@@ -1,5 +1,5 @@
 name: PO-Pensjon Ekstern API
 title: PO-Pensjon Ekstern API
 description: Beskrivelse av eksterne API eksponert av PO-pensjon
-theme: jekyll-theme-slate
+remote_theme: jekyll-theme-slate
 baseurl: /pensjon-ekstern-api
