@@ -1,0 +1,62 @@
+openapi: 3.0.1
+info:
+  title: Pensjon AFP-privat
+  description: Inneholder tjenester for å behandle og hente informasjon om en AFP-privat saker/brukere.
+    søknad.
+  version: 1.0.0
+servers:
+  - url: https://template.value/template/value
+paths:
+  /mottarAfpPrivat:
+    get:
+      description: Hent ut informasjon om bruker mottar AFP-privat. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/mottarafpprivat`.
+      operationId: mottarafpprivat
+      parameters:
+        - name: Authorization
+          in: header
+          description: Format - byte. Standard Authorization header som inneholder et
+            Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi).
+            Verdien må starte med "Bearer ", deretter følger tokenstrengen.
+          required: true
+          schema:
+            type: string
+        - name: personId
+          in: header
+          description: Fødselsnummer/personidentifikator
+          required: true
+          schema:
+            type: string
+        - name: fraOgMedDato
+          in: query
+          description: Ønsket virkningstidspunkt å sjekke på om bruker mottar afp-privat
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK. Returnerer true/false om bruker mottar afpprivat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MottarAfpPrivat'
+        400:
+          description: Ugyldig fnr
+          content: { }
+        404:
+          description: Fant ikke person med oppgitt fnr
+          content: { }
+components:
+  schemas:
+    MottarAfpPrivat:
+      title: MottarAfpPrivat
+      type: object
+      properties:
+        mottarAfpPrivat:
+          type: boolean
+          description: true/false verdi om bruker mottar afp-privat
+  securitySchemes:
+    Ocp-Apim-Subscription-Key:
+      type: apiKey
+      description: ""
+      name: Ocp-Apim-Subscription-Key
+      in: header
