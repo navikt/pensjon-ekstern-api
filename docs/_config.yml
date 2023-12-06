@@ -25,7 +25,7 @@ baseurl: "/pensjon-ekstern-api" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Build settings
-theme: slate
+remote_theme: slate
 plugins:
   - jekyll-feed
 
