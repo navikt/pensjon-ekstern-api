@@ -222,3 +222,8 @@ components:
           type: string
           format: YYYY-mm-DD
           example: "2024-01-01"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
