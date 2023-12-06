@@ -164,8 +164,9 @@ components:
           example: "01234567890"
         datoForOnsketUttakAvAfp:
           type: string
+          format: YYYY-mm-DD
           description: |
-            Dato på format YYYY-mm-DD. Dette input-feltet er nødvendig for å kunne sjekke om bruker har et gyldig vedtak om uføretrygd som gjelder for det ønskede virkningstidspunktet eller senere, og som evt. må stanses for å få rett til AFP. Det blir riktig å bruke dette fremfor situasjonen på kalltidspunktet, for å unngå å få med vedtak som er opphørt før ønsket virkningstidspunkt for AFP.
+            Dette input-feltet er nødvendig for å kunne sjekke om bruker har et gyldig vedtak om uføretrygd som gjelder for det ønskede virkningstidspunktet eller senere, og som evt. må stanses for å få rett til AFP. Det blir riktig å bruke dette fremfor situasjonen på kalltidspunktet, for å unngå å få med vedtak som er opphørt før ønsket virkningstidspunkt for AFP.
           example: "2024-01-01"
     HarLopendeVedtakOmUforeResponse:
       title: Har løpende vedtak om uføre - response
@@ -197,11 +198,11 @@ components:
           example: "01234567890"
         fraOgMedDato:
           type: string
-          description: Dato på format YYYY-mm-DD
+          format: YYYY-mm-DD
           example: "2024-01-01"
         tilOgMedDato:
           type: string
-          description: Dato på format YYYY-mm-DD
+          format: YYYY-mm-DD
           example: "2024-01-01"
     UforeperioderResponse:
       title: Uforeperioder - response
@@ -215,9 +216,9 @@ components:
       properties:
         fraOgMedDato:
           type: string
-          description: Dato på format YYYY-mm-DD
+          format: YYYY-mm-DD
           example: "2024-01-01"
         tilOgMedDato:
           type: string
-          description: Dato på format YYYY-mm-DD
+          format: YYYY-mm-DD
           example: "2024-01-01"
