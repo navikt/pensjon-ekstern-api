@@ -1,0 +1,223 @@
+openapi: 3.0.1
+info:
+  title: Uføretrygd
+  description: Tjenester ifbm behandling av AFP offentlig
+  version: 1.0.0
+servers:
+  - url: https://template.value/template/value
+paths:
+  /harMottattUforeEtter62:
+    post:
+      description: |
+        - Denne gir svar på om det finnes løpende vedtak for uføretrygd (tilbake i tid) for perioden etter at bruker fylte 62 år med netto beregnet uføretrygd > 0. Hvis verdien er True, vil vilkåret om å ikke ha mottatt uføretrygd ikke være oppfylt ved ønsket uttakstidspunkt.
+        - Med «løpende» menes her at vedtaket er gyldig. Vedtaket trenger ikke nødvendigvis å gjelder for tidspunktet da tjenesten kalles. F.eks. skal tjenesten også gi True om bruker har vedtak om uføretrygd som er opphørt på kalltidspunktet, men som har gjeldt for tidsrom etter fylte 62, og som har gitt netto utbetaling av uføretrygd i det tidsrommet.
+        - Med «netto beregnet uføretrygd» menes her den delen av uføretrygdutbetalingen som er i behold etter etteroppgjøret dersom etteroppgjøret er gjort, eller det som er utbetalt, men uten at det er gjort etteroppgjør for perioden. «Netto utbetalt uføretrygd» tar ikke hensyn til om utbetalingen er krevd tilbake på andre måter enn gjennom etteroppgjør. En utbetaling som er krevd tilbake etter reglene i folketrygdloven § 22-15 regnes likevel som netto utbetalt, og vil gi verdien True på mottattUforeEtter62. (@Nordås, Magne, stemmer dette? Kan hende vi må se mer på dette etter jul.) «Netto» handler her ikke om skattlegging.
+        - I privat sektor er det en unntaksregel som gjør at vilkåret om ikke-mottak av uføretrygd kan bli oppfylt på et senere tidspunkt, dersom all uføretrygd utbetalt etter fylte 62 år blir tilbakebetalt som følge av etteroppgjøret for uføretrygd. NAV kjenner ikke til at denne regelen har vært brukt i AFP privat. Vi har ikke vurdert om NAV kan gi opplysninger som sier noe om muligheten for at dette kan skje i fremtidige etteroppgjør, og ser for oss at bruker heller evt. bør få veiledning om muligheten for å bli omfattet av denne unntaksregelen i avslagsbrevet.
+      operationId: harMottattUforeEtter62
+      parameters:
+        - in: header
+          name: x-callid
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MottattUforeEtter62Request'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MottattUforeEtter62Response'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+  /harLopendeVedtakOmUfore:
+    post:
+      description: |
+        Gir svar på om personen har et løpende, ikke-avsluttet vedtak om uføretrygd på ønsket AFP-uttakstidspunkt eller senere (uavhengig av om det faktisk er utbetalt noe, og uavhengig av alder). Feltet er relevant for veiledning. Bruker er her i en tidskritisk situasjon der hen må velge mellom AFP og uføretrygd. En mulighet kan være å sette behandling av AFP-søknad på vent, og informere bruker om at de må velge mellom AFP og uføretrygd. Å evt. gi simulering av AFP, og be bruker ta kontakt med NAV for veiledning om uføretrygd og konsekvenser av å si fra seg denne, og informere om at bruker må si fra seg uføretrygden dersom de ønsker å ta ut AFP.
+      operationId: harLopendeVedtakOmUfore
+      parameters:
+        - in: header
+          name: x-callid
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HarLopendeVedtakOmUforeRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HarLopendeVedtakOmUforeResponse'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+  /harUforesoknadUnderBehandling:
+    post:
+      description: |
+        - Gir svar på om AFP-søkeren på kall-tidspunktet har en søknad om uføretrygd til behandling hos NAV.
+        - Formålet er det samme som for lopendeVedtakOmUfore – å fange opp om bruker kan ha behov for veiledning om valg mellom AFP og uføretrygd.
+        - Åpent spørsmål: Ønsker TP-ordningen også å vite om åpent krav om klage/anke på uføretrygd?
+        - Per nå vet vi ikke nøyaktig hvilke tilfeller som vil kunne fanges opp her og hvilke som kunne vært relevante, men som faller utenfor. Dette avhenger av hvilke rutiner vi har for når krav om uføretrygd registreres i pensjonssaksbehandlingssystemet, og det har vi ikke ennå sjekket opp. Vi kan evt. undersøke dette.
+      parameters:
+        - in: header
+          name: x-callid
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HarUforesoknadUnderBehandlingRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HarUforesoknadUnderBehandlingResponse'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+  /uforeperioder:
+    post:
+      description: Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
+      operationId: uforeperioder
+      parameters:
+        - in: header
+          name: x-callid
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UforeperioderRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UforeperioderResponse'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+components:
+  schemas:
+    MottattUforeEtter62Request:
+      title: Har mottatt uføre etter 62 - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+    MottattUforeEtter62Response:
+      title: Har mottatt uføre etter 62 - response
+      type: object
+      properties:
+        harMottattUforeEtter62:
+          type: boolean
+    HarLopendeVedtakOmUforeRequest:
+      title: Har løpende vedtak om uføre - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        datoForOnsketUttakAvAfp:
+          type: string
+          description: |
+            Dato på format YYYY-mm-DD. Dette input-feltet er nødvendig for å kunne sjekke om bruker har et gyldig vedtak om uføretrygd som gjelder for det ønskede virkningstidspunktet eller senere, og som evt. må stanses for å få rett til AFP. Det blir riktig å bruke dette fremfor situasjonen på kalltidspunktet, for å unngå å få med vedtak som er opphørt før ønsket virkningstidspunkt for AFP.
+          example: "2024-01-01"
+    HarLopendeVedtakOmUforeResponse:
+      title: Har løpende vedtak om uføre - response
+      type: object
+      properties:
+        harLopendeVedtakOmUfore:
+          type: boolean
+    HarUforesoknadUnderBehandlingRequest:
+      title: Har søknad om uføretrygd under behandling - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+    HarUforesoknadUnderBehandlingResponse:
+      title: Har søknad om uføretrygd under behandling - response
+      type: object
+      properties:
+        harUforesoknadUnderBehandling:
+          type: boolean
+    UforeperioderRequest:
+      title: Uforeperioder - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fraOgMedDato:
+          type: string
+          description: Dato på format YYYY-mm-DD
+          example: "2024-01-01"
+        tilOgMedDato:
+          type: string
+          description: Dato på format YYYY-mm-DD
+          example: "2024-01-01"
+    UforeperioderResponse:
+      title: Uforeperioder - response
+      type: array
+      items:
+        $ref: '#/components/schemas/VedtakPeriode'
+    VedtakPeriode:
+      title: Vedtaksperiode
+      type: object
+      description: Vedtaksperiode
+      properties:
+        fraOgMedDato:
+          type: string
+          description: Dato på format YYYY-mm-DD
+          example: "2024-01-01"
+        tilOgMedDato:
+          type: string
+          description: Dato på format YYYY-mm-DD
+          example: "2024-01-01"
