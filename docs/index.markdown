@@ -10,5 +10,5 @@ title: PO-Pensjon Ekstern API
 
 Eksponerte tjenester
 
-* [AfpPrivat](afpprivat/AfpPrivat.html)
-* [Uforetrygd](uforetrygd/Uforetrygd.html)
+* [AfpPrivat](../AfpPrivat.html)
+* [Uforetrygd](../Uforetrygd.html)
