@@ -8,52 +8,57 @@ servers:
   - url: https://template.value/template/value
 paths:
   /mottarAfpPrivat:
-    get:
-      description: Hent ut informasjon om bruker mottar AFP-privat. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/mottarafpprivat`.
+    post:
+      description: Hent ut informasjon om bruker mottar AFP-privat.
       operationId: mottarafpprivat
       parameters:
-        - name: Authorization
-          in: header
-          description: Format - byte. Standard Authorization header som inneholder et
-            Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi).
-            Verdien må starte med "Bearer ", deretter følger tokenstrengen.
-          required: true
+        - in: header
+          name: x-callid
+          description: UUID for å spore kallet
           schema:
             type: string
-        - name: personId
-          in: header
-          description: Fødselsnummer/personidentifikator
+            format: uuid
           required: true
-          schema:
-            type: string
-        - name: fraOgMedDato
-          in: query
-          description: Ønsket virkningstidspunkt å sjekke på om bruker mottar afp-privat
-          required: true
-          schema:
-            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MottarAfpPrivatRequest'
+        required: true
       responses:
         200:
-          description: OK. Returnerer true/false om bruker mottar afpprivat
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MottarAfpPrivat'
+                $ref: '#/components/schemas/MottarAfpPrivatResponse'
         400:
-          description: Ugyldig fnr
-          content: { }
-        404:
-          description: Fant ikke person med oppgitt fnr
-          content: { }
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token		  
 components:
   schemas:
-    MottarAfpPrivat:
-      title: MottarAfpPrivat
+    MottarAfpPrivatRequest:
+      title: Mottar AFP Privat - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fraOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          description: Ønsket virkningstidspunkt å sjekke på om bruker mottar afp-privat          
+          example: "2024-01-01"          
+    MottarAfpPrivatResponse:
+      title: Mottar AFP Privat - response
       type: object
       properties:
         mottarAfpPrivat:
           type: boolean
-          description: true/false verdi om bruker mottar afp-privat
   securitySchemes:
     Ocp-Apim-Subscription-Key:
       type: apiKey
