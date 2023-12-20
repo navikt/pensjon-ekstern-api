@@ -1,0 +1,137 @@
+openapi: 3.0.1
+info:
+  title: AFP Grunnlag Beholdning
+  description: Benyttes for å hente AFP Beholdning for gitt fødselsnummer fra og med ønsket dato (for beregning av AFP ifm sakbehandling og simulering)
+  version: 1.0.0
+servers:
+  - url: https://template.value/template/value
+paths:
+  /afpBeholdningGrunnlag:
+    post:
+      description: Benyttes for å hente AFP Beholdning Grunnlag for gitt fødselsnummer fra og med ønsket dato
+      operationId: afpBeholdningGrunnlag
+      parameters:
+        - in: header
+          name: x-callid
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AfpGrunnlagBeholdningRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AfpGrunnlagBeholdningResponse'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+  /afpBeholdningGrunnlagSimulering:
+    post:
+      description: Benyttes for å hente simulert AFP Beholdning Grunnlag for gitt fødselsnummer fra og med ønsket dato, med fremtidig inntekt som input
+      operationId: afpBeholdningGrunnlagSimulering
+      parameters:
+        - in: header
+          name: x-callid
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AfpGrunnlagBeholdningSimuleringRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AfpGrunnlagBeholdningSimuleringResponse'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+components:
+  schemas:
+    AfpGrunnlagBeholdningRequest:
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fraOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-01-01"
+    AfpGrunnlagBeholdningResponse:
+      type: array
+      description: Returnerer alle AFP Beholdning Grunnlag perioder for gitt personId fra og med dato. AFP Beholdning Grunnlag-perioder gjelder fra 1. januar (der opptjening 2 år før blir godskrevet) til og med 30. april. Og fra 1. mai der AFP Beholdning Grunnlag lønnsvekstreguleres til og med 31. desember.
+      items:
+        $ref: '#/components/schemas/AfpGrunnlagBeholdningPeriode'
+    AfpGrunnlagBeholdningSimuleringRequest:
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fraOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-01-01"
+        inntekter:
+          type: array
+          description: Liste med inntekter med inntekstår og beløp for hvert år
+          items:
+            $ref: '#/components/schemas/InntektPeriode'
+    InntektPeriode:
+      type: object
+      properties:
+        inntektAr:
+          type: number
+          example: 2023
+        belop:
+          type: number
+          example: 100000
+    AfpGrunnlagBeholdningSimuleringResponse:
+      type: array
+      description: Returnerer alle AFP Beholdning Grunnlag perioder for gitt personId fra og med dato. De fremtidige AFP Beholdning Grunnlag periodene inkluderer godskriving av de simulerte inntektene og tilsvarende regulerte perioder. (NB. Må sjekke om beholdning skal reguleres ved simulering og evt. hvilken lønssvekstfaktor som skal benyttes i reguleringen.)
+      items:
+        $ref: '#/components/schemas/AfpGrunnlagBeholdningPeriode'
+    AfpGrunnlagBeholdningPeriode:
+      type: object
+      properties:
+        fraOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-01-01"
+        tilOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-04-30"
+        belop:
+          type: number
+          example: 123456
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
