@@ -12,7 +12,7 @@ paths:
       operationId: afpBeholdningGrunnlag
       parameters:
         - in: header
-          name: x-callid
+          name: x-request-id
           description: UUID for å spore kallet
           schema:
             type: string
@@ -43,7 +43,7 @@ paths:
       operationId: afpBeholdningGrunnlagSimulering
       parameters:
         - in: header
-          name: x-callid
+          name: x-request-id
           description: UUID for å spore kallet
           schema:
             type: string

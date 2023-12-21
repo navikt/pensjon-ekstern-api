@@ -16,7 +16,7 @@ paths:
       operationId: harMottattUforeEtter62
       parameters:
         - in: header
-          name: x-callid
+          name: x-request-id
           description: UUID for å spore kallet
           schema:
             type: string
@@ -48,7 +48,7 @@ paths:
       operationId: harLopendeVedtakOmUfore
       parameters:
         - in: header
-          name: x-callid
+          name: x-request-id
           description: UUID for å spore kallet
           schema:
             type: string
@@ -82,7 +82,7 @@ paths:
         - Per nå vet vi ikke nøyaktig hvilke tilfeller som vil kunne fanges opp her og hvilke som kunne vært relevante, men som faller utenfor. Dette avhenger av hvilke rutiner vi har for når krav om uføretrygd registreres i pensjonssaksbehandlingssystemet, og det har vi ikke ennå sjekket opp. Vi kan evt. undersøke dette.
       parameters:
         - in: header
-          name: x-callid
+          name: x-request-id
           description: UUID for å spore kallet
           schema:
             type: string
@@ -113,7 +113,7 @@ paths:
       operationId: uforeperioder
       parameters:
         - in: header
-          name: x-callid
+          name: x-request-id
           description: UUID for å spore kallet
           schema:
             type: string

@@ -13,7 +13,7 @@ paths:
       operationId: mottarafpprivat
       parameters:
         - in: header
-          name: x-callid
+          name: x-request-id
           description: UUID for å spore kallet
           schema:
             type: string
