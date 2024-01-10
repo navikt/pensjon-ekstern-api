@@ -13,3 +13,4 @@ Eksponerte tjenester
 * [AfpPrivat](api/afpprivat/AfpPrivat.html)
 * [Uforetrygd](api/uforetrygd/Uforetrygd.html)
 * [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
+* [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
