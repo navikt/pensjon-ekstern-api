@@ -1,0 +1,392 @@
+openapi: 3.0.1
+info:
+  title: Pensjon AFP-privat fellesordningen
+  description: Inneholder tjenester for Fellesordningen for å behandle og hente informasjon om en AFP-privat saker/brukere.
+    søknad.
+  version: 1.0.0
+servers:
+  - url: https://template.value/template/value
+paths:
+  /sokere:
+    get:
+      description: Henter søkere mellom gitte tidspunkt. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
+      operationId: hentAfpPrivatSokere
+      parameters:
+        - name: Authorization
+          in: header
+          description: Format - byte. Standard Authorization header som inneholder et
+            Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi).
+            Verdien må starte med "Bearer ", deretter følger tokenstrengen.
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - name: fom
+          in: query
+          description: Format - Long. Fra og med dato input. Epoch tid.
+          required: true
+          schema:
+            type: number
+        - name: tom
+          in: query
+          description: Format - Long. Til og med dato input. Epoch tid.
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SokereDto'
+  /uforeperioder:
+    get:
+      description: Hent uføreperioder 3 år tilbake i tid fra ønsket virkningstidspunkt. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
+      operationId: afpprivatHentUforeperioder
+      parameters:
+        - name: Authorization
+          in: header
+          description: Format - byte. Standard Authorization header som inneholder et
+            Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi).
+            Verdien må starte med "Bearer ", deretter følger tokenstrengen.
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - name: fnr
+          in: header
+          description: Fødselsnummer/personidentifikator til søker
+          required: true
+          schema:
+            type: string
+        - name: oensketVirkningsdato
+          in: query
+          description: Ønsket virkningstidspunkt til søker
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK. Returnerer en liste med uføreperioder
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Uforeperiode'
+        400:
+          description: Ugyldig fnr
+          content: {}
+        404:
+          description: Fant ikke person med oppgitt fnr
+          content: {}
+  /resultat:
+    post:
+      description: Lagre afpprivat-resultat. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
+      operationId: lagreAfpPrivatResultat
+      parameters:
+        - name: Authorization
+          in: header
+          description: Format - byte. Standard Authorization header som inneholder et
+            Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi).
+            Verdien må starte med "Bearer ", deretter følger tokenstrengen.
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        description: Resultatet på afpprivat-behandlingen
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resultat'
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+        404:
+          description: Fant ikke krav på personen på gitt registrert tidspunkt. Fant
+            ikke personen med gitt fnr.
+          content: {}
+        409:
+          description: Identifisert krav er ikke et AFP privat-krav. Identifisert
+            krav har feil status. Resultatet er allerede satt på kravet.
+          content: {}
+      x-codegen-request-body-name: resultat
+  /vedtak:
+    get:
+      description: Hent afpprivat vedtak som er iverksatt, førstegangsvedtak og avslagsvedtak. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
+        mellom to tidspunkt.
+      operationId: hentAfpPrivatVedtak
+      parameters:
+        - name: Authorization
+          in: header
+          description: Format - byte. Standard Authorization header som inneholder et
+            Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi).
+            Verdien må starte med "Bearer ", deretter følger tokenstrengen.
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - name: fom
+          in: query
+          description: Format - Long. Fra og med dato input. Epoch tid.
+          required: true
+          schema:
+            type: number
+        - name: tom
+          in: query
+          description: Format - Long. Til og med dato input. Epoch tid.
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: OK. Liste med afpprivatvedtak
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vedtak'
+components:
+  schemas:
+    SokereDto:
+      title: Søkere
+      type: object
+      properties:
+        Sokere:
+          $ref: '#/components/schemas/Sokerdetaljer'
+        Merknader:
+          $ref: '#/components/schemas/Merknad'
+    Merknad:
+      title: Merknad
+      type: object
+      description: Feilsituasjoner
+      properties:
+        fnr:
+          type: string
+          description: Fødselsnummer/personidentifikator
+        kravTidspunktReg:
+          type: number
+          description: Epoch tid på når kravet/søknaden ble registrert
+        feilmelding:
+          type: string
+          description: Feilmeldingen på merknaden
+    Sokerdetaljer:
+      title: Søkerdetaljer
+      type: object
+      properties:
+        PersonInfo:
+          $ref: '#/components/schemas/PersonInfo'
+        KravInfo:
+          $ref: '#/components/schemas/KravInfo'
+        Soknad:
+          $ref: '#/components/schemas/Soknad'
+    PersonInfo:
+      title: PersonInfo
+      type: object
+      description: Inneholder personinformasjon
+      properties:
+        fnr:
+          type: string
+          description: Fødselsnummer/personidentifikator
+          example: "12345678910"
+        fornavn:
+          type: string
+          description: Fornavn til søker
+          example: Gylden
+        mellomnavn:
+          type: string
+          description: Mellomnavn til søker
+          example: Dal
+        etternavn:
+          type: string
+          description: Etternavn til søker
+          example: Maskin
+        telefonnr:
+          $ref: '#/components/schemas/Telefonnummer'
+        epost:
+          type: string
+          description: Epost til søker
+        kontaktAdresse:
+          $ref: '#/components/schemas/Adresse'
+        diskresjonskode:
+          type: string
+          description: Informasjon om søker har diskresjonskode 6/7
+    Telefonnummer:
+      title: Telefonnummer
+      type: object
+      description: Telefonnummer til søker
+      properties:
+        nummer:
+          type: string
+          description: Telefonnummer til søker
+        prioritet:
+          type: number
+          description: Prioritet på telefonnummer til søker
+        landkode:
+          type: string
+          description: Landkode på telefonnummer til søker
+    Adresse:
+      title: Adresse
+      type: object
+      description: Adressen til adressaten
+      properties:
+        adresselinje1:
+          type: string
+          description: Adressen til adressaten
+        adresselinje2:
+          type: string
+          description: Dersom personen har en annen adresse enn der vedkommende er
+            registrert bosatt
+        adresselinje3:
+          type: string
+          description: Dersom personen har en annen adresse enn der vedkommende er
+            registrert bosatt.
+        postnummer:
+          type: string
+          description: Postnummer
+        poststed:
+          type: string
+          description: Poststed
+        land:
+          type: string
+          description: Land
+    KravInfo:
+      title: KravInfo
+      type: object
+      description: Inneholder kravinformasjon
+      properties:
+        oensketVirkningFom:
+          type: string
+          description: Dato på format YYYY-mm-DD
+        mottattDato:
+          type: string
+          description: Dato på format YYYY-mm-DD
+        tidspunktRegistrert:
+          type: number
+          description: Epoch tid på når kravet/søknad er registrert. Benyttes for
+            å identifisere krav/søknad
+        navEnhet:
+          type: string
+          description: Nav-enhet til kravet/søknad
+    Soknad:
+      title: Søknad
+      type: object
+      description: Inneholder informasjon fra søknaden
+      properties:
+        harHattPermisjonSistePeriode:
+          type: boolean
+          description: Informasjon om søker har hatt permisjon siste periode 3Aar
+        harHattInntektUtenArbPlikt:
+          type: boolean
+          description: Informasjon om søker har hatt inntekt uten arbeidsplikt
+        harHattRedusertStillingSistePeriode:
+          type: boolean
+          description: Informasjon om søker har hatt redusert stilling siste periode
+            3Aar
+        harDrevetNaeringsvirkEierandel:
+          type: boolean
+          description: Informasjon om søker har drevet næringsvirksomhet med eierandel
+        arbeidsgiver:
+          $ref: '#/components/schemas/Arbeidsgiver'
+    Arbeidsgiver:
+      title: Arbeidsgiver
+      type: object
+      description: Informasjon om arbeidsgiver
+      properties:
+        navn:
+          type: string
+          description: Navn på arbeidsgiver
+        orgnr:
+          type: string
+          description: Organisasjonsnummer til arbeidsgiver
+        adresse:
+          $ref: '#/components/schemas/Adresse'
+    Resultat:
+      title: Resultat
+      type: object
+      properties:
+        fnr:
+          type: string
+          example: 12345678901
+          description: Fødselsnummer/personidentifikator til krav/søknad gjelder
+        kravTidspunktReg:
+          type: number
+          example: 1677585475195
+          description: Epoch tid på når kravet/søknad er registrert. Benyttes for
+            å identifisere krav/søknad
+        innvilgetFraDato:
+          type: string
+          example: 2023-06-01
+          description: Dato på format YYYY-mm-DD
+        vedtaksdato:
+          type: string
+          example: 2023-06-01
+          description: Dato på format YYYY-mm-DD
+        resultatkode:
+          type: string
+          example: INNVILGET
+          description: Resultat på krav/søknad. AVSLATT, FEILREG, INNVILGET, TRUKKET
+    Uforeperiode:
+      title: Uforeperiode
+      type: object
+      properties:
+        uforegrad:
+          type: number
+          description: Uføregrad til bruker
+          example: 50.0
+        uforeperiodeFom:
+          type: string
+          description: Dato på format YYYY-mm-DD
+        uforeperiodeTom:
+          type: string
+          description: Dato på format YYYY-mm-DD
+    Vedtak:
+      title: Vedtak
+      type: object
+      properties:
+        fnr:
+          type: string
+          description: Fødselsnummer/personidentifikator til krav/søknad gjelder
+        kravTidspunktReg:
+          type: number
+          description: Epoch tid på når kravet/søknaden ble registrert
+        innvilget:
+          type: boolean
+          description: True/false - Verdi om vedtaket er innvilget
+        iverksattDato:
+          type: string
+          description: Dato på format YYYY-mm-DD. Dato vedtaket er mottatt i utbetalingsløsningen.
+        virkFom:
+          type: string
+          description: Dato på format YYYY-mm-DD. Virkningsdatoen, fra og med, vedtaket er løpende.
+  securitySchemes:
+    Ocp-Apim-Subscription-Key:
+      type: apiKey
+      description: ""
+      name: Ocp-Apim-Subscription-Key
+      in: header
