@@ -178,9 +178,13 @@ components:
       type: object
       properties:
         Sokere:
-          $ref: '#/components/schemas/Sokerdetaljer'
+          items:
+            $ref: '#/components/schemas/Sokerdetaljer'
+          type: array
         Merknader:
-          $ref: '#/components/schemas/Merknad'
+          items:
+            $ref: '#/components/schemas/Merknad'
+          type: array
     Merknad:
       title: Merknad
       type: object
