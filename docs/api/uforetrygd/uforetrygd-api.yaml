@@ -4,16 +4,17 @@ info:
   description: Tjenester ifbm behandling av AFP offentlig
   version: 1.0.0
 servers:
-  - url: https://template.value/template/value
+  - url: https://pensjon-q2-gw.ekstern.dev.nav.no/api/uforetrygd/tpordningene
 paths:
   /harMottattUforeEtter62:
     post:
       description: |
-        - Denne gir svar på om det finnes løpende vedtak for uføretrygd (tilbake i tid) for perioden etter at bruker fylte 62 år med netto beregnet uføretrygd > 0. Hvis verdien er True, vil vilkåret om å ikke ha mottatt uføretrygd ikke være oppfylt ved ønsket uttakstidspunkt.
+        - Denne gir svar på om det finnes løpende vedtak for uføretrygd (tilbake i tid) for perioden etter at bruker fylte 62 år med netto beregnet uføretrygd > 0. Tjenesten tar bare hensyn til ytelseskomponenten Uføretrygd Ordinær, ikke evt barnetillegg. Hvis verdien er True, vil vilkåret om å ikke ha mottatt uføretrygd ikke være oppfylt ved ønsket uttakstidspunkt.
         - Det garanteres bare at data er riktig for personer som fyller 62 år fra 01.01.2025.
         - Med «løpende» menes her at vedtaket er gyldig. Vedtaket trenger ikke nødvendigvis å gjelde for tidspunktet da tjenesten kalles. F.eks. skal tjenesten også gi True om bruker har vedtak om uføretrygd som er opphørt på kalltidspunktet, men som har gjeldt for tidsrom etter fylte 62, og som har gitt netto utbetaling av uføretrygd i det tidsrommet.
         - Med «netto beregnet uføretrygd» menes her den delen av uføretrygdutbetalingen som er i behold etter etteroppgjøret dersom etteroppgjøret er gjort, eller det som er utbetalt, men uten at det er gjort etteroppgjør for perioden. Vi skal avklare om «netto utbetalt uføretrygd» tar hensyn til om utbetalingen er krevd tilbake på andre måter enn gjennom etteroppgjør, slik som folketrygdloven § 22-15, eller ikke. «Netto» handler her ikke om skattlegging.
         - I privat sektor er det en unntaksregel som gjør at vilkåret om ikke-mottak av uføretrygd kan bli oppfylt på et senere tidspunkt, dersom all uføretrygd utbetalt etter fylte 62 år blir tilbakebetalt som følge av etteroppgjøret for uføretrygd. NAV kjenner ikke til at denne regelen har vært brukt i AFP privat. Vi har ikke vurdert om NAV kan gi opplysninger som sier noe om muligheten for at dette kan skje i fremtidige etteroppgjør, og ser for oss at bruker heller evt. bør få veiledning om muligheten for å bli omfattet av denne unntaksregelen i avslagsbrevet.
+        - Krever token med maskinporten-scope nav:uforetrygd:tpordningene.harmottattuforeetter62.read
       operationId: harMottattUforeEtter62
       parameters:
         - in: header
@@ -110,7 +111,9 @@ paths:
           description: Autorisering til ressurs feilet, feks feil scope i token
   /uforeperioder:
     post:
-      description: Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
+      description: |
+      - Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
+      - Krever token med maskinporten-scope nav:uforetrygd:tpordningene.uforeperioder.read
       operationId: uforeperioder
       parameters:
         - in: header
