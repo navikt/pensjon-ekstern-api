@@ -4,7 +4,7 @@ info:
   description: Tjenester ifbm behandling av AFP offentlig
   version: 1.0.0
 servers:
-  - url: https://pensjon-q2-gw.ekstern.dev.nav.no/api/uforetrygd/tpordningene
+  - url: https://pensjon-q2-gw.ekstern.dev.nav.no/uforetrygd/tpordningene
 paths:
   /harMottattUforeEtter62:
     post:
