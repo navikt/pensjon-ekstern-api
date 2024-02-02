@@ -112,8 +112,8 @@ paths:
   /uforeperioder:
     post:
       description: |
-      - Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
-      - Krever token med maskinporten-scope nav:uforetrygd:tpordningene.uforeperioder.read
+        - Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
+        - Krever token med maskinporten-scope nav:uforetrygd:tpordningene.uforeperioder.read
       operationId: uforeperioder
       parameters:
         - in: header
