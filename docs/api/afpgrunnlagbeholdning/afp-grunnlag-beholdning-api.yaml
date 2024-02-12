@@ -72,15 +72,16 @@ components:
   schemas:
     BeregnRequest:
       type: object
-      personId:
-        type: string
-        description: Fødselsnummer, 11 siffer
-        example: "01234567890"
-      fraOgMedDato:
-        description: Angir datoen man ønsker beholdningsgrunnlag fra og med. Response inkluderer alle beholdningsgrunnlag på angitt dato og senere.
-        type: string
-        format: YYYY-mm-DD
-        example: "2024-01-01"
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fraOgMedDato:
+          description: Angir datoen man ønsker beholdningsgrunnlag fra og med. Response inkluderer alle beholdningsgrunnlag på angitt dato og senere.
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-01-01"
     SimulerRequest:
       type: object
       properties:
@@ -101,7 +102,7 @@ components:
       type: object
       properties:
         fraOgMedDato:
-          description: Måneden den årlige inntekten gjelder fra - gyldig frem til neste inntekt med senere fraOgMedDato, eller til "evig" tid dersom ingen eksisterer. Årlig inntekt regnes om til månedsinntekt og multipliseres med antall måneder per år - eks (fraOgMedDato:2024-01-01, inntekt:100.000) + (fraOgMedDato:2024-07-01, inntekt:200.000) -> (100.000/12*6) + (200.000/12*6) -> (50.000) + (100.000) = 150.000 for året 2024.
+          description: Måneden den årlige inntekten gjelder fra - gyldig frem til neste inntekt med senere fraOgMedDato, eller til "evig" tid dersom ingen eksisterer. Årlig inntekt regnes om til månedsinntekt og multipliseres med antall måneder per år - eks (fraOgMedDato:2024-01-01, inntekt:100.000) + (fraOgMedDato:2024-07-01, inntekt:200.000) -> (100.000/12x6) + (200.000/12x6) -> (50.000) + (100.000) = 150.000 for året 2024.
           type: string
           example: "2024-01-01"
         arligInntekt:
