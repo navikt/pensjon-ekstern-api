@@ -1,15 +1,15 @@
 openapi: 3.0.1
 info:
-  title: AFP Grunnlag Beholdning
-  description: Benyttes for å hente AFP Beholdning for gitt fødselsnummer fra og med ønsket dato (for beregning av AFP ifm sakbehandling og simulering)
+  title: AFP Beholdningsgrunnlag
+  description: Tjenester for beregning og simulering av AFP beholdningsgrunnlag.
   version: 1.0.0
 servers:
   - url: https://template.value/template/value
 paths:
-  /afpBeholdningGrunnlag:
+  /opptjening/afp/beholdningsgrunnlag/beregn:
     post:
-      description: Benyttes for å hente AFP Beholdning Grunnlag for gitt fødselsnummer fra og med ønsket dato
-      operationId: afpBeholdningGrunnlag
+      description: Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt dato.
+      operationId: beregn
       parameters:
         - in: header
           name: x-request-id
@@ -22,7 +22,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AfpGrunnlagBeholdningRequest'
+              $ref: '#/components/schemas/BeregnRequest'
         required: true
       responses:
         200:
@@ -30,17 +30,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AfpGrunnlagBeholdningResponse'
+                $ref: '#/components/schemas/Response'
         400:
           description: Feil i request-data fra klient
         401:
           description: Autentisering feilet
         403:
           description: Autorisering til ressurs feilet, feks feil scope i token
-  /afpBeholdningGrunnlagSimulering:
+  /opptjening/afp/beholdningsgrunnlag/simuler:
     post:
-      description: Benyttes for å hente simulert AFP Beholdning Grunnlag for gitt fødselsnummer fra og med ønsket dato, med fremtidig inntekt som input
-      operationId: afpBeholdningGrunnlagSimulering
+      description: Simulerer beholdningsgrunnlag med tilvekst fra oppgitte inntekter fra og med angitt dato. NB! Grunnlag med fraOgMedDato senere enn siste kjente grunnbeløpsendring vil ikke være lønnsvekstregulert - se https://www.nav.no/grunnbelopet
+      operationId: simuler
       parameters:
         - in: header
           name: x-request-id
@@ -53,7 +53,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AfpGrunnlagBeholdningSimuleringRequest'
+              $ref: '#/components/schemas/SimulerRequest'
         required: true
       responses:
         200:
@@ -61,7 +61,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AfpGrunnlagBeholdningSimuleringResponse'
+                $ref: '#/components/schemas/Response'
         400:
           description: Feil i request-data fra klient
         401:
@@ -70,7 +70,18 @@ paths:
           description: Autorisering til ressurs feilet, feks feil scope i token
 components:
   schemas:
-    AfpGrunnlagBeholdningRequest:
+    BeregnRequest:
+      type: object
+      personId:
+        type: string
+        description: Fødselsnummer, 11 siffer
+        example: "01234567890"
+      fraOgMedDato:
+        description: Angir datoen man ønsker beholdningsgrunnlag fra og med. Response inkluderer alle beholdningsgrunnlag på angitt dato og senere.
+        type: string
+        format: YYYY-mm-DD
+        example: "2024-01-01"
+    SimulerRequest:
       type: object
       properties:
         personId:
@@ -78,100 +89,42 @@ components:
           description: Fødselsnummer, 11 siffer
           example: "01234567890"
         fraOgMedDato:
+          description: Angir datoen man ønsker beholdningsgrunnlag fra og med. Response inkluderer alle beholdningsgrunnlag på angitt dato og senere.
           type: string
           format: YYYY-mm-DD
           example: "2024-01-01"
-    AfpGrunnlagBeholdningResponse:
-      type: object
-      description: Returnerer alle AFP Beholdning Grunnlag perioder for gitt personId fra og med dato. AFP Beholdning Grunnlag-perioder gjelder fra 1. januar (der opptjening 2 år før blir godskrevet) til og med 30. april. Og fra 1. mai der AFP Beholdning Grunnlag lønnsvekstreguleres til og med 31. desember.
-      properties:
-        personId:
-          type: string
-          description: Fødselsnummer, 11 siffer
-          example: "01234567890"
-        afpGrunnlagBeholdninger:
+        fremtidigInntektListe:
           type: array
           items:
-            $ref: '#/components/schemas/AfpGrunnlagBeholdningPeriode'
-          example:
-            - fraOgMedDato: "2024-01-01"
-              tilOgMedDato: "2024-04-30"
-              belop: 123456
-            - fraOgMedDato: "2024-05-01"
-              tilOgMedDato:
-              belop: 234567
-    AfpGrunnlagBeholdningSimuleringRequest:
+            $ref: '#/components/schemas/FremtidigInntekt'
+    FremtidigInntekt:
       type: object
       properties:
-        personId:
-          type: string
-          description: Fødselsnummer, 11 siffer
-          example: "01234567890"
         fraOgMedDato:
+          description: Måneden den årlige inntekten gjelder fra - gyldig frem til neste inntekt med senere fraOgMedDato, eller til "evig" tid dersom ingen eksisterer. Årlig inntekt regnes om til månedsinntekt og multipliseres med antall måneder per år - eks (fraOgMedDato:2024-01-01, inntekt:100.000) + (fraOgMedDato:2024-07-01, inntekt:200.000) -> (100.000/12*6) + (200.000/12*6) -> (50.000) + (100.000) = 150.000 for året 2024.
           type: string
-          format: YYYY-mm-DD
           example: "2024-01-01"
-        inntekter:
-          type: array
-          description: Liste med inntekter med inntekstår og beløp for hvert år
-          items:
-            $ref: '#/components/schemas/InntektPeriode'
-          example:
-            - inntektAr: 2023
-              belop: 100000
-            - inntektAr: 2024
-              belop: 120000
-    InntektPeriode:
-      type: object
-      properties:
-        inntektAr:
-          type: number
-          example: 2023
-        belop:
-          type: number
+        arligInntekt:
+          type: integer
           example: 100000
-    AfpGrunnlagBeholdningSimuleringResponse:
+    Response:
       type: object
-      description: Returnerer alle AFP Beholdning Grunnlag perioder for gitt personId fra og med dato. De fremtidige AFP Beholdning Grunnlag periodene inkluderer godskriving av de simulerte inntektene og tilsvarende regulerte perioder. (NB. Må sjekke om beholdning skal reguleres ved simulering og evt. hvilken lønssvekstfaktor som skal benyttes i reguleringen.)
+      description: AFP beholdningsgrunnlag gjeldende på angitt fraOgMedDato og senere.
       properties:
-        personId:
-          type: string
-          description: Fødselsnummer, 11 siffer
-          example: "01234567890"
-        afpGrunnlagBeholdninger:
+        afpBeholdningsgrunnlag:
           type: array
           items:
-            $ref: '#/components/schemas/AfpGrunnlagBeholdningPeriode'
-          example:
-            - fraOgMedDato: "2024-01-01"
-              tilOgMedDato: "2024-04-30"
-              belop: 123456
-            - fraOgMedDato: "2024-05-01"
-              tilOgMedDato: "2024-12-31"
-              belop: 234567
-            - fraOgMedDato: "2025-01-01"
-              tilOgMedDato: "2025-04-30"
-              belop: 345678
-            - fraOgMedDato: "2025-05-01"
-              tilOgMedDato: "2025-12-31"
-              belop: 456789
-            - fraOgMedDato: "2026-01-01"
-              tilOgMedDato:
-              belop: 567890
-    AfpGrunnlagBeholdningPeriode:
+            $ref: '#/components/schemas/AFPBeholdningsgrunnlag'
+    AFPBeholdningsgrunnlag:
       type: object
       properties:
         fraOgMedDato:
+          description: Datoen beholdningsgrunnlaget er gjeldende fra - gyldig frem til neste grunnlag med senere fraOgMedDato, eller til "evig" tid dersom ingen eksisterer.
           type: string
           format: YYYY-mm-DD
           example: "2024-01-01"
-        tilOgMedDato:
-          type: string
-          description: Dersom feltet er NULL betyr det at beholdningen er gjeldede frem til neste fremtidige/potensielle endring, og at den på nåværende tidspunkt er den som gjelder til evig tid.
-          nullable: true
-          format: YYYY-mm-DD
-          example: "2024-04-30"
         belop:
+          description: Belop per fraOgMedDato
           type: number
           example: 123456
   securitySchemes:
