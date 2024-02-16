@@ -8,7 +8,7 @@ servers:
 paths:
   /opptjening/afp/beholdningsgrunnlag/beregn:
     post:
-      description: Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt dato.
+      description: Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt uttaksDato.
       operationId: beregn
       parameters:
         - in: header
@@ -77,7 +77,7 @@ components:
           type: string
           description: Fødselsnummer, 11 siffer
           example: "01234567890"
-        fraOgMedDato:
+        uttaksDato:
           description: Angir datoen man ønsker beholdningsgrunnlag fra og med. Response inkluderer alle beholdningsgrunnlag på angitt dato og senere.
           type: string
           format: YYYY-mm-DD
@@ -89,7 +89,7 @@ components:
           type: string
           description: Fødselsnummer, 11 siffer
           example: "01234567890"
-        fraOgMedDato:
+        uttaksDato:
           description: Angir datoen man ønsker beholdningsgrunnlag fra og med. Response inkluderer alle beholdningsgrunnlag på angitt dato og senere.
           type: string
           format: YYYY-mm-DD
