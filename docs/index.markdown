@@ -14,3 +14,4 @@ Eksponerte tjenester
 * [Uforetrygd](api/uforetrygd/Uforetrygd.html)
 * [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
+* [Pensjonsimulator](https://pensjonssimulator.ekstern.dev.nav.no/swagger-ui/index.html)
