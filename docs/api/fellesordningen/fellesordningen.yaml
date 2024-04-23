@@ -390,8 +390,9 @@ components:
           type: string
           description: Dato på format YYYY-mm-DD. Virkningsdatoen, fra og med, vedtaket er løpende.
   securitySchemes:
-    Ocp-Apim-Subscription-Key:
-      type: apiKey
-      description: ""
-      name: Ocp-Apim-Subscription-Key
-      in: header
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    security:
+      - bearerAuth: [ ]

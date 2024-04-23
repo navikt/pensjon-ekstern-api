@@ -60,8 +60,9 @@ components:
         mottarAfpPrivat:
           type: boolean
   securitySchemes:
-    Ocp-Apim-Subscription-Key:
-      type: apiKey
-      description: ""
-      name: Ocp-Apim-Subscription-Key
-      in: header
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    security:
+      - bearerAuth: [ ]
