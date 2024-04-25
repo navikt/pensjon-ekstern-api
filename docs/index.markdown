@@ -15,3 +15,7 @@ Eksponerte tjenester
 * [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
 * [Pensjonsimulator](https://pensjonssimulator.ekstern.dev.nav.no/swagger-ui/index.html)
+
+Tjenester på nav-api-portal
+
+* [Simuler Alderspensjon V3](api/alderspensjon/simulering/simulerAlderspensjonV3.html)
