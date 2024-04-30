@@ -10,8 +10,22 @@ title: PO-Pensjon Ekstern API
 
 Eksponerte tjenester
 
-* [AfpPrivat](api/afpprivat/AfpPrivat.html)
+#### Alderspensjon
+
+* [Simuler Alderspensjon V3](api/alderspensjon/simulering/simulerAlderspensjonV3.html)
+
+* [Pensjonsimulator](https://pensjonssimulator.ekstern.dev.nav.no/swagger-ui/index.html) (V4)
+
+#### Uføretrygd 
+
 * [Uforetrygd](api/uforetrygd/Uforetrygd.html)
-* [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
+
+#### AFP Privat
+
+* [AfpPrivat](api/afpprivat/AfpPrivat.html)
+
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
-* [Pensjonsimulator](https://pensjonssimulator.ekstern.dev.nav.no/swagger-ui/index.html)
+
+#### Felles
+
+* [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
