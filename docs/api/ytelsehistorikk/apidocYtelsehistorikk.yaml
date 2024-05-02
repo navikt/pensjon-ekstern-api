@@ -1,0 +1,162 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Pensjon Ytelsehistorikk
+  description: |-
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/v1/ytelsehistorikk`. 
+
+    Tjenesten returnerer nødvendig informasjonen om brukers ytelse.
+  contact: {}
+servers:
+  - url: https://template.value/template/value
+paths:
+  /historikk:
+    get:
+      description: Utleverer informasjon om en brukers ytelsehistorikk i en gitt periode.
+      summary: hentYtelsehistorikk
+      tags:
+        - Ytelsehistorikk
+      operationId: hentYtelsehistorikk
+      deprecated: false
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Format - byte. Standard Authorization header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.
+        - name: fnr
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Brukers fnr/dnr.
+        - name: fomDato
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Dato i ISO-8601 format, uten klokkeslett. Angir fomDato for perioden man ønsker opplysninger for.
+        - name: tomDato
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Dato i ISO-8601 format, uten klokkeslett. Angir tomDato for perioden man ønsker opplysninger for.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HentYtelsehistorikkResponse'
+          headers: {}
+        '400':
+          description: Ugyldig input i forespørselen.
+        '401':
+          description: Ugyldig aksesstoken til tjenesten.
+        '404':
+          description: Person ikke funnet.
+        '500':
+          description: Intern feil i tjenesten.
+components:
+  schemas:
+    HentYtelsehistorikkResponse:
+      title: HentYtelsehistorikkResponse
+      type: object
+      properties:
+        fnr:
+          description: Brukers fnr/dnr.
+          type: string
+        ytelser:
+          description: En liste over brukers ytelser. Dersom bruker ikke har noen ytelse returneres en tom liste.
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelse'
+      required:
+        - fnr
+        - ytelser
+    Ytelse:
+      title: Ytelse
+      type: object
+      properties:
+        type:
+          description: Saktypen for ytelsen.
+          type: string
+        fomDato:
+          description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
+          type: string
+          format: date
+        tomDato:
+          description: Dato i ISO-8601 format, uten klokkeslett. Dagen før opphør av ytelsen.
+          type: string
+          format: date
+        apenSoknad:
+          description: Angir om det finnes et åpent krav av typen førstegangsbehandling.
+          type: boolean
+        perioder:
+          description: En liste over ytelseperioder som er gjeldende innenfor perioden i spørring.
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelseperiode'
+      required:
+        - type
+        - apenSoknad
+    Ytelseperiode:
+      title: Ytelseperiode
+      type: object
+      properties:
+        eksportertYtelse:
+          description: Angir om ytelsen er eksportert i perioden. Påkrevd for alle typer ytelse, bortsett fra AFP_PRIVAT, GJENLEV og BARNEP.
+          type: boolean
+        uforegrad:
+          description: Brukers uføregrad for UP/UT.
+          type: integer
+          format: int32
+        uttaksgrad:
+          description: Brukers uttaksgrad for alderspensjon. For AP67 settes alltid 100.
+          type: integer
+          format: int32
+        fomDato:
+          description: Dato i ISO-8601 format, uten klokkeslett. FomDato til perioden.
+          type: string
+          format: date
+        tomDato:
+          description: Dato i ISO-8601 format, uten klokkeslett. TomDato til perioden.
+          type: string
+          format: date
+        minstepensjon:
+          description: Flagg fra beregning om bruker er minstepensjonist i perioden. Settes for ytelse av typen ALDER, UFOREP, AFP.
+          type: boolean
+        tt_kap19:
+          description: Kapittel 19 trygdetid brukt i beregning for AP2011 og AP2016.
+          type: integer
+          format: int32
+        tt_kap20:
+          description: Kapittel 20 trygdetid brukt i beregning for AP2016 og AP2025.
+          type: integer
+          format: int32
+        prorata_nevner:
+          description: Nevner for proratabrøk brukt i beregning for uføre. Må være satt hvis prorata_teller er satt.
+          type: integer
+          format: int32
+        prorata_teller:
+          description: Teller for proratabrøk brukt i beregning for uføre. Må være satt hvis prorata_nevner er satt.
+          type: integer
+          format: int32
+        tt:
+          description: Trygdetid brukt i beregning for AP67, UP, UT, AFP, FAM_PL.
+          type: integer
+          format: int32
+      required:
+        - fomDato
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+  - name: Ytelsehistorikk
+    description: ''

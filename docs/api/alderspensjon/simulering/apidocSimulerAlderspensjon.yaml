@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: 1.0.1-alpha
+  version: 1.0.1
   title: Pensjon Simuler Alderspensjon
   description: For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/v3/alderspensjon`. Dette er en simuleringstjeneste for tjenestepensjonsordninger i offentlig sektor, og benyttes for å kunne simulere alderspensjon fra folketrygden for brukere med TP-forhold.
   contact: {}
@@ -331,8 +331,11 @@ components:
       required:
         - code
         - message
-security:
-  - Ocp-Apim-Subscription-Key: []
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 tags:
   - name: Simuler alderspensjon
     description: ''
