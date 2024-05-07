@@ -1,0 +1,95 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Pensjon BeregnFolketrygdbeholdning
+  description: |-
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon:folketrygdbeholdning`.
+  contact: {}
+servers:
+  - url: https://template.value/template/value
+paths:
+  /beregnFolketrygdbeholdning:
+    post:
+      description: Beregn folketrygdbeholdning
+      tags:
+        - Folketrygdbeholdning
+      operationId: beregnFolketrygdbeholdning
+      deprecated: false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BeregnFolketrygdbeholdningRequest'
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Format - byte. Standard Authorization header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.
+        - name: tp-nr
+          in: header
+          description: Tjenestepensjonsnummer
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BeregnFolketrygdbeholdningResponse'
+          headers: {}
+        '400':
+          description: Ugyldig input i forespørselen.
+        '401':
+          description: Ugyldig aksesstoken til tjenesten.
+        '404':
+          description: Person ikke funnet.
+        '500':
+          description: Intern feil i tjenesten.
+components:
+  schemas:
+    BeregnFolketrygdbeholdningRequest:
+      title: BeregnFolketrygdbeholdningRequest
+      type: object
+      properties:
+        fnr:
+          type: string
+        beholdningFom:
+          type: string
+          format: date-time
+    BeregnFolketrygdbeholdningResponse:
+      title: BeregnFolketrygdbeholdningResponse
+      type: object
+      properties:
+        folketrygdBeholdningListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/Beholdning'
+    Beholdning:
+      title: Beholdning
+      type: object
+      properties:
+        fomDato:
+          type: string
+          format: date-time
+        tomDato:
+          type: string
+          format: date-time
+        pensjonsbeholdning:
+          type: number
+        garantipensjonsbeholdning:
+          type: number
+        garantitilleggsbeholdning:
+          type: number
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+  - name: Beregn folketrygdbeholdning
+    description: ''
