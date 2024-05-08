@@ -12,6 +12,8 @@ Eksponerte tjenester
 
 #### Alderspensjon
 
+* [Beregn_Folketrygdbeholdning](api/alderspensjon/folketrygdbeholdning/folketrygdbeholdning.html)
+
 * [Simuler Alderspensjon V3](api/alderspensjon/simulering/simulerAlderspensjonV3.html)
 
 * [Pensjonsimulator](https://pensjonssimulator.ekstern.dev.nav.no/swagger-ui/index.html) (V4)
