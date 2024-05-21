@@ -48,7 +48,7 @@ paths:
                 $ref: '#/components/schemas/SokereDto'
   /uforeperioder:
     get:
-      description: Hent uføreperioder 3 år tilbake i tid fra ønsket virkningstidspunkt. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
+      description: Henter uføreperioder 3 år tilbake i tid fra ønsket virkningstidspunkt. Ønsket virkningsdato forventes å stemme overens med det som er registrert hos NAV. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
       operationId: afpprivatHentUforeperioder
       parameters:
         - name: Authorization
@@ -91,6 +91,12 @@ paths:
         404:
           description: Fant ikke person med oppgitt fnr
           content: {}
+        403:
+          description: Ingen tilgang til å se uføreperioder. Kan skyldes mangelfull autorisering eller at person ikke har AFP privat-krav med status VENTER_AFP
+          content: { }
+        409:
+          description: Ønsket virkningsdato stemmer ikke overens med virkningsdato på kravet hos NAV
+          content: { }
   /resultat:
     post:
       description: Lagre afpprivat-resultat. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
