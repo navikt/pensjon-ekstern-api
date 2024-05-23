@@ -20,6 +20,8 @@ Eksponerte tjenester
 
 #### Uføretrygd 
 
+* [Uforeopplysninger](api/uforeopplysninger/uforeopplysninger.html)
+
 * [Uforetrygd](api/uforetrygd/Uforetrygd.html)
 
 #### AFP Privat
