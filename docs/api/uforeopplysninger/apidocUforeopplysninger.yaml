@@ -1,0 +1,139 @@
+openapi: 3.0.1
+info:
+  version: '1.0'
+  title: Pensjon Uføreopplysninger
+  description: |-
+    For å kunne benytte tjenesten må konsumenten autentisere seg gjennom ID-porten Virksomhet og ha avtale med NAV. I tillegg må konsumenten ha samtykke fra bruker og hente et samtykketoken fra Altinns Samtykkeløsning. Disse to tokenene sendes sammen med brukers Fnr/Dnr, fra-og-med dato, samt til-og-med dato som inn-parametere til tjenesten. Tjenesten returnerer uføreopplysninger for ønsket periode så fremt samtykket gjelder for perioden Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database. Bruker kan logge seg inn på nav.no for å lese av disse hendelsene.\n\nPåkrevd scope-verdi for bruk av API'et er `nav:helse/v1/uforeopplysninger`.\n\n Samtykke hos Altinn identifiseres med tjenestekode og tjenesteutgavekode `5252_X`, der `X` er 2 eller 3.\n\nKlikk [her](https://apimgmtstdp9yhy11s8y8cys.blob.core.windows.net/content/MediaLibrary/begrep/Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.
+  contact: {}
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/ufore/uforeopplysninger
+  - url: https://pensjon-gw.nav.no/ufore/uforeopplysninger
+paths:
+  /uforeopplysninger:
+    get:
+      description: Returnerer periodisert uføreopplysninger for en person representert med fnr eller dnr
+      summary: uforeopplysninger
+      tags:
+        - Uforeopplysninger
+      operationId: hentUforeopplysninger
+      deprecated: false
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Standard Authorization header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av ID-Porten (Difi)
+        - name: fnr
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Fødselsnummer eller Dnr til brukeren som det spørres på.
+        - name: fomDato
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Format - date (as full-date in RFC3339). Fra-og-med-dato på ISO-8601 format for vedtak som ønskes returnert. Dersom parameteren ikke er spesifisert, brukes samtykkeperiodens startdato.
+        - name: tomDato
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Format - date (as full-date in RFC3339). Til-og-med-dato på ISO-8601 format for vedtak som ønskes returnert. Dersom parameteren ikke er spesifisert, brukes samtykkeperiodens sluttdato.
+        - name: NAV-Samtykke-Token
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Base64-kodet JWT-samtykketoken utstedt av Altinn.
+      responses:
+        '200':
+          description: Returnerer vedtakene som ble funnet. Returneres også dersom brukeren ikke finnes i fagsystemet (så lenge det er et gyldig fnr/dnr).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UforedataProdusentDTO'
+          headers: {}
+        '400':
+          description: Ugyldig input i forespørselen.
+        '401':
+          description: Konsumenten mangler gyldig aksesstoken.
+        '403':
+          description: Konsumenten har ikke tilgang til vedtaksinformasjon. Situasjoner som kan gi feilen er som følger.\n\n   * Scope til aksesstoken gir ikke tilgang til vedtaksdata.\n   * Konsumenten mangler gyldig samtykketoken.\n   * Samtykketokenet er ikke utstedt av altinn.no (iss).\n   * Samtykket har passert utløpstidspunktet (ValidToDate).\n   * Organisasjonsnummer som samtykket er i gitt til er ikke i overensstemmelse med organisasjonsnummeret som aksesstokenet er utstedt til.\n   * Fødselsnummeret som har gitt samtykket er ikke i overensstemmelse med fødselsnummeret det spørres på.\n   * Forespurt periode ligger utenfor samtykkeperioden.
+        '500':
+          description: Intern feil i tjenesten.
+components:
+  schemas:
+    BeregningsperiodeProdusentDTO:
+      title: BeregningsperiodeProdusentDTO
+      type: object
+      properties:
+        ferdiglignetInntekt:
+          description: Hvis inntekt brukt i avkortingen er hentet fra Skatt og gjelder hele året = sann, ellers usann Dersom denne = sann betyr det at det er denne inntekten NAV har brukt i beregningen av etteroppgjøret for perioden.
+          type: boolean
+        fom:
+          description: Starttidspunktet for beregningsperiode, dvs. tidspunktet fra når uføretrygden trer i kraft eller endres.
+          format: date
+          type: string
+        ifu:
+          description: Inntekt før uførhet. Tilsvarer det det den uføre ville ha tjent i full stilling før uføretidspunktet. (Vi viser her IFU og ikke oppjustert IFU som er inntekt før uførhet oppjustert til dagens nivå).
+          format: int32
+          type: integer
+        inntektBruktIAvkortingen:
+          description: Oppgitt som et summert beløp som brukes til å redusere utbetaling av uføretrygd dersom inntekten er større enn inntektsgrensen. Kilden kan være bruker selv, a-ordningen eller Skatteetaten.
+          format: int32
+          type: integer
+        klagebehandles:
+          description: Hvis vedtaket er under klagebehandling = sann, ellers usann. Kun aktuelt dersom klagen gjelder avslag på søknad om uføretrygd.
+          type: boolean
+        tom:
+          description: Til og med dato for beregningsperioden. Når den siste vedtaksperioden har en TOM-dato er ytelsen opphør.
+          format: date
+          type: string
+        uforegrad:
+          description: Prosentvis andel av arbeidsuførhet. Fastsettes ved å sammenligne inntektsevne før og etter uførhet.
+          format: int32
+          type: integer
+        uforetidspunkt:
+          description: Uføretidspunktet brukt i beregningen angir tidspunktet bruker vurderes å ha fått sin inntektsevne redusert med minst 30, 40 eller 50 %.
+          format: date
+          type: string
+    UforedataProdusentDTO:
+      title: UforedataProdusentDTO
+      type: object
+      properties:
+        beregningsperioder:
+          description: En tabell med beregningsperioder. Se modell for BeregningsperiodeProdusentDTO for beskrivelse av felter
+          type: array
+          items:
+            $ref: '#/components/schemas/BeregningsperiodeProdusentDTO'
+        forsteVirkningstidspunkt:
+          description: Første virkningstidspunkt på saken. Dersom saken er en konvertert uføretrygd benyttes første virkningstidspunkt for uførepensjonen.
+          format: date
+          type: string
+        status:
+          description: "Tjenesten returnerer et statusfelt som beskriver nå-situasjonen samt en tabell med beregningsvetakshistorikk\"\nStatusfeltet kan ha følgende verdier: \n\"IKKE_SOKT: Dersom det ikke er mottatt søknad om uføretrygd\"\n\"AVSLAG: Dersom det er søkt om uføretrygd og søknaden har blitt avslått. Gjelder ikke avslag på søknad om endring.\"\n\"REKONSTRUKSJON: Det foreligger et åpent krav under rekonstruksjon på saken (ingen historikk kan vises, prøv igjen siden)\"\n\"KLAGE_PA_AVSLAG: Dersom søknad om uføretrygd har blitt avslått, og det foreligger en klage under behandling. Gjelder ikke avslag på søknad om endring.\"\n\"LOPENDE: Dersom det finnes minst et løpende vedtak hvor det ikke er satt tom-dato.\":\n\"OPPHORT: Dersom det eksisterer løpende vedtak og alle vedtak har løpende tom satt (ikke null) på saken\"\n\"UNDER_BEHANDLING: Dersom det foreligger et åpent krav på saken som ikke gjelder rekonstruksjon eller klage på avslag\":"
+          example: LOPENDE
+          type: string
+          enum:
+            - IKKE_SOKT
+            - AVSLAG
+            - KLAGE_PA_AVSLAG
+            - REKONSTRUKSJON
+            - LOPENDE
+            - OPPHORT
+            - UNDER_BEHANDLING
+            - UKJENT_STATUS
+            - EKSPORT
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+  - name: Uforeopplysninger
+    description: ''
