@@ -1,0 +1,1177 @@
+openapi: '3.0.1'
+info:
+  title: Pensjon Vedtaksinformasjon
+  version: '1.0'
+  description: |-
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/v1/vedtaksinformasjon`. 
+
+    Tjenesten returnerer den samordningspliktige informasjonen om en brukers vedtak.
+servers:
+  - url: https://template.value/template/value
+paths:
+  /informasjon:
+    get:
+      description: Utleverer informasjon om en brukers vedtak etter ett gitt tidspunkt.
+      operationId: hentVedtaksinformasjonForSamordning
+      summary: hentVedtaksinformasjonForSamordning
+      tags:
+        - Vedtaksinformasjon
+      parameters:
+        - name: fnr
+          in: header
+          description: Brukers fnr/dnr.
+          required: true
+          schema:
+            type: string
+        - name: tp-nr
+          in: header
+          required: true
+          schema:
+            type: string
+          description: TP-Nummer
+        - name: fom
+          in: query
+          description: Format - date (as full-date in RFC3339). Dato i ISO-8601 format, uten klokkeslett. Angir fomDato for perioden man ønsker opplysninger for.
+          required: true
+          schema:
+            type: string
+        - name: AUTHORIZATION
+          in: header
+          description: Format - byte. Standard Authorization header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vedtaksinformasjon'
+        '400':
+          description: Ugyldig input i forespørselen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Get400ApplicationJsonResponse'
+        '401':
+          description: Ugyldig aksesstoken til tjenesten.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Get401ApplicationJsonResponse'
+        '404':
+          description: Person ikke funnet.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Get404ApplicationJsonResponse'
+        '500':
+          description: Intern feil i tjenesten.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Get500ApplicationJsonResponse'
+components:
+  schemas:
+    Vedtaksinformasjon:
+      title: Vedtaksinformasjon
+      type: object
+      properties:
+        kap20InfoList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Kap20Info'
+        kap19InfoList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Kap19Info'
+        afpPrivatInfoList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AfpPrivatInfo'
+        afpOffentligInfoList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AfpOffentligInfo'
+        AP67InfoList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AP67Info'
+      required:
+        - kap20InfoList
+        - kap19InfoList
+        - afpPrivatInfoList
+        - afpOffentligInfoList
+        - AP67InfoList
+    Get400ApplicationJsonResponse: {}
+    Get401ApplicationJsonResponse: {}
+    Get404ApplicationJsonResponse: {}
+    Get500ApplicationJsonResponse: {}
+    Kap20Info:
+      title: Kap20Info
+      type: object
+      properties:
+        vedtaksKode:
+          description: 'Hvilken type vedtak dette er. '
+          type: string
+        virkFom:
+          description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
+          type: string
+          format: date
+        virkTom:
+          description: Dato i ISO-8601 format, uten klokkeslett. Dagen før opphør av ytelsen.
+          type: string
+          format: date
+        vedtakId:
+          description: Identifikator for vedtak.
+          type: number
+          format: int64
+        trygdetidAnvendt:
+          description: 'Antall trygdetid anvendt i vedtak. '
+          type: integer
+        totalBelopNetto:
+          description: 'Angir sum netto per mnd. '
+          type: integer
+        resultatKilde:
+          description: 'Kilden til beregningen som angir om beregningen er utført automatisk av regelmotoren, manuelt av en saksbehandler eller om den er konvertert inn. '
+          type: string
+        merknadsListe:
+          description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
+          type: array
+          items:
+            $ref: '#/components/schemas/Merknad'
+        sakType:
+          description: 'Angir hva slags sak komponenten er knyttet til. F.eks. ALDER, AFP, AFP_PRIVAT. '
+          type: string
+        ytelseskomponenter:
+          description: Ytelseskomponenter som kan forekomme
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelsekomponent'
+        pensjonsbeholdning:
+          description: 'Angir verdi for beholdning. '
+          type: number
+          format: double
+        garantitilleggsbeholdning:
+          description: 'Angir verdi for beholdning.. '
+          type: number
+          format: double
+        garantipensjonsnivasats:
+          description: 'Garantipensjonsnivå. Kan være ordinær og høy. '
+          type: string
+        garantipensjonsnivasatsBelop:
+          description: 'Satsen brukt ved utregning. '
+          type: number
+          format: double
+        garantipensjonsbeholdning:
+          description: 'Angir verdi for beholdning.. '
+          type: number
+          format: double
+        totalbelopNettoAr:
+          description: Netto totalbeløp per år.
+          type: number
+          format: double
+        delingstallUttak:
+          description: 'Brukers delingstall ved uttak(interpolert). '
+          type: number
+          format: double
+        delingstall67:
+          description: 'Bruker delingstall ved 67. '
+          type: number
+          format: double
+        uttaksgrad:
+          description: Uttaksgraden av alderspensjon som er benyttet i beregningen.
+          type: integer
+        minstenivatilleggIndividuelt:
+          description: 'Minstenivatillegg individuelt netto. '
+          type: integer
+        minstenivatilleggPensjonistpar:
+          description: 'Minstenivatillegg pensjonistpar netto. '
+          type: integer
+        uvektedeytelseskomponenter:
+          description: Uvektede ytelseskomponenter som kan forekomme
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelsekomponent'
+    Kap19Info:
+      description: Kapittel 19
+      title: Kap19Info
+      type: object
+      properties:
+        vedtaksKode:
+          description: 'Hvilken type vedtak dette er.'
+          type: string
+        virkFom:
+          description: 'Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.'
+          type: string
+          format: date
+        virkTom:
+          description: 'Dato i ISO-8601 format, uten klokkeslett. Dagen før opphør av ytelsen.'
+          type: string
+          format: date
+        vedtakId:
+          description: Identifikator for vedtak.
+          type: number
+          format: int64
+        trygdetidAnvendt:
+          description: 'Antall trygdetid anvendt i vedtak. '
+          type: integer
+        totalBelopNetto:
+          description: 'Angir sum netto per mnd. '
+          type: integer
+        resultatKilde:
+          description: 'Kilden til beregningen som angir om beregningen er utført automatisk av regelmotoren, manuelt av en saksbehandler eller om den er konvertert inn. '
+          type: string
+        merknadsListe:
+          description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
+          type: array
+          items:
+            $ref: '#/components/schemas/Merknad'
+        sakType:
+          description: 'Angir hva slags sak komponenten er knyttet til. F.eks. ALDER, AFP, AFP_PRIVAT. '
+          type: string
+        ytelseskomponenter:
+          description: Ytelseskomponenter som kan forekomme
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelsekomponent'
+        resultatKode:
+          description: Hvilken type beregning dette er.
+          type: string
+        uttaksgrad:
+          description: Uttaksgraden av alderspensjon som er benyttet i beregningen.
+          type: integer
+        basisgp:
+          description: Basis grunnpensjon.
+          type: number
+          format: double
+        basistp:
+          description: Basis tilleggspensjon.
+          type: number
+          format: double
+        basispt:
+          description: Basis pensjonstillegg.
+          type: number
+          format: double
+        forholdstallUttak:
+          description: Forholdstall ved uttak.
+          type: number
+          format: double
+        forholdstall67:
+          description: Forholdstall ved 67.
+          type: number
+          format: double
+        grunnpensjonsats:
+          description: Grunnpensjonsats, kan for eksempel v�re 0,9 eller 1,0. Vil ikke v�re satt for vedtak fattet f�r desember 2008.
+          type: number
+          format: double
+        totalbelopNettoAr:
+          description: 'Netto totalbeløp per år. '
+          type: number
+          format: double
+        gpRestpensjon:
+          description: Restpensjon av grunnpensjon per år.
+          type: number
+          format: double
+        ptRestpensjon:
+          description: Restpensjon av pensjonstillegg per år.
+          type: number
+          format: double
+        tpRestpensjon:
+          description: Restpensjon av tilleggspensjon per år.
+          type: number
+          format: double
+        spt:
+          description: 'Sluttpoengtall på tilleggspensjon. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        ypt:
+          description: 'Sluttpoengtall for yrkesskade. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        yrkesskadegrad:
+          description: 'Angir den siste yrkesskadegraden (fra yrkesskadegrunnlaget) som er lagt til grunn på beregningen. Kun relevant for ytelser der yrkesskade er tatt hensyn til. '
+          type: number
+          format: double
+        fnrAvdod:
+          description: Fødselsnummer til avdøde som er hensyntatt i beregningen.
+          type: string
+        sptAvdod:
+          description: 'Sluttpoengtall på tilleggspensjon for avdøde. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        yptAvdod:
+          description: 'Sluttpoengtall for yrkesskade for avdøde. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        optAvdod:
+          description: 'Sluttpoengtall ved overkompensasjon på tilleggspensjonen for avdød. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        yrkesskadegradAvdod:
+          description: 'Angir den siste yrkesskadegraden for avdøde (fra yrkesskadegrunnlaget) som er lagt til grunn på beregningen. Kun relevant for ytelser der yrkesskade er hensyntatt. '
+          type: number
+          format: double
+        anvendtTrygdetidAvdod:
+          description: 'Den trygdetiden som er anvendt i pensjonsberegningen for avdøde. '
+          type: integer
+        uforegrad:
+          description: 'Uføregrad. '
+          type: integer
+        minstenivatilleggIndividuelt:
+          description: 'Minstenivatillegg individuelt netto. '
+          type: integer
+        minstenivatilleggPensjonistpar:
+          description: 'Minstenivatillegg pensjonistpar netto. '
+          type: integer
+        vilkarsvedtakForBarnSomGirRettTilBarnetillegg:
+          description: Liste med vilkårsvedtak for barn som gir rett til barnetillegg.
+          type: array
+          items:
+            $ref: '#/components/schemas/Vilkarsvedtak'
+        uvektedeytelseskomponenter:
+          description: Uvektede ytelseskomponenter som kan forekomme
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelsekomponent'
+          required:
+            - resultatKode
+    Merknad:
+      title: Merknad
+      description: Informasjon om avvik eller spesielle forhold fra regeltjeneste
+      type: object
+      properties:
+        argumentListeString:
+          type: array
+          items: {}
+        kode:
+          description: Kodetekst som beskriver merknaden.
+          type: string
+    AP67Info:
+      title: AP67Info
+      type: object
+      properties:
+        vedtaksKode:
+          description: 'Hvilken type vedtak dette er. '
+          type: string
+        virkFom:
+          description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
+          type: string
+          format: date
+        virkTom:
+          description: Dato i ISO-8601 format, uten klokkeslett. Dagen før opphør av ytelsen.
+          type: string
+          format: date
+        vedtakId:
+          description: Identifikator for vedtak.
+          type: number
+          format: int64
+        trygdetidAnvendt:
+          description: 'Antall trygdetid anvendt i vedtak. '
+          type: integer
+        totalBelopNetto:
+          description: 'Angir sum netto per mnd. '
+          type: integer
+        resultatKilde:
+          description: 'Kilden til beregningen som angir om beregningen er utført automatisk av regelmotoren, manuelt av en saksbehandler eller om den er konvertert inn. '
+          type: string
+        merknadsListe:
+          description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
+          type: array
+          items:
+            type: string
+        sakType:
+          description: 'Angir hva slags sak komponenten er knyttet til. F.eks. ALDER, AFP, AFP_PRIVAT. '
+          type: string
+        ytelseskomponenter:
+          description: Ytelseskomponenter som kan forekomme
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelsekomponent'
+        resultatKode:
+          description: 'Hvilken type beregning dette er. '
+          type: string
+        brutto:
+          description: 'Totalbeløp for beregningen før avkorting. Vil kunne være satt til ?-1?for vedtak fattet før desember 2008. '
+          type: integer
+        netto:
+          description: 'Totalbeløp for beregningen etter avkorting. '
+          type: integer
+        p67Beregning:
+          description: 'Flagg som angir om det er gjort en beregning etter reglen for P67 dersom det er alderspensjon. '
+          type: boolean
+        grunnpensjonsats:
+          description: 'Grunnpensjonsats. Kan for eksempel være 0,9 eller 1,0. Vil ikke være satt for vedtak fattet før desember 2008. '
+          type: number
+          format: double
+        sertillleggsats:
+          description: 'Hvis mottaker har liten eller ingen tilleggspensjon, tilståes det et særtillegg. Størrelsen avhenger av særtilleggsats og eventuell tilleggspensjon. '
+          type: number
+          format: double
+        ventetilleggProsent:
+          description: 'Ventetilleggsprosent. '
+          type: number
+          format: double
+        vilkarsvedtakForBarnSomGirRettTilBarnetillegg:
+          description: Liste med vilkårsvedtak for barn som gir rett til barnetillegg.
+          type: array
+          items:
+            $ref: '#/components/schemas/Vilkarsvedtak'
+        involvertePersonerNokkelinfoListe:
+          description: 'Liste med beregningsgrunnlag for personer som har vært vurdert i beregningen. Om hvert beregningsgrunnlag har vært brukt i beregningen angis av feltet ?anvendtIBeregningen?. '
+          type: array
+          items:
+            $ref: '#/components/schemas/BeregningNokkelinfo'
+        sluttpoengtall:
+          description: Ved uføre, etterlatt og AFP blir det beregnet poengtall for fremtidige år for å komme frem til et sluttpoengtall som pensjonen skal beregnes etter
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        minstenivatilleggIndividuelt:
+          description: 'Minstenivatillegg individuelt netto. '
+          type: integer
+        minstenivatilleggPensjonistpar:
+          description: 'Minstenivatillegg pensjonistpar netto. '
+          type: integer
+        yrkesskadegrad:
+          description: 'Angir yrkesskadegraden fra yrkesskadegrunnlaget som ble lagt til grunn for beregningen. Relevant ved yrkesskade og ifm UP, AP med tidligere UP og GJP. '
+          type: integer
+        fremtidigPensjonsgivendeInntektBruker:
+          description: 'Brukers fremtidige pensjonsgivende inntekt. '
+          type: integer
+        uforegrad:
+          description: 'Uføregrad. '
+          type: integer
+    AfpPrivatInfo:
+      title: AfpPrivatInfo
+      type: object
+      properties:
+        vedtaksKode:
+          description: 'Hvilken type vedtak dette er. '
+          type: string
+        virkFom:
+          description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
+          type: string
+          format: date
+        virkTom:
+          description: Dato i ISO-8601 format, uten klokkeslett. Dagen før opphør av ytelsen.
+          type: string
+          format: date
+        vedtakId:
+          description: Identifikator for vedtak.
+          type: number
+          format: int64
+        trygdetidAnvendt:
+          description: 'Antall trygdetid anvendt i vedtak. '
+          type: integer
+        totalBelopNetto:
+          description: 'Angir sum netto per mnd. '
+          type: integer
+        resultatKilde:
+          description: 'Kilden til beregningen som angir om beregningen er utført automatisk av regelmotoren, manuelt av en saksbehandler eller om den er konvertert inn. '
+          type: string
+        merknadsListe:
+          description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
+          type: array
+          items:
+            type: string
+        sakType:
+          description: 'Angir hva slags sak komponenten er knyttet til. F.eks. ALDER, AFP, AFP_PRIVAT. '
+          type: string
+        ytelseskomponenter:
+          description: Ytelseskomponenter som kan forekomme
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelsekomponent'
+        forholdstallKompensasjonstillegg:
+          description: 'Forholdstall brukt i beregning av kompensasjonstillegg. '
+          type: number
+          format: double
+        afpOpptjeningTotalbelop:
+          description: 'Totalverdi av beholdning (opptjeningsgrunnlaget x 0.314). '
+          type: number
+          format: double
+    AfpOffentligInfo:
+      title: AfpOffentligInfo
+      type: object
+      properties:
+        vedtaksKode:
+          description: 'Hvilken type vedtak dette er. '
+          type: string
+        virkFom:
+          description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
+          type: string
+          format: date
+        virkTom:
+          description: Dato i ISO-8601 format, uten klokkeslett. Dagen før opphør av ytelsen.
+          type: string
+          format: date
+        vedtakId:
+          description: Identifikator for vedtak.
+          type: number
+          format: int64
+        trygdetidAnvendt:
+          description: 'Antall trygdetid anvendt i vedtak. '
+          type: integer
+        totalBelopNetto:
+          description: 'Angir sum netto per mnd. '
+          type: integer
+        resultatKilde:
+          description: 'Kilden til beregningen som angir om beregningen er utført automatisk av regelmotoren, manuelt av en saksbehandler eller om den er konvertert inn. '
+          type: string
+        merknadsListe:
+          description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
+          type: array
+          items:
+            type: string
+        sakType:
+          description: 'Angir hva slags sak komponenten er knyttet til. F.eks. ALDER, AFP, AFP_PRIVAT. '
+          type: string
+        ytelseskomponenter:
+          description: Ytelseskomponenter som kan forekomme
+          type: array
+          items:
+            $ref: '#/components/schemas/Ytelsekomponent'
+        resultatKode:
+          description: Hvilken type beregning dette er.
+          type: string
+        uttaksgrad:
+          description: Uttaksgraden av alderspensjon som er benyttet i beregningen.
+          type: integer
+        grunnpensjonsats:
+          description: 'Grunnpensjonsats. Kan for eksempel være 0,9 eller 1,0. Vil ikke være satt for vedtak fattet før desember 2008. '
+          type: number
+          format: double
+        fremtidigPensjonsgivendeInntektBruker:
+          description: 'Brukers fremtidige pensjonsgivende inntekt. '
+          type: integer
+        spt:
+          description: 'Sluttpoengtall på tilleggspensjon. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        minstenivatilleggIndividuelt:
+          description: 'Minstenivatillegg individuelt netto. '
+          type: integer
+        minstenivatilleggPensjonistpar:
+          description: 'Minstenivatillegg pensjonistpar netto. '
+          type: integer
+    Vilkarsvedtak:
+      title: Vilkarsvedtak
+      type: object
+      properties:
+        gjelderFnr:
+          description: Fødselsnummer til barnet vilkårsvedtaket gjelder
+          type: string
+        fom:
+          description: Virkningsdatoen, fra og med, vedtaket gjelder fra.
+          type: string
+          format: date
+        tom:
+          description: Eventuell dato vedtaket er tidsbegrenset til og skal opphøre fra.
+          type: string
+          format: date
+      required:
+        - gjelderFnr
+    BeregningNokkelinfo:
+      title: BeregningNokkelinfo
+      type: object
+      properties:
+        fnr:
+          description: 'Fødselsnummer eller D-nummer til en person. '
+          type: string
+        grunnlagrolleKode:
+          description: 'Kode som angir hvilken rolle persongrunnlaget har på kravet. '
+          type: string
+        spt:
+          description: 'Eventuelt sluttpoengtall på tilleggspensjonen som er i bruk på (del)beregningen nøkkelinformasjonen gjelder for. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        ypt:
+          description: 'Eventuelt sluttpoengtall ved yrkesskade på tilleggspensjonen som er i bruk  på (del)beregningen nøkkelinformasjonen gjelder for. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        opt:
+          description: 'Eventuelt sluttpoengtall med overkompensasjon tilleggspensjonen som er i bruk på (del)beregning nøkkelinformasjonen gjelder for. '
+          items:
+            $ref: '#/components/schemas/KapittelSluttpoengtall'
+        anvendtTrygdetid:
+          description: 'Eventuelt anvendt trygdetid på (del)beregningen nøkkelinformasjonen gjelder for. '
+          type: integer
+        anvendtIBeregningen:
+          description: 'Informasjon om (del)beregningen ble brukt i fastsettelsen av totalbeløpet for beregningen. '
+          type: boolean
+    KapittelSluttpoengtall:
+      title: Sluttpoengtall
+      type: object
+      properties:
+        poengrekke:
+          $ref: '#/components/schemas/KapittelPoengrekke'
+        sluttpoengtall:
+          description: Sluttpoengtall.
+          type: number
+          format: double
+    KapittelPoengrekke:
+      title: Poengrekke
+      type: object
+      properties:
+        pa:
+          description: Antall poengår totalt.
+          type: integer
+        paf92:
+          description: Antall poengår før 1992.
+          type: integer
+        pae91:
+          description: Antall poengår etter 1991.
+          type: integer
+        tpiFaktor:
+          description: Tidligere pensjonsgivende inntekt faktor.
+          type: number
+          format: double
+    YtelseskomponentSluttpoengtall:
+      title: Sluttpoengtall
+      type: object
+      properties:
+        pt_eos:
+          description: ''
+          type: number
+          format: double
+        merknadliste:
+          $ref: '#/components/schemas/Merknadliste'
+        pt_a10:
+          description: ''
+          type: number
+          format: double
+        pt:
+          description: ''
+          type: number
+          format: double
+        poengrekke:
+          $ref: '#/components/schemas/YtelseskomponentPoengrekke'
+        fpp_grad_eos:
+          description: ''
+          type: number
+          format: double
+        poengtillegg:
+          description: ''
+          type: number
+          format: double
+    YtelseskomponentPoengrekke:
+      title: Poengrekke
+      type: object
+      properties:
+        poengtallListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/Poengtall'
+        pa_eos_f92:
+          description: ''
+          type: integer
+        pa_eos_e91:
+          description: ''
+          type: integer
+        pa_nordisk_framt_netto:
+          description: ''
+          type: integer
+        tpiFaktor:
+          description: ''
+          type: number
+          format: double
+        siste_fpp_aar_norden:
+          description: ''
+          type: integer
+        siste_fpp_aar_eos:
+          description: ''
+          type: integer
+        pa_f92:
+          description: ''
+          type: integer
+        pa:
+          description: ''
+          type: integer
+        paa:
+          description: ''
+          type: number
+          format: double
+        pa_e91:
+          description: ''
+          type: integer
+        pa_no:
+          description: ''
+          type: integer
+        fpa:
+          description: ''
+          type: integer
+        tpi:
+          description: ''
+          type: integer
+        pa_nordisk_framt_brutto:
+          description: ''
+          type: integer
+        pa_fa_norge:
+          description: ''
+          type: integer
+        siste_fpp_aar:
+          description: ''
+          type: integer
+        merknadliste:
+          $ref: '#/components/schemas/Merknadliste'
+        fpp_eos_snitt:
+          description: ''
+          type: number
+          format: double
+        pa_fa_norden:
+          description: ''
+          type: integer
+        pa_eos_teoretisk:
+          description: ''
+          type: integer
+        pa_eos_pro_rata:
+          description: ''
+          type: integer
+        pa_pro_rata_teller:
+          description: ''
+          type: integer
+        pa_pro_rata_nevner:
+          description: ''
+          type: integer
+    Poengtall:
+      title: Poengtall
+      type: object
+      properties:
+        gv:
+          description: ''
+          type: integer
+        bruktIBeregning:
+          description: ''
+          type: boolean
+        pi:
+          description: ''
+          type: integer
+        pia:
+          description: ''
+          type: integer
+        merknadliste:
+          $ref: '#/components/schemas/Merknadliste'
+        poengtallType:
+          title: poengtallType
+          description: ''
+          type: object
+          properties:
+            code:
+              description: ''
+              type: string
+            decode:
+              description: ''
+              type: string
+        maksUforegrad:
+          description: ''
+          type: integer
+        ar:
+          description: ''
+          type: integer
+        pp:
+          description: ''
+          type: number
+          format: double
+        pa_fa_norge:
+          description: ''
+          type: integer
+        uforear:
+          description: ''
+          type: boolean
+    Merknadliste:
+      title: merknadliste
+      description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
+      type: object
+      properties:
+        argumentListe:
+          description: ''
+          type: array
+          items:
+            type: string
+        kode:
+          description: ''
+          type: string
+    Ytelsekomponent:
+      title: Ytelsekomponent
+      description: Felter vil variere basert på typen ytelseskomponent
+      type: object
+      discriminator:
+        propertyName: ytelseskomponentType
+      properties:
+        ytelseskomponentType:
+          description: ''
+          type: string
+        resultatKilde:
+          title: resultatKilde
+          description: ''
+          type: object
+          properties:
+            code:
+              description: ''
+              type: string
+            decode:
+              description: ''
+              type: string
+        brutto:
+          description: ''
+          type: integer
+        bruttoPerAr:
+          description: ''
+          type: number
+          format: double
+        fradrag:
+          description: ''
+          type: integer
+        netto:
+          description: ''
+          type: integer
+        erBrukt:
+          description: ''
+          type: boolean
+        merknadliste:
+          $ref: '#/components/schemas/Merknadliste'
+        sakType:
+          title: sakType
+          description: ''
+          type: object
+          properties:
+            code:
+              description: ''
+              type: string
+            decode:
+              description: ''
+              type: string
+        fradragsTransaksjon:
+          description: ''
+          type: boolean
+        ytelseKomponentTypeCti:
+          title: ytelseKomponentTypeCti
+          description: ''
+          type: object
+          properties:
+            code:
+              description: ''
+              type: string
+            decode:
+              description: ''
+              type: string
+        formelKode:
+          title: formelKode
+          description: ''
+          type: object
+          properties:
+            code:
+              description: ''
+              type: string
+            decode:
+              description: ''
+              type: string
+        inntektBruktIAvkorting:
+          description: ''
+          type: integer
+        osLinjeIdFk:
+          description: ''
+          type: integer
+      required:
+        - ytelseskomponentType
+    BeregningsinformasjonMinstenivatilleggPensjonistpar:
+      title: BeregningsinformasjonMinstenivatilleggPensjonistpar
+      type: object
+      properties:
+        samletPensjonPerAr:
+          description: ''
+          type: number
+          format: double
+        uttaksgrad:
+          description: ''
+          type: integer
+        uforegrad:
+          description: ''
+          type: integer
+        tt_anv_AP2011:
+          description: ''
+          type: integer
+        tt_anv_AP2025:
+          description: ''
+          type: integer
+        tt_anv_UP:
+          description: ''
+          type: integer
+        prorataUP:
+          description: ''
+          type: number
+          format: double
+        mpnSatsOrdinaer:
+          description: ''
+          type: number
+          format: double
+        stSatsOrdinaer:
+          description: ''
+          type: number
+          format: double
+    Garantipensjon:
+      title: Garantipensjon
+      description: ''
+      items:
+        $ref: '#/components/schemas/Ytelsekomponent'
+    Garantitillegg:
+      title: Garantitillegg
+      description: ''
+      items:
+        $ref: '#/components/schemas/Ytelsekomponent'
+    GjenlevendetilleggAP:
+      title: GjenlevendetilleggAP
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            apKap19MedGJR:
+              description: ''
+              type: integer
+            apKap19UtenGJR:
+              description: ''
+              type: integer
+    Inntektspensjon:
+      title: Inntektspensjon
+      description: ''
+      items:
+        $ref: '#/components/schemas/Ytelsekomponent'
+    MinstenivatilleggIndividuelt:
+      title: MinstenivatilleggIndividuelt
+      description: ''
+      items:
+        $ref: '#/components/schemas/Ytelsekomponent'
+    MinstenivatilleggPensjonistpar:
+      title: MinstenivatilleggPensjonistpar
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            brukersBeregningsinformasjonMinstenivatilleggPensjonistpar:
+              title: brukersBeregningsinformasjonMinstenivatilleggPensjonistpar
+              description: ''
+              items:
+                $ref: '#/components/schemas/BeregningsinformasjonMinstenivatilleggPensjonistpar'
+            epsBeregningsinformasjonMinstenivatilleggPensjonistpar:
+              title: epsBeregningsinformasjonMinstenivatilleggPensjonistpar
+              description: ''
+              items:
+                $ref: '#/components/schemas/BeregningsinformasjonMinstenivatilleggPensjonistpar'
+    BarnetilleggFellesbarn:
+      title: BarnetilleggFellesbarn
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            fribelop:
+              description: ''
+              type: number
+              format: double
+            antallBarn:
+              description: ''
+              type: integer
+            btDiff_eos:
+              description: ''
+              type: integer
+    BarnetilleggSerkullsbarn:
+      title: BarnetilleggSerkullsbarn
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            fribelop:
+              description: ''
+              type: number
+              format: double
+            antallBarn:
+              description: ''
+              type: integer
+            btDiff_eos:
+              description: ''
+              type: integer
+    Ektefelletillegg:
+      title: Ektefelletillegg
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            fribelop:
+              description: ''
+              type: number
+              format: double
+    Grunnpensjon:
+      title: Grunnpensjon
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            pSats_gp:
+              description: ''
+              type: number
+              format: double
+            ektefelleInntektOver2G:
+              description: ''
+              type: boolean
+            satsType:
+              title: satsType
+              description: ''
+              type: object
+              properties:
+                code:
+                  description: ''
+                  type: string
+                decode:
+                  description: ''
+                  type: string
+    Pensjonstillegg:
+      title: Pensjonstillegg
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            minstepensjonsnivaSatsType:
+              title: minstepensjonsnivaSatsType
+              description: ''
+              type: object
+              properties:
+                code:
+                  description: ''
+                  type: string
+                decode:
+                  description: ''
+                  type: string
+            minstepensjonsnivaSats:
+              description: ''
+              type: number
+              format: double
+            forholdstall67:
+              description: ''
+              type: number
+              format: double
+    Skjermingstillegg:
+      title: Skjermingstillegg
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            ufg:
+              description: ''
+              type: integer
+            skjermingsgrad:
+              description: ''
+              type: number
+              format: double
+
+    Tilleggspensjon:
+      title: Tilleggspensjon
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - $ref: '#/components/schemas/Ytp'
+        - $ref: '#/components/schemas/Spt'
+        - $ref: '#/components/schemas/Opt'
+    Ytp:
+      title: ypt
+      description: 'Sluttpoengtall for yrkesskade. '
+      items:
+        $ref: '#/components/schemas/YtelseskomponentSluttpoengtall'
+    Spt:
+      description: 'Sluttpoengtall for yrkesskade. '
+      items:
+        $ref: '#/components/schemas/YtelseskomponentSluttpoengtall'
+    Opt:
+      description: 'Sluttpoengtall for yrkesskade. '
+      items:
+        $ref: '#/components/schemas/YtelseskomponentSluttpoengtall'
+    Paragraf_8_5_1Tillegg:
+      title: Paragraf_8_5_1Tillegg
+      description: ''
+      items:
+        $ref: '#/components/schemas/Ytelsekomponent'
+    Sertillegg:
+      title: Sertillegg
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            pSats_st:
+              description: ''
+              type: number
+              format: double
+    Ventetillegg:
+      title: Ventetillegg
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            ventetilleggTP:
+              description: ''
+              type: integer
+            ventetilleggGP:
+              description: ''
+              type: integer
+            ventetilleggProsent:
+              description: ''
+              type: number
+              format: double
+    AfpKompensasjonstillegg:
+      title: AfpKompensasjonstillegg
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            referansebelop:
+              description: ''
+              type: integer
+            reduksjonsbelop:
+              description: ''
+              type: integer
+            forholdstallKompensasjonstillegg:
+              description: ''
+              type: number
+              format: double
+    AfpKronetillegg:
+      title: AfpKronetillegg
+      description: ''
+      items:
+        $ref: '#/components/schemas/Ytelsekomponent'
+    AfpLivsvarig:
+      title: AfpLivsvarig
+      description: ''
+      allOf:
+        - $ref: '#/components/schemas/Ytelsekomponent'
+        - type: object
+          properties:
+            justeringsbelop:
+              description: ''
+              type: integer
+            afpPensjonsgrad:
+              description: ''
+              type: number
+              format: double
+            afpForholdstall:
+              description: ''
+              type: number
+              format: double
+    AfpTillegg:
+      title: AfpTillegg
+      description: ''
+      items:
+        $ref: '#/components/schemas/Ytelsekomponent'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

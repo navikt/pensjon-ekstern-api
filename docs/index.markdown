@@ -35,3 +35,5 @@ Eksponerte tjenester
 * [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
 
 * [Ytelsehistorikk](api/ytelsehistorikk/ytelsehistorikk.html)
+
+* [Hent Vedtaksinformasjon](api/alderspensjon/vedtaksinformasjon/hentVedtaksinformasjon.html)
