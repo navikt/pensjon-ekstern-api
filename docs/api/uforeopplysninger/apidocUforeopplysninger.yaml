@@ -6,8 +6,8 @@ info:
     For å kunne benytte tjenesten må konsumenten autentisere seg gjennom ID-porten Virksomhet og ha avtale med NAV. I tillegg må konsumenten ha samtykke fra bruker og hente et samtykketoken fra Altinns Samtykkeløsning. Disse to tokenene sendes sammen med brukers Fnr/Dnr, fra-og-med dato, samt til-og-med dato som inn-parametere til tjenesten. Tjenesten returnerer uføreopplysninger for ønsket periode så fremt samtykket gjelder for perioden Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database. Bruker kan logge seg inn på nav.no for å lese av disse hendelsene.\n\nPåkrevd scope-verdi for bruk av API'et er `nav:helse/v1/uforeopplysninger`.\n\n Samtykke hos Altinn identifiseres med tjenestekode og tjenesteutgavekode `5252_X`, der `X` er 2 eller 3.\n\nKlikk [her](https://apimgmtstdp9yhy11s8y8cys.blob.core.windows.net/content/MediaLibrary/begrep/Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.
   contact: {}
 servers:
-  - url: https://pensjon-gw.ekstern.dev.nav.no/ufore/uforeopplysninger
-  - url: https://pensjon-gw.nav.no/ufore/uforeopplysninger
+  - url: https://pensjon-gw.ekstern.dev.nav.no/dsop-ufo/uforeopplysninger
+  - url: https://pensjon-gw.nav.no/dsop-ufo/uforeopplysninger
 paths:
   /uforeopplysninger:
     get:
