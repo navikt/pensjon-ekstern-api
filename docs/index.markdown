@@ -34,7 +34,7 @@ Eksponerte tjenester
 
 * [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
 
-* [Tpregisteret](api/tpregistert/Tpregisteret.html)
+* [Tjenestepensjon](api/tjenestepensjon/tjenestepensjon.html)
 
 * [Ytelsehistorikk](api/ytelsehistorikk/ytelsehistorikk.html)
 
