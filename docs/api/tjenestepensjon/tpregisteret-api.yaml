@@ -14,7 +14,69 @@ servers:
 security:
   - Maskinporten: []
 paths:
-  /forhold/{ordning}:
+  /forhold/{ordning}/get:
+    get:
+      summary: Hent et forhold
+      description: Hent et forhold på  eksisterende ordning for person.
+      operationId: HentForholdGet
+      requestBody:
+        description: Et forhold
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/samhandlerForhold'
+      parameters:
+        - name: fnr
+          in: header
+          description: Person identifikator
+          required: true
+          schema:
+            type: string
+        - name: ordning
+          in: path
+          description: Tjenestepensjonsnummer
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/samhandlerForhold'
+        '401':
+          description: Ugyldig access token
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '403':
+          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '404':
+          description: Person eller Ordning ikke funnet.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+      deprecated: false
+  /forhold/{ordning}/put:
     put:
       summary: Opprett et forhold.
       description: Opprett et forhold på eksisterende ordning for person.
@@ -76,6 +138,7 @@ paths:
               schema:
                 type: object
       deprecated: false
+  /forhold/{ordning}/delete:
     delete:
       summary: Slett et forhold.
       description: Slett et forhold på eksisterende ordning for person.
@@ -121,7 +184,7 @@ paths:
               schema:
                 type: object
       deprecated: false
-  /forhold/{ordning}/datoSistOpptjening:
+  /forhold/{ordning}/datoSistOpptjening/update:
     patch:
       summary: Opprette dato for sist opptjening på forhold
       description: Opprette dato for sist opptjening på forhold for en person i en ordning.
@@ -184,6 +247,7 @@ paths:
               schema:
                 type: object
       deprecated: false
+  /forhold/{ordning}/datoSistOpptjening/delete:
     delete:
       summary: Slette dato for sist opptjening på forhold
       description: Slette dato for sist opptjening på forhold for en person i en ordning.
@@ -239,7 +303,7 @@ paths:
               schema:
                 type: object
       deprecated: false
-  /innsyn/forhold/{tpNr}:
+  /innsyn/forhold/{tpNr}/get:
     get:
       summary: Innsyn, forhold og ytelser
       description: Henter ut forhold med ytelser for ett gitt fnr og tjenestepensjonsnummer.
@@ -295,7 +359,7 @@ paths:
               schema:
                 type: object
       deprecated: false
-  /forhold/forholdListe:
+  /forhold/forholdListe/get:
     get:
       summary: Forholdsliste på ordning
       description: Henter ut liste av forhold med ordninger og dato sist opptjening.
@@ -351,7 +415,120 @@ paths:
               schema:
                 type: object
       deprecated: false
-
+  /forhold/{ordning}/ytelse/post:
+    post:
+      summary: Opprett en ytelse.
+      description: Opprett en ytelse på eksisterende forhold.
+      operationId: opprettYtelsePost
+      requestBody:
+        description: En ytelse
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/samhandlerYtelse'
+      parameters:
+        - name: fnr
+          in: header
+          description: Person identifikator
+          required: true
+          schema:
+            type: string
+        - name: ordning
+          in: path
+          description: Tjenestepensjonsnummer
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/samhandlerPersonDto'
+        '401':
+          description: Ugyldig access token
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '404':
+          description: Person eller forhold ikke funnet.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '409':
+          description: Identisk ytelse eksisterer allerede.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+      deprecated: false
+  /forhold/{ordning}/ytelse/{ytelseid}/delete:
+    delete:
+      summary: Slette en ytelse.
+      description: Slette en ytelse på eksisterende forhold.
+      operationId: slettYtelseDelete
+      parameters:
+        - name: fnr
+          in: header
+          description: Person identifikator
+          required: true
+          schema:
+            type: string
+        - name: ordning
+          in: path
+          description: Tjenestepensjonsnummer
+          required: true
+          schema:
+            type: string
+        - name: ytelseId
+          in: path
+          description: Unik id for ytelse
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Ugyldig access token
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '403':
+          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+      deprecated: false
 components:
   schemas:
     innsynForhold:
@@ -465,13 +642,41 @@ components:
           type: string
           description: Dato endret
           format: date
+    samhandlerYtelse:
+      title: Ytelse
+      type: object
+      properties:
+        type:
+          type: string
+          description: Ytelsetype(ALDER, UFORE, mm)
+        datoInnmeldtYtelseFom:
+          type: string
+          description: Dato da ytelse ble innmeldt
+          format: date
+        datoYtelseIverksattFom:
+          type: string
+          description: Dato da ytelse ble iverksatt
+          format: date
+        datoYtelseIverksattTom:
+          type: string
+          description: Dato da iverksatt ytelse avsluttet
+          format: date
+        changeStamp:
+          type: object
+          description: Hvem opprettet og endret med datoer.
+          items:
+            $ref: '#/components/schemas/changeStampDateDto'
+        ytelseId:
+          type: string
+          description: Unik Id for ytelse
+          format: long
     innsynYtelse:
       title: Ytelse
       type: object
       properties:
         type:
           type: string
-          description: Ytelsestype (ALDER, UFORE med videre)
+          description: Ytelsestype (ALDER, UFORE, mm)
         medlemskapDatoFom:
           type: string
           description: Dato da medlemskapet startet
