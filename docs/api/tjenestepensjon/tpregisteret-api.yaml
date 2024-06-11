@@ -529,6 +529,62 @@ paths:
               schema:
                 type: object
       deprecated: false
+  /forhold/{ordning}/ytelse/update:
+    put:
+      summary: Endre en ytelse.
+      description: Endre en ytelse på eksisterende forhold.
+      operationId: endreYtelsePut
+      requestBody:
+        description: En ytelse
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/samhandlerYtelse'
+      parameters:
+        - name: fnr
+          in: header
+          description: Person identifikator
+          required: true
+          schema:
+            type: string
+        - name: ordning
+          in: path
+          description: Tjenestepensjonsnummer
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/samhandlerPersonDto'
+        '401':
+          description: Ugyldig access token
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '404':
+          description: Person, Ytelse eller forhold ikke funnet.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+      deprecated: false
 components:
   schemas:
     innsynForhold:
