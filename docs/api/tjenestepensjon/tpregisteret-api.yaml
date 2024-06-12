@@ -3,7 +3,7 @@ info:
   title: Pensjon TP-registeret, forhold mellom person og ordning, og Innsyn.
   description: |-
     API for å behandle forhold mellom person og ordning for eksterne samhandlere,
-    og innsyn i NAV-registrerte tjenestepensjonsforhold og ytelser.
+    og innsyn i registrerte tjenestepensjonsforhold og ytelser.
 
     Påkrevd scope-verdi: `nav:pensjon/v1/tpregisteret`
   contact: {}

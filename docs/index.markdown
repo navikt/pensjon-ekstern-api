@@ -30,11 +30,15 @@ Eksponerte tjenester
 
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
 
+#### Tjenestepensjon / Samordning
+
+* [Tjenestepensjon](api/tjenestepensjon/tjenestepensjon.html)
+
+* [Samordning](api/samordning/hendelser-api.html)
+
 #### Felles
 
 * [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
-
-* [Tjenestepensjon](api/tjenestepensjon/tjenestepensjon.html)
 
 * [Ytelsehistorikk](api/ytelsehistorikk/ytelsehistorikk.html)
 
