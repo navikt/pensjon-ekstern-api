@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
-  title: Samordningspliktige hendelser.
+  title: Pensjon Samordningspliktige hendelser.
   description: |-
-    Hendelseskø for samordningspliktige hendelser.
+    Hendelseskø for samordningspliktige hendelser (AP, AFP, OMS).
 
     Påkrevd scope-verdi: `nav:pensjon/v1/samordning`
   contact: {}
@@ -13,31 +13,43 @@ servers:
 security:
   - Maskinporten: []
 paths:
-  /samordning/hendelser
+  /samordning/hendelser:
     get:
       summary: Les samordningspliktige hendelser.
-      description: Les samordningspliktige hendelser fra hendelseskø.
+      description: "Endepunktet returnerer en feed som inneholder hendelser tilhørende et angitt tjenestepensjonsnummer.
+                    \n\nFeeden benytter paginering, som deler opp feeden i sider basert på angitt antall hendelser per side. Hver side inneholder en liste med _hendelser_, samt en _nextUrl_ som peker til neste side av feeden. Siste side er nådd når _nextUrl_ er _null_.
+                    \n\nSekvensnummer kan benyttes som offset for feeden. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_."
       operationId: HendelserGet
       parameters:
         - name: tpnr
           in: query
-          description: Id for Ordning
+          description: Id for ordning som vedtaket tilhører
           required: true
+          schema:
+            type: string
         - name: side
           in: query
           description: Sidenummer for paginert søk.
           required: false
-          default: 0
+          schema:
+            type: integer
+            default: 0
         - name: antall
           in: query
-          description: Antall treff per side.
+          description: Antall hendelser per side.
           required: false
-          default: 10000
+          schema:
+            type: number
+            format: int64
+            default: 10000
         - name: sekvensnummer
           in: query
-          description:
+          description: Start innlesningen fra dette sekvensnummeret
           required: false
-          default: 1
+          schema:
+            type: number
+            format: int64
+            default: 1
         - name: Authorization
           in: header
           description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
@@ -72,44 +84,45 @@ components:
       properties:
         hendelser:
           type: array
-          description: Liste av hendelser for ordning
-          $ref: '#/components/schemas/hendelse'
+          description: Liste av hendelser
+          items:
+            $ref: '#/components/schemas/hendelse'
         sisteSekvensnummer:
           type: string
-          description:
+          description: Siste sekvensnummer fra forrige side
           format: long
         sisteLesteSekvensnummer:
           type: string
-          description:
+          description: Det nyeste sekvensnummeret
           format: long
         nextUrl:
           type: string
-          description: url for å hente flere hendelser
+          description: Lenke til neste side
     hendelse:
       title: Hendelse
-        type: object
-        description: En hendelse tilknyttet samordningspliktig ytelse.
-        properties:
-          ytelsesType:
-            type: string
-            description: Type samordningspliktig ytelse knyttet til hendelse.
-          identifikator:
-            type: string
-            description: Unik id for hendelse
-          vedtakId:
-            type: string
-            description: Unik id for vedtak knyttet til hendelse
-          samId:
-            type: string
-            description: Unik id for samordning av ytelser.
-          fom:
-            type: string
-            description:
-            format: date
-          tom:
-            type: string
-            description:
-            format: date
+      type: object
+      description: En hendelse tilknyttet samordningspliktig ytelse
+      properties:
+        ytelsesType:
+          type: string
+          description: Samordningspliktig ytelse knyttet til hendelse
+        identifikator:
+          type: string
+          description: Identifiserer brukeren (eks. fnr/dnr)
+        vedtakId:
+          type: string
+          description: Identifiserer vedtak i fagsystemet(Pesys, Gjenny)
+        samId:
+          type: string
+          description: Samordning-id tilknyttet vedtaket.
+        fom:
+          type: string
+          description: Dato fra og med.
+          format: date
+        tom:
+          type: string
+          description: Dato til og med.
+          format: date
   securitySchemes:
     Maskinporten:
       type: http
