@@ -12,19 +12,51 @@ servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/tjenestepensjon
   - url: https://pensjon-gw.nav.no/tjenestepensjon
 security:
-  - Maskinporten: []
+  - Maskinporten:
+    - nav:pensjon/v1/tpregisteret
+
 paths:
+  /forhold/forholdListe/get:
+    get:
+      tags:
+        - Person
+      summary: Forholdsliste
+      description: Henter ut liste av forhold.
+      operationId: ForholdlisteGet
+      parameters:
+        - name: fnr
+          in: header
+          description: Person identifikator
+          required: true
+          schema:
+            type: string
+        - name: ordning
+          in: path
+          description: Tjenestepensjons nummer
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/samhandlerPersonDto'
+        '401':
+          description: Ugyldig access token
+        '403':
+          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+        '404':
+          description: Person eller forhold ikke funnet
+      deprecated: false
   /forhold/{ordning}/get:
     get:
+      tags:
+        - Forhold
       summary: Hent et forhold
       description: Hent et forhold på  eksisterende ordning for person.
       operationId: HentForholdGet
-      requestBody:
-        description: Et forhold
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/samhandlerForhold'
       parameters:
         - name: fnr
           in: header
@@ -38,12 +70,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -53,31 +79,15 @@ paths:
                 $ref: '#/components/schemas/samhandlerForhold'
         '401':
           description: Ugyldig access token
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
         '404':
-          description: Person eller Ordning ikke funnet.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Person eller Ordning ikke funnet
       deprecated: false
   /forhold/{ordning}/put:
     put:
+      tags:
+        - Forhold
       summary: Opprett et forhold.
       description: Opprett et forhold på eksisterende ordning for person.
       operationId: OpprettForholdPut
@@ -100,12 +110,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -115,31 +119,15 @@ paths:
                 $ref: '#/components/schemas/samhandlerForhold'
         '401':
           description: Ugyldig access token
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
         '404':
-          description: Person eller Ordning ikke funnet.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Person eller Ordning ikke funnet
       deprecated: false
   /forhold/{ordning}/delete:
     delete:
+      tags:
+        - Forhold
       summary: Slett et forhold.
       description: Slett et forhold på eksisterende ordning for person.
       operationId: SlettForholdDelete
@@ -153,12 +141,6 @@ paths:
         - name: ordning
           in: path
           description: Tjenestepensjonsnummer
-          required: true
-          schema:
-            type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
           required: true
           schema:
             type: string
@@ -177,15 +159,11 @@ paths:
             application/json;charset=UTF-8:
               schema:
                 type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
       deprecated: false
   /forhold/{ordning}/datoSistOpptjening/update:
     patch:
+      tags:
+        - Forhold
       summary: Opprette dato for sist opptjening på forhold
       description: Opprette dato for sist opptjening på forhold for en person i en ordning.
       operationId: OpprettDatoSistOpptjeningPatch
@@ -209,12 +187,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -224,31 +196,15 @@ paths:
                 $ref: '#/components/schemas/samhandlerPerson'
         '401':
           description: Ugyldig access token
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
         '404':
-          description: Person eller forhold ikke funnet.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Person eller forhold ikke funnet
       deprecated: false
   /forhold/{ordning}/datoSistOpptjening/delete:
     delete:
+      tags:
+        - Forhold
       summary: Slette dato for sist opptjening på forhold
       description: Slette dato for sist opptjening på forhold for en person i en ordning.
       operationId: SlettDatoSistOpptjeningDelete
@@ -265,12 +221,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -280,143 +230,15 @@ paths:
                 $ref: '#/components/schemas/samhandlerPerson'
         '401':
           description: Ugyldig access token
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
         '404':
-          description: Person eller forhold ikke funnet.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-      deprecated: false
-  /innsyn/forhold/{tpNr}/get:
-    get:
-      summary: Innsyn, forhold og ytelser
-      description: Henter ut forhold med ytelser for ett gitt fnr og tjenestepensjonsnummer.
-      operationId: InnsynForholdGet
-      parameters:
-        - name: fnr
-          in: header
-          description: Person identifikator
-          required: true
-          schema:
-            type: string
-        - name: tpNr
-          in: path
-          description: Tjenestepensjons nummer
-          required: true
-          schema:
-            type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/innsynForhold'
-        '401':
-          description: Ugyldig access token
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '404':
-          description: Person eller forhold ikke funnet.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-      deprecated: false
-  /forhold/forholdListe/get:
-    get:
-      summary: Forholdsliste på ordning
-      description: Henter ut liste av forhold med ordninger og dato sist opptjening.
-      operationId: ForholdlisteGet
-      parameters:
-        - name: fnr
-          in: header
-          description: Person identifikator
-          required: true
-          schema:
-            type: string
-        - name: ordning
-          in: path
-          description: Tjenestepensjons nummer
-          required: true
-          schema:
-            type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                $ref: '#/components/schemas/samhandlerPersonDto'
-        '401':
-          description: Ugyldig access token
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '404':
-          description: Person eller forhold ikke funnet.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Person eller forhold ikke funnet
       deprecated: false
   /forhold/{ordning}/ytelse/post:
     post:
+      tags:
+        - Ytelse
       summary: Opprett en ytelse.
       description: Opprett en ytelse på eksisterende forhold.
       operationId: opprettYtelsePost
@@ -439,46 +261,24 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/samhandlerPersonDto'
+                $ref: '#/components/schemas/samhandlerYtelse'
         '401':
           description: Ugyldig access token
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
         '404':
-          description: Person eller forhold ikke funnet.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Person eller forhold ikke funnet
         '409':
-          description: Identisk ytelse eksisterer allerede.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Identisk ytelse eksisterer allerede
       deprecated: false
   /forhold/{ordning}/ytelse/{ytelseid}/delete:
     delete:
+      tags:
+        - Ytelse
       summary: Slette en ytelse.
       description: Slette en ytelse på eksisterende forhold.
       operationId: slettYtelseDelete
@@ -501,12 +301,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: No Content
@@ -522,15 +316,11 @@ paths:
             application/json;charset=UTF-8:
               schema:
                 type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
       deprecated: false
-  /forhold/{ordning}/ytelse/update:
+  /forhold/{ordning}/ytelse/{ytelseid}/update:
     put:
+      tags:
+        - Ytelse
       summary: Endre en ytelse.
       description: Endre en ytelse på eksisterende forhold.
       operationId: endreYtelsePut
@@ -553,12 +343,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -568,59 +352,61 @@ paths:
                 $ref: '#/components/schemas/samhandlerPersonDto'
         '401':
           description: Ugyldig access token
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
         '404':
-          description: Person, Ytelse eller forhold ikke funnet.
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            application/json;charset=UTF-8:
-              schema:
-                type: object
+          description: Person, Ytelse eller forhold ikke funnet
       deprecated: false
+  /innsyn/forhold/{tpNr}/get:
+    get:
+      tags:
+        - Deprecated
+      summary: Innsyn, forhold og ytelser
+      description: Henter ut forhold med ytelser for ett gitt fnr og tjenestepensjonsnummer.
+      operationId: InnsynForholdGet
+      parameters:
+        - name: fnr
+          in: header
+          description: Person identifikator
+          required: true
+          schema:
+            type: string
+        - name: tpNr
+          in: path
+          description: Tjenestepensjons nummer
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/innsynForhold'
+        '401':
+          description: Ugyldig access token
+        '403':
+          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+        '404':
+          description: Person eller forhold ikke funnet
+      deprecated: true
 components:
   schemas:
-    innsynForhold:
-      title: Forhold
-      type: object
-      properties:
-        tpNr:
-          type: string
-          description: Tjenestepensjonsnummeret som forholdet tilhører
-        datoSistOpptjening:
-          type: string
-          description: Dato siste opptjening for forhold.
-          format: date
-        sistEndretdatoSistOpptjening:
-          type: string
-          description: Timestamp for endring av datoSistOpptjening.
-          format: date-time
-        ytelser:
-          type: array
-          description: Liste med ytelser som tilhører dette forholdet
-          items:
-            $ref: '#/components/schemas/innsynYtelse'
     samhandlerPerson:
-      title: Person
+      title: Person med forhold og ytelser
       type: object
+      required:
+        - fNr
       properties:
         fNr:
           type: string
           description: personidentifikator
         forhold:
           type: array
-          description: Liste av forhold tilhørende person
+          description: Liste av forhold tilhørende person, med liste av ytelser
           items:
             $ref: '#/components/schemas/samhandlerForhold'
     samhandlerForhold:
-      title: Forhold
+      title: Forhold med ytelser
       type: object
       properties:
         kilde:
@@ -646,9 +432,9 @@ components:
           type: array
           description: Liste av ytelser tilhørende forhold
           items:
-            $ref: '#/components/schemas/innsynYtelse'
+            $ref: '#/components/schemas/samhandlerYtelse'
     samhandlerPersonDto:
-      title: Person
+      title: Person med forhold uten ytelser
       type: object
       properties:
         fNr:
@@ -656,11 +442,11 @@ components:
           description: personidentifikator
         forhold:
           type: array
-          description: Liste av forhold tilhørende person
+          description: Liste av forhold tilhørende person, uten liste av ytelser
           items:
             $ref: '#/components/schemas/samhandlerForholdListe'
     samhandlerForholdListe:
-      title: Forhold
+      title: Forhold uten ytelser
       type: object
       properties:
         tpNr:
@@ -701,6 +487,9 @@ components:
     samhandlerYtelse:
       title: Ytelse
       type: object
+      required:
+        - type
+        - datoYtelseIverksattFom
       properties:
         type:
           type: string
@@ -726,8 +515,29 @@ components:
           type: string
           description: Unik Id for ytelse
           format: long
+          readOnly: true
+    innsynForhold:
+      title: InnsynForhold
+      type: object
+      properties:
+        tpNr:
+          type: string
+          description: Tjenestepensjonsnummeret som forholdet tilhører
+        datoSistOpptjening:
+          type: string
+          description: Dato siste opptjening for forhold.
+          format: date
+        sistEndretdatoSistOpptjening:
+          type: string
+          description: Timestamp for endring av datoSistOpptjening.
+          format: date-time
+        ytelser:
+          type: array
+          description: Liste med ytelser som tilhører dette forholdet
+          items:
+            $ref: '#/components/schemas/innsynYtelse'
     innsynYtelse:
-      title: Ytelse
+      title: InnsynYtelse
       type: object
       properties:
         type:
