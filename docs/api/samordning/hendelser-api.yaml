@@ -1,0 +1,118 @@
+openapi: 3.0.1
+info:
+  title: Samordningspliktige hendelser.
+  description: |-
+    Hendelseskø for samordningspliktige hendelser.
+
+    Påkrevd scope-verdi: `nav:pensjon/v1/samordning`
+  contact: {}
+  version: '1.0'
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/samordning
+  - url: https://pensjon-gw.nav.no/samordning
+security:
+  - Maskinporten: []
+paths:
+  /samordning/hendelser
+    get:
+      summary: Les samordningspliktige hendelser.
+      description: Les samordningspliktige hendelser fra hendelseskø.
+      operationId: HendelserGet
+      parameters:
+        - name: tpnr
+          in: query
+          description: Id for Ordning
+          required: true
+        - name: side
+          in: query
+          description: Sidenummer for paginert søk.
+          required: false
+          default: 0
+        - name: antall
+          in: query
+          description: Antall treff per side.
+          required: false
+          default: 10000
+        - name: sekvensnummer
+          in: query
+          description:
+          required: false
+          default: 1
+        - name: Authorization
+          in: header
+          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/feed'
+        '401':
+          description: Ugyldig access token
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+      deprecated: false
+components:
+  schemas:
+    feed:
+      title: Feed
+      type: object
+      properties:
+        hendelser:
+          type: array
+          description: Liste av hendelser for ordning
+          $ref: '#/components/schemas/hendelse'
+        sisteSekvensnummer:
+          type: string
+          description:
+          format: long
+        sisteLesteSekvensnummer:
+          type: string
+          description:
+          format: long
+        nextUrl:
+          type: string
+          description: url for å hente flere hendelser
+    hendelse:
+      title: Hendelse
+        type: object
+        description: En hendelse tilknyttet samordningspliktig ytelse.
+        properties:
+          ytelsesType:
+            type: string
+            description: Type samordningspliktig ytelse knyttet til hendelse.
+          identifikator:
+            type: string
+            description: Unik id for hendelse
+          vedtakId:
+            type: string
+            description: Unik id for vedtak knyttet til hendelse
+          samId:
+            type: string
+            description: Unik id for samordning av ytelser.
+          fom:
+            type: string
+            description:
+            format: date
+          tom:
+            type: string
+            description:
+            format: date
+  securitySchemes:
+    Maskinporten:
+      type: http
+      description: "Bearer token utstedt av Maskinporten."
+      scheme: Bearer
+      in: header
