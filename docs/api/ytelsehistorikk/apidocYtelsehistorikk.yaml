@@ -8,9 +8,10 @@ info:
     Tjenesten returnerer nødvendig informasjonen om brukers ytelse.
   contact: {}
 servers:
-  - url: https://template.value/template/value
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon
+  - url: https://pensjon-gw.nav.no/pensjon
 paths:
-  /historikk:
+  /ytelsehistorikk:
     get:
       description: Utleverer informasjon om en brukers ytelsehistorikk i en gitt periode.
       summary: hentYtelsehistorikk
