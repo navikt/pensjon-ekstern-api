@@ -10,6 +10,7 @@ info:
   version: '1.0'
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/tjenestepensjon
+  - url: https://pensjon-q1-gw.ekstern.dev.nav.no/tjenestepensjon
   - url: https://pensjon-gw.nav.no/tjenestepensjon
 security:
   - Maskinporten:
@@ -27,12 +28,6 @@ paths:
         - name: fnr
           in: header
           description: Person identifikator
-          required: true
-          schema:
-            type: string
-        - name: ordning
-          in: path
-          description: Tjenestepensjons nummer
           required: true
           schema:
             type: string
