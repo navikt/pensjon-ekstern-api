@@ -5,7 +5,8 @@ info:
     søknad.
   version: 1.0.0
 servers:
-  - url: https://template.value/template/value
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/fellesordningen/afp-privat
+  - url: https://pensjon-gw.nav.no/pensjon/fellesordningen/afp-privat
 paths:
   /sokere:
     get:

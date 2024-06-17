@@ -6,7 +6,8 @@ info:
     For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon:folketrygdbeholdning`.
   contact: {}
 servers:
-  - url: https://template.value/template/value
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon
+  - url: https://pensjon-gw.nav.no/pensjon
 paths:
   /beregnFolketrygdbeholdning:
     post:

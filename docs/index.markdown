@@ -18,6 +18,8 @@ Eksponerte tjenester
 
 * [Pensjonsimulator](https://pensjonssimulator.ekstern.dev.nav.no/swagger-ui/index.html) (V4)
 
+* [Hent Vedtaksinformasjon](api/alderspensjon/vedtaksinformasjon/hentVedtaksinformasjon.html)
+
 #### Uføretrygd 
 
 * [Uforeopplysninger](api/uforeopplysninger/uforeopplysninger.html)
@@ -41,5 +43,3 @@ Eksponerte tjenester
 * [AfpGrunnlagBeholdning](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)
 
 * [Ytelsehistorikk](api/ytelsehistorikk/ytelsehistorikk.html)
-
-* [Hent Vedtaksinformasjon](api/alderspensjon/vedtaksinformasjon/hentVedtaksinformasjon.html)
