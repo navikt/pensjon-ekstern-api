@@ -9,6 +9,7 @@ info:
   version: '1.0'
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/samordning
+  - url: https://pensjon-q1-gw.ekstern.dev.nav.no/samordning
   - url: https://pensjon-gw.nav.no/samordning
 security:
   - Maskinporten: []
