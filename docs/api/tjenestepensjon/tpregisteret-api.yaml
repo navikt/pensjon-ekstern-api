@@ -235,10 +235,7 @@ paths:
       tags:
         - Ytelse
       summary: Opprett en ytelse.
-      description: "Opprett en ytelse på eksisterende forhold.\n\n
-            Følgende Ytelsetype støttes:\n\n ALDER, UFORE, GJENLEVENDE, BARN, AFP,\n\n
-    OPPSATT_BTO_PEN, SAERALDER,\n\n
-    PAASLAGSPENSJON, OVERGANGSTILLEGG, BETINGET_TP, LIVSVARIG_AFP"
+      description: Opprett en ytelse på eksisterende forhold.
       operationId: opprettYtelsePost
       requestBody:
         description: En ytelse
@@ -491,7 +488,19 @@ components:
       properties:
         type:
           type: string
-          description: Ytelsetype(ALDER, UFORE, GJENLEVENDE, mm)
+          enum:
+            - ALDER
+            - UFORE
+            - GJENLEVENDE
+            - BARN
+            - AFP
+            - OPPSATT_BTO_PEN
+            - SAERALDER
+            - PAASLAGSPENSJON
+            - OVERGANGSTILLEGG
+            - BETINGET_TP
+            - LIVSVARIG_AFP
+          description: Ytelsetype
         datoInnmeldtYtelseFom:
           type: string
           description: Dato da ytelse ble innmeldt
