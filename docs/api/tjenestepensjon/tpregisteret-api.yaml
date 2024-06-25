@@ -235,14 +235,17 @@ paths:
       tags:
         - Ytelse
       summary: Opprett en ytelse.
-      description: Opprett en ytelse på eksisterende forhold.
+      description: "Opprett en ytelse på eksisterende forhold.\n\n
+            Følgende Ytelsetype støttes:\n\n ALDER, UFORE, GJENLEVENDE, BARN, AFP,\n\n
+    OPPSATT_BTO_PEN, SAERALDER,\n\n
+    PAASLAGSPENSJON, OVERGANGSTILLEGG, BETINGET_TP, LIVSVARIG_AFP"
       operationId: opprettYtelsePost
       requestBody:
         description: En ytelse
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/samhandlerYtelse'
+              $ref: '#/components/schemas/samhandlerYtelse'
       parameters:
         - name: fnr
           in: header
@@ -324,7 +327,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/samhandlerYtelse'
+              $ref: '#/components/schemas/samhandlerYtelse'
       parameters:
         - name: fnr
           in: header
@@ -488,7 +491,7 @@ components:
       properties:
         type:
           type: string
-          description: Ytelsetype(ALDER, UFORE, mm)
+          description: Ytelsetype(ALDER, UFORE, GJENLEVENDE, mm)
         datoInnmeldtYtelseFom:
           type: string
           description: Dato da ytelse ble innmeldt
