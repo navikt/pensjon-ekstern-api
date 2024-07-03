@@ -338,13 +338,19 @@ paths:
           required: true
           schema:
             type: string
+        - name: ytelseid
+          in: path
+          description: YtelseId
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
           content:
             application/json;charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/samhandlerPersonDto'
+                $ref: '#/components/schemas/samhandlerYtelse'
         '401':
           description: Ugyldig access token
         '404':
@@ -516,6 +522,7 @@ components:
         changeStamp:
           type: object
           description: Hvem opprettet og endret med datoer.
+          readOnly: true
           items:
             $ref: '#/components/schemas/changeStampDateDto'
         ytelseId:
