@@ -1,0 +1,82 @@
+openapi: 3.0.1
+info:
+  title: Pensjon Alderspensjon status
+  description: Henter status på alderspensjon til bruker på gitt dato. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/alderspensjon/status`.
+  version: 1.0.0
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/alderspensjon
+  - url: https://pensjon-gw.nav.no/pensjon/alderspensjon
+paths:
+  /status:
+    post:
+      description: Hent ut status på brukers alderspensjon
+      operationId: status
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlderspensjonStatustRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlderspensjonStatustResponse'
+        400:
+          description: Feil i request-data fra klient. F.eks person er født før 1963
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, f.eks feil scope i token
+components:
+  schemas:
+    AlderspensjonStatustRequest:
+      title: AlderspensjonStatus - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        soknadsdato:
+          type: string
+          format: YYYY-mm-DD
+          description: Ønsket tidspunkt å sjekke status på alderspensjon for bruker
+          example: "2024-01-01"
+    AlderspensjonStatustResponse:
+      title: AlderspensjonStatus - response
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status på alderspensjonen
+          enum:
+            - SOKNAD_MOTTATT
+            - SOKNAD_INNVILGET
+            - SOKNAD_AVSLATT
+            - INGEN
+        virkningsdato:
+            type: string
+            format: YYYY-mm-DD
+            description: Virkningsdato eller søknadsdato på alderspensjonen
+        uttaksgrad:
+            type: integer
+            description: Uttaksgrad gitt når det er avslag på søknaden. Denne er kun satt ved AVSLAG.
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    security:
+      - bearerAuth: [ ]

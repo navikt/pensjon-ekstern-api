@@ -20,6 +20,8 @@ Eksponerte tjenester
 
 * [Hent Vedtaksinformasjon](api/alderspensjon/vedtaksinformasjon/hentVedtaksinformasjon.html)
 
+* [Status Alderspensjon](api/alderspensjon/status/alderspensjonStatus.html)
+
 #### Uføretrygd 
 
 * [Uforeopplysninger](api/uforeopplysninger/uforeopplysninger.html)
