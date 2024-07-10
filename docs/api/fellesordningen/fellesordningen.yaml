@@ -312,19 +312,46 @@ components:
       properties:
         harHattPermisjonSistePeriode:
           type: boolean
-          description: Informasjon om søker har hatt permisjon siste periode 3Aar
+          description: Informasjon om søker har hatt permisjon siste periode 3Aar.
         harHattInntektUtenArbPlikt:
           type: boolean
-          description: Informasjon om søker har hatt inntekt uten arbeidsplikt
+          description: Informasjon om søker har hatt inntekt uten arbeidsplikt.
         harHattRedusertStillingSistePeriode:
           type: boolean
-          description: Informasjon om søker har hatt redusert stilling siste periode
+          description: Informasjon om søker har hatt redusert stilling siste periode.
             3Aar
         harDrevetNaeringsvirkEierandel:
           type: boolean
-          description: Informasjon om søker har drevet næringsvirksomhet med eierandel
+          description: Informasjon om søker har drevet næringsvirksomhet med eierandel.
         arbeidsgiver:
           $ref: '#/components/schemas/Arbeidsgiver'
+        ansattDato:
+          type: string
+          description: Dato for når søker ble ansatt.
+        sisteDagArbeid:
+          type: string
+          description: Dato for når søker hadde siste arbeidsdag.
+        harAnsattforholdOpphoer:
+          type: boolean
+          description: Informasjon om søkers ansattforhold er opphørt eller om det er bestemt når det skal opphøre.
+        ansattType:
+          type: string
+          description: Informasjon om ansattelsestype, heltid, deltid, midlertidig eller sesongansatt.
+        opphoerArsak:
+          type: string
+          description: Informasjon om årsak til opphør av arbeidsforhold.
+        harStillingUnder20ProsentEtter53Ar:
+          type: boolean
+          description: Informasjon om søkers stillingprosent har vært under 20% etter fylt 53 år.
+        harSykemeldtMerEnn26UkerSiste3Ar:
+          type: boolean
+          description: Informasjon om søker har vært sykemeldt mer enn 26 uker de siste 3 årene.
+        harPermittertSiste3Ar:
+          type: boolean
+          description: Informasjon om søker har i løpet de siste 3 årene vært permittert.
+        harArbeidetUtlandEtter53Ar:
+          type: boolean
+          description: Informasjon om søker har etter fylt 53 år arbeidet i utlandet.
     Arbeidsgiver:
       title: Arbeidsgiver
       type: object
