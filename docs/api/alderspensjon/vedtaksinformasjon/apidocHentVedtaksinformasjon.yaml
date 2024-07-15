@@ -7,7 +7,8 @@ info:
 
     Tjenesten returnerer den samordningspliktige informasjonen om en brukers vedtak.
 servers:
-  - url: https://template.value/template/value
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/vedtak/informasjon
+  - url: https://pensjon-gw.nav.no/pensjon/vedtak/informasjon
 paths:
   /informasjon:
     get:
@@ -41,6 +42,13 @@ paths:
           required: true
           schema:
             type: string
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
       responses:
         '200':
           description: OK
