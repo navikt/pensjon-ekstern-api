@@ -312,7 +312,7 @@ paths:
               schema:
                 type: object
       deprecated: false
-  /forhold/{ordning}/ytelse/{ytelseid}/update:
+  /forhold/{ordning}/ytelse/{ytelseid}/put:
     put:
       tags:
         - Ytelse
@@ -489,10 +489,10 @@ components:
       title: Ytelse
       type: object
       required:
-        - type
+        - ytelseType
         - datoYtelseIverksattFom
       properties:
-        type:
+        ytelseType:
           type: string
           enum:
             - ALDER
@@ -506,7 +506,7 @@ components:
             - OVERGANGSTILLEGG
             - BETINGET_TP
             - LIVSVARIG_AFP
-          description: Ytelsetype
+          description: YtelseType
         datoInnmeldtYtelseFom:
           type: string
           description: Dato da ytelse ble innmeldt
