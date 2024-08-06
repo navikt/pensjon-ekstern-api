@@ -38,7 +38,7 @@ Eksponerte tjenester
 
 * [Tjenestepensjon](api/tjenestepensjon/tjenestepensjon.html)
 
-* [Samordning](api/samordning/hendelser-api.html)
+* [Samordning / Hendelse-Api](api/samordning/hendelser-api.html)
 
 #### Felles
 
