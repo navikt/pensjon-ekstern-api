@@ -1,0 +1,376 @@
+openapi: 3.0.1
+info:
+  title: Pensjonssimulator API
+  description: For å kunne bruke tjenestene må scope i autentiseringen mot Maskinporten settes til `nav:pensjonssimulator:simulering`. Dette er simuleringstjenester for tjenestepensjonsordninger i offentlig sektor, og benyttes for å kunne simulere alderspensjon fra folketrygden for brukere med tjenestepensjonsforhold.
+  version: v0.3.0
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no
+paths:
+  /api/v4/simuler-alderspensjon:
+    post:
+      tags:
+        - alderspensjon-controller
+      summary: Simuler alderspensjon
+      description: Lager en prognose for utbetaling av alderspensjon
+      operationId: simulerAlderspensjon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlderspensjonSpecV4'
+        required: true
+      responses:
+        '200':
+          description: Simulering av alderspensjon utført
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AlderspensjonResultV4'
+      security:
+        - BearerAuthentication: []
+  /api/v1/tidligst-mulig-uttak:
+    post:
+      tags:
+        - uttak-controller
+      summary: Tidligst mulig uttak
+      description: Finner tidligst mulig dato for uttak av alderspensjon
+      operationId: tidligstMuligUttak
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TidligstMuligUttakSpecV1'
+        required: true
+      responses:
+        '200':
+          description: Utledning av uttaksdato utført
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TidligstMuligUttakResultV1'
+      security:
+        - BearerAuthentication: []
+  /api/v1/simuler-folketrygdbeholdning:
+    post:
+      tags:
+        - beholdning-controller
+      summary: Simuler folketrygdbeholdning
+      description: Lager en prognose for pensjonsbeholdning i folketrygden
+      operationId: simulerFolketrygdbeholdning
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FolketrygdBeholdningSpecV1'
+        required: true
+      responses:
+        '200':
+          description: Simulering av folketrygdbeholdning utført
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/FolketrygdBeholdningResultV1'
+      security:
+        - BearerAuthentication: []
+  /api/v1/status:
+    get:
+      tags:
+        - status-controller
+      summary: Status
+      description: Sjekker status for applikasjonens helsetilstand
+      operationId: status
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/StatusV1'
+components:
+  schemas:
+    AlderspensjonSpecV4:
+      type: object
+      properties:
+        personId:
+          type: string
+        gradertUttak:
+          $ref: '#/components/schemas/GradertUttakSpecV4'
+        heltUttakFraOgMedDato:
+          type: string
+        aarIUtlandetEtter16:
+          type: integer
+          format: int32
+        epsPensjon:
+          type: boolean
+        eps2G:
+          type: boolean
+        fremtidigInntektListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/PensjonInntektSpecV4'
+        rettTilAfpOffentligDato:
+          type: string
+    GradertUttakSpecV4:
+      type: object
+      properties:
+        fraOgMedDato:
+          type: string
+        uttaksgrad:
+          type: integer
+          format: int32
+    PensjonInntektSpecV4:
+      type: object
+      properties:
+        aarligInntekt:
+          type: integer
+          format: int32
+        fraOgMedDato:
+          type: string
+    AlderspensjonFraFolketrygdenV4:
+      required:
+        - delytelseListe
+        - fraOgMedDato
+        - uttaksgrad
+      type: object
+      properties:
+        fraOgMedDato:
+          type: string
+          format: date
+        delytelseListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/PensjonDelytelseV4'
+        uttaksgrad:
+          type: integer
+          format: int32
+    AlderspensjonResultV4:
+      required:
+        - aarsakListeIkkeSuksess
+        - alderspensjon
+        - harUttak
+        - simuleringSuksess
+      type: object
+      properties:
+        simuleringSuksess:
+          type: boolean
+        aarsakListeIkkeSuksess:
+          type: array
+          items:
+            $ref: '#/components/schemas/PensjonSimuleringStatusV4'
+        alderspensjon:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlderspensjonFraFolketrygdenV4'
+        alternativerVedForLavOpptjening:
+          $ref: '#/components/schemas/ForslagVedForLavOpptjeningV4'
+        harUttak:
+          type: boolean
+    ForslagVedForLavOpptjeningV4:
+      required:
+        - heltUttakFraOgMedDato
+      type: object
+      properties:
+        gradertUttak:
+          $ref: '#/components/schemas/GradertUttakV4'
+        heltUttakFraOgMedDato:
+          type: string
+          format: date
+    GradertUttakV4:
+      required:
+        - fraOgMedDato
+        - uttaksgrad
+      type: object
+      properties:
+        fraOgMedDato:
+          type: string
+          format: date
+        uttaksgrad:
+          type: integer
+          format: int32
+    PensjonDelytelseV4:
+      required:
+        - belop
+        - pensjonsType
+      type: object
+      properties:
+        pensjonsType:
+          type: string
+        belop:
+          type: integer
+          format: int32
+    PensjonSimuleringStatusV4:
+      required:
+        - statusBeskrivelse
+        - statusKode
+      type: object
+      properties:
+        statusKode:
+          type: string
+        statusBeskrivelse:
+          type: string
+    TidligstMuligUttakSpecV1:
+      required:
+        - fodselsdato
+        - heltUttakFraOgMedDato
+        - personId
+      type: object
+      properties:
+        personId:
+          type: string
+        fodselsdato:
+          type: string
+          format: date
+        uttaksgrad:
+          type: integer
+          format: int32
+        heltUttakFraOgMedDato:
+          type: string
+          format: date
+        rettTilAfpOffentligDato:
+          type: string
+          format: date
+        fremtidigInntektListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/UttakInntektSpecV1'
+    UttakInntektSpecV1:
+      required:
+        - fraOgMedDato
+      type: object
+      properties:
+        arligInntekt:
+          type: integer
+          format: int32
+        fraOgMedDato:
+          type: string
+          format: date
+    TidligstMuligUttakFeilV1:
+      required:
+        - beskrivelse
+        - type
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - NONE
+            - FOR_LAV_OPPTJENING
+            - TEKNISK_FEIL
+        beskrivelse:
+          type: string
+    TidligstMuligUttakResultV1:
+      required:
+        - tidligstMuligeUttakstidspunktListe
+      type: object
+      properties:
+        tidligstMuligeUttakstidspunktListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/TidligstMuligUttakV1'
+        feil:
+          $ref: '#/components/schemas/TidligstMuligUttakFeilV1'
+    TidligstMuligUttakV1:
+      required:
+        - tidligstMuligeUttaksdato
+        - uttaksgrad
+      type: object
+      properties:
+        uttaksgrad:
+          type: integer
+          format: int32
+        tidligstMuligeUttaksdato:
+          type: string
+          format: date
+    BeholdningInntektSpecV1:
+      required:
+        - fraOgMedDato
+      type: object
+      properties:
+        arligInntekt:
+          type: integer
+          format: int32
+        fraOgMedDato:
+          type: string
+    FolketrygdBeholdningSpecV1:
+      required:
+        - personId
+        - uttaksdato
+      type: object
+      properties:
+        personId:
+          type: string
+        uttaksdato:
+          type: string
+        fremtidigInntektListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/BeholdningInntektSpecV1'
+        arIUtlandetEtter16:
+          type: integer
+          format: int32
+        epsPensjon:
+          type: boolean
+        eps2G:
+          type: boolean
+    FolketrygdBeholdningResultV1:
+      required:
+        - pensjonsBeholdningsPeriodeListe
+      type: object
+      properties:
+        pensjonsBeholdningsPeriodeListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/PensjonsbeholdningPeriodeV1'
+    GarantipensjonNivaaV1:
+      required:
+        - anvendtTrygdetid
+        - belop
+        - sats
+        - satsType
+      type: object
+      properties:
+        belop:
+          type: integer
+          format: int32
+        satsType:
+          type: string
+        sats:
+          type: integer
+          format: int32
+        anvendtTrygdetid:
+          type: integer
+          format: int32
+    PensjonsbeholdningPeriodeV1:
+      required:
+        - fraOgMedDato
+        - garantiPensjonsBeholdning
+        - garantiPensjonsNiva
+        - pensjonsBeholdning
+      type: object
+      properties:
+        pensjonsBeholdning:
+          type: integer
+          format: int32
+        garantiPensjonsBeholdning:
+          type: integer
+          format: int32
+        garantiPensjonsNiva:
+          $ref: '#/components/schemas/GarantipensjonNivaaV1'
+        fraOgMedDato:
+          type: string
+          format: date
+    StatusV1:
+      required:
+        - status
+      type: object
+      properties:
+        status:
+          type: string
+  securitySchemes:
+    BearerAuthentication:
+      type: http
+      description: >-
+        NAV-intern informasjon: For å anskaffe et token i dev kan du bruke
+        https://pensjon-maskinporten-test.intern.dev.nav.no/
+      scheme: bearer
+      bearerFormat: JWT
