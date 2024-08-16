@@ -6,7 +6,7 @@ info:
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no
 paths:
-  /api/v4/simuler-alderspensjon:
+  /pensjonssimulator/v4/simuler-alderspensjon:
     post:
       tags:
         - alderspensjon-controller
@@ -28,7 +28,7 @@ paths:
                 $ref: '#/components/schemas/AlderspensjonResultV4'
       security:
         - BearerAuthentication: []
-  /api/v1/tidligst-mulig-uttak:
+  /pensjonssimulator/v1/tidligst-mulig-uttak:
     post:
       tags:
         - uttak-controller
@@ -50,7 +50,7 @@ paths:
                 $ref: '#/components/schemas/TidligstMuligUttakResultV1'
       security:
         - BearerAuthentication: []
-  /api/v1/simuler-folketrygdbeholdning:
+  /pensjonssimulator/v1/simuler-folketrygdbeholdning:
     post:
       tags:
         - beholdning-controller
@@ -72,7 +72,7 @@ paths:
                 $ref: '#/components/schemas/FolketrygdBeholdningResultV1'
       security:
         - BearerAuthentication: []
-  /api/v1/status:
+  /pensjonssimulator/v1/status:
     get:
       tags:
         - status-controller
