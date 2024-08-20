@@ -451,7 +451,7 @@ components:
           description: personidentifikator
         forhold:
           type: array
-          description: Liste av forhold tilhørende person, uten liste av ytelser
+          description: Liste av forhold tilhørende person
           items:
             $ref: '#/components/schemas/samhandlerForhold'
     changeStampDateDto:
