@@ -416,7 +416,7 @@ components:
         tpNr:
           type: string
           description: Tjenestepensjonsnummer
-        ordningNavn:
+        tpOrdingNavn:
           type: string
           readOnly: true
           description: Navn på tjenestepensjonsordning.
