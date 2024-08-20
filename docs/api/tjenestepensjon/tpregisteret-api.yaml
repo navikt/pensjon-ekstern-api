@@ -416,29 +416,35 @@ components:
         tpNr:
           type: string
           description: Tjenestepensjonsnummer
-        tpOrdningNavn:
+        ordningNavn:
           type: string
+          readOnly: true
           description: Navn på tjenestepensjonsordning.
         datoSistOpptjening:
           type: string
+          readOnly: true
           description: dato for sist opptjening i forhold.
           format: date
         sistEndretdatoSistOpptjening:
           type: string
+          readOnly: true
           description: Timestamp for endring av datoSistOpptjening.
           format: date-time
         changeStamp:
           type: object
+          readOnly: true
           description: Hvem opprettet og endret med datoer.
           items:
             $ref: '#/components/schemas/changeStampDateDto'
         ytelser:
           type: array
+          readOnly: true
           description: Liste av ytelser tilhørende forhold
           items:
             $ref: '#/components/schemas/samhandlerYtelse'
         harGjenlevendeYtelse:
           type: boolean
+          readOnly: true
           description: Hvorvidt vedkommende har gjenlevendeYtelse eller ikke. Deprecated - Vennligst benytt ytelse.type
           deprecated: true
           nullable: true
