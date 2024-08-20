@@ -425,7 +425,7 @@ components:
           readOnly: true
           description: dato for sist opptjening i forhold.
           format: date
-        sistEndretdatoSistOpptjening:
+        sistEndretDatoSistOpptjening:
           type: string
           readOnly: true
           description: Timestamp for endring av datoSistOpptjening.
