@@ -416,6 +416,9 @@ components:
         tpNr:
           type: string
           description: Tjenestepensjonsnummer
+        tpOrdningNavn:
+          type: string
+          description: Navn på tjenestepensjonsordning.
         datoSistOpptjening:
           type: string
           description: dato for sist opptjening i forhold.
@@ -434,8 +437,13 @@ components:
           description: Liste av ytelser tilhørende forhold
           items:
             $ref: '#/components/schemas/samhandlerYtelse'
+        harGjenlevendeYtelse:
+          type: boolean
+          description: Hvorvidt vedkommende har gjenlevendeYtelse eller ikke. Deprecated - Vennligst benytt ytelse.type
+          deprecated: true
+          nullable: true
     samhandlerPersonDto:
-      title: Person med forhold uten ytelser
+      title: Person med forhold og ytelser
       type: object
       properties:
         fNr:
@@ -445,28 +453,7 @@ components:
           type: array
           description: Liste av forhold tilhørende person, uten liste av ytelser
           items:
-            $ref: '#/components/schemas/samhandlerForholdListe'
-    samhandlerForholdListe:
-      title: Forhold uten ytelser
-      type: object
-      properties:
-        tpNr:
-          type: string
-          description: Tjenestepensjonsnummer
-        tpOrdningNavn:
-          type: string
-          description: Navn på tjenestepensjonsordning.
-        datoSistOpptjening:
-          type: string
-          description: dato for sist opptjening i forhold.
-          format: date
-        sistEndretdatoSistOpptjening:
-          type: string
-          description: Timestamp for endring av datoSistOpptjening.
-          format: date-time
-        harGjenlevendeYtelse:
-          type: boolean
-          description: Hvorvidt vedkommende har gjenlevendeYtelse eller ikke.
+            $ref: '#/components/schemas/samhandlerForhold'
     changeStampDateDto:
       title: ChangeStampDateDto
       type: object
