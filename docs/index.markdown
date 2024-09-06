@@ -26,6 +26,8 @@ title: PO-Pensjon Ekstern API
 
 * [Uføretrygd](api/uforetrygd/Uforetrygd.html)
 
+* [Er ung ufør](api/erungufor/ErUngUfor.html)
+
 #### AFP Privat
 
 * [AFP Privat](api/afpprivat/AfpPrivat.html)
