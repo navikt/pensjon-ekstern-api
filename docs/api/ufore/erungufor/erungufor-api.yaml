@@ -1,0 +1,169 @@
+openapi: 3.0.3
+info:
+  title: Uføretrygd - Er ung ufør
+  description: |-
+    Tjeneste for å hente ut om en person var innvilget ung uføre på en bestemt dato.
+
+    Tjenesten krever et token utstedt av Maskinporten med scope `nav:uforetrygd:erungufor.read`.
+
+    Tjenesten støtter bruk av syntetiske testpersoner fra Dolly, Tenor og Test-Norge. For å sette
+    opp syntetiske testpersoner trenger man tilgang til [Dolly](https://dolly.ekstern.dev.nav.no),
+    Nav sin selvbetjeningsløsning for syntetisk testdata
+
+    Grensesnittet er under utvikling sammen med Husbanken.
+  version: 1.0.0
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/uforetrygd
+paths:
+  /erungufor:
+    post:
+      summary: Utfører en spørring for å sjekke om en person er ung ufør
+      description: ''
+      operationId: ErUngUfor
+      security:
+        - maskinporten: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErUngUforRequest'
+            example:
+              - fnr: "16878397960"
+                dato: "2024-01-01"
+        required: true
+      responses:
+        200:
+          description: Vellykket operasjon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErUngUforResponse'
+              examples:
+                "Person som er ung ufør":
+                  value:
+                    erUngUfor: "true"
+                    tidligsteVirkningsdato: "2023-06-01"
+                "Person som ikke er ung ufør":
+                  value:
+                    erUngUfor: "false"
+                    padding: "*************************"
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet, f.eks manglende token, feil token, utløpt token
+        403:
+          description: Ikke tilgang til tjenesten, feks feil scope i token
+        404:
+          description: Om personen det spørres på ikke er funnet i systemet
+  /erungufor/batch:
+    post:
+      summary: Utfører en spørring for å sjekke om en mengde av personer er ung uføre
+      description: |
+        Både inndata og returnert data behandles som mengder (`java.util.Set`, `kotlin.collections.Set` og tilsvarende).
+        Rekkefølgen på dataene i svaret kan være forskjellig fra rekkefølgen på data gitt i spørringen.
+
+        En spørring med det samme fødselsnummeret flere ganger vil kun få ett svar for det aktuelle fødselsnummeret.
+
+        Personer som ikke er funnet i systemet blir utelatt fra svaret.
+
+        Ugyldige fødseslnummer blir ignorert og blir utelatt fra svaret.
+      operationId: ErUngUforBatch
+      security:
+        - maskinporten: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErUngUforBatchRequest'
+        required: true
+      responses:
+        200:
+          description: Vellykket operasjon
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErUngUforBatchResponse'
+              example:
+                batch:
+                  - fnr: "08425431529"
+                    erUngUfor: false
+                  - fnr: "16878397960"
+                    erUngUfor: true
+                    tidligsteVirkningsdato: "2023-06-01"
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet, f.eks manglende token, feil token, utløpt token
+        403:
+          description: Ikke tilgang til tjenesten, feks feil scope i token
+components:
+  schemas:
+    ErUngUforRequest:
+      type: object
+      properties:
+        fnr:
+          type: string
+          description: Fødselsnummer, 11 siffer
+        dato:
+          type: string
+          format: date
+      required:
+        - fnr
+        - dato
+    ErUngUforResponse:
+      type: object
+      properties:
+        erUngUfor:
+          type: boolean
+        tidligsteVirkningsdato:
+          type: string
+          format: date
+        padding:
+          type: string
+          description: Padding for å sørge for at http svarhodet 'Content-Length' ikke røper om svaret var true eller false. Feltet skal ignoreres av konsumenter av tjenesten
+      required:
+        - erUngUfor
+    ErUngUforBatchRequest:
+      type: object
+      properties:
+        fnr:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+          description: Fødselsnummer, 11 siffer
+          example: ["00000000000", "00000010073", "08425431529", "16878397960"]
+        dato:
+          type: string
+          format: date
+          example: "2024-01-01"
+      required:
+        - fnr
+        - dato
+    ErUngUforBatchResponse:
+      type: object
+      properties:
+        batch:
+          type: array
+          items:
+            $ref: '#/components/schemas/FnrErUngUfor'
+      required:
+        - batch
+    FnrErUngUfor:
+      type: object
+      properties:
+        fnr:
+          type: string
+        erUngUfor:
+          type: boolean
+        tidligsteVirkningsdato:
+          type: string
+          format: date
+      required:
+        - fnr
+        - erUngUfor
+  securitySchemes:
+    maskinporten:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
