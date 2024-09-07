@@ -10,6 +10,9 @@ info:
     opp syntetiske testpersoner trenger man tilgang til [Dolly](https://dolly.ekstern.dev.nav.no),
     Nav sin selvbetjeningsløsning for syntetisk testdata
 
+    Tjenesten er rate-limited og returnerer http status kode 503 når for mange kall er blitt gjort mot tjenesten den
+    siste tiden.
+
     Grensesnittet er under utvikling sammen med Husbanken.
   version: 1.0.0
 servers:
@@ -22,6 +25,10 @@ paths:
       operationId: ErUngUfor
       security:
         - maskinporten: [ ]
+      parameters:
+        - $ref: '#/components/parameters/traceparent'
+        - $ref: '#/components/parameters/tracestate'
+        - $ref: '#/components/parameters/x-request-id'
       requestBody:
         content:
           application/json:
@@ -55,6 +62,8 @@ paths:
           description: Ikke tilgang til tjenesten, feks feil scope i token
         404:
           description: Om personen det spørres på ikke er funnet i systemet
+        503:
+          description: Rate limit nådd mot tjeneste. Prøv igjen senere
   /erungufor/batch:
     post:
       summary: Utfører en spørring for å sjekke om en mengde av personer er ung uføre
@@ -66,10 +75,14 @@ paths:
 
         Personer som ikke er funnet i systemet blir utelatt fra svaret.
 
-        Ugyldige fødseslnummer blir ignorert og blir utelatt fra svaret.
+        Ugyldige fødselsnummer blir ignorert og blir utelatt fra svaret.
       operationId: ErUngUforBatch
       security:
         - maskinporten: [ ]
+      parameters:
+        - $ref: '#/components/parameters/traceparent'
+        - $ref: '#/components/parameters/tracestate'
+        - $ref: '#/components/parameters/x-request-id'
       requestBody:
         content:
           application/json:
@@ -96,7 +109,47 @@ paths:
           description: Autentisering feilet, f.eks manglende token, feil token, utløpt token
         403:
           description: Ikke tilgang til tjenesten, feks feil scope i token
+        503:
+          description: Rate limit nådd mot tjeneste. Prøv igjen senere
 components:
+  parameters:
+    traceparent:
+      in: header
+      name: traceparent
+      description: |
+        Valgfritt spørringshode som kan brukes sammen med `tracestate` for å propagere telemetriinformasjon for
+        feilsøking og tracing. Verktøy som [OpenTelemetry](https://opentelemetry.io) legger på dette spørringshodet
+        automatisk.
+
+        Se [W3.org Trace Context](https://www.w3.org/TR/trace-context-1/#traceparent-header-field-values)
+        for mer dokumentasjon.
+      schema:
+        type: string
+        pattern: '^00-[a-z0-9]{32}-[a-z0-9]{16}-\d{2}$'
+        example: "00-d4cda95b652f4a1592b449d5929fda1b-6e0c63257de34c92-01"
+      required: false
+    tracestate:
+      name: tracestate
+      in: header
+      description: |
+        Valgfritt spørringshode som kan brukes sammen med `traceparent` for å propagere telemetriinformasjon for
+        feilsøking og tracing. Sensitiv informasjon skal ikke legges ved dette spørringshodet. Verktøy som OpenTelemetry
+        legger på dette spørringshodet automatisk.
+
+        Se [W3.org Trace Context](https://www.w3.org/TR/trace-context-1/#tracestate-header) for mer dokumentasjon.
+      schema:
+        type: string
+    x-request-id:
+      in: header
+      name: x-request-id
+      description: |
+        Spørringshode som kan brukes i stedet eller i tillegg til `traceparent` og `tracestate` for feilsøking
+        av kall fra konsument til Nav. Verdien bør være globalt unikt per kall til Nav. Spørringshodene
+        `traceparent` og `tracestate` er foretrukket fremfor dette spørringshodet.
+      schema:
+        type: string
+        format: uuid
+      required: false
   schemas:
     ErUngUforRequest:
       type: object
