@@ -2,18 +2,20 @@ openapi: 3.0.3
 info:
   title: Uføretrygd - Er ung ufør
   description: |-
-    Tjeneste for å hente ut om en person var innvilget ung uføre på en bestemt dato.
+    Tjeneste for å hente ut om en person var innvilget ung uføre på en bestemt dato. Oppslag er begrenset til å sjekke
+    ung uføre tilknyttet uføretrygd, med andre ord datoer fra og med uførereformen fra 1. jannuar 2015.
 
     Tjenesten krever et token utstedt av Maskinporten med scope `nav:uforetrygd:erungufor.read`.
-
-    Tjenesten støtter bruk av syntetiske testpersoner fra Dolly, Tenor og Test-Norge. For å sette
-    opp syntetiske testpersoner trenger man tilgang til [Dolly](https://dolly.ekstern.dev.nav.no),
-    Nav sin selvbetjeningsløsning for syntetisk testdata
 
     Tjenesten er rate-limited og returnerer http status kode 503 når for mange kall er blitt gjort mot tjenesten den
     siste tiden.
 
     Grensesnittet er under utvikling sammen med Husbanken.
+
+    Tjenesten støtter bruk av syntetiske testpersoner fra Dolly, Tenor og Test-Norge. For å sette
+    opp syntetiske testpersoner trenger man tilgang til [Dolly](https://dolly.ekstern.dev.nav.no),
+    Nav sin selvbetjeningsløsning for syntetisk testdata
+
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/uforetrygd
@@ -158,6 +160,7 @@ components:
           type: string
           description: Fødselsnummer, 11 siffer
         dato:
+          description: Data det sjekkes på. Må være på eller etter 1. januar 2015
           type: string
           format: date
       required:
@@ -187,6 +190,7 @@ components:
           description: Fødselsnummer, 11 siffer
           example: ["00000000000", "00000010073", "08425431529", "16878397960"]
         dato:
+          description: Data det sjekkes på. Må være på eller etter 1. januar 2015
           type: string
           format: date
           example: "2024-01-01"
