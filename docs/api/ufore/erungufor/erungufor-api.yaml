@@ -19,6 +19,7 @@ info:
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/uforetrygd
+  - url: https://pensjon-gw.nav.no/uforetrygd
 paths:
   /erungufor:
     post:
