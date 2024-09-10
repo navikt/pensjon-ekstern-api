@@ -2,9 +2,10 @@ openapi: 3.0.1
 info:
   title: Pensjonssimulator API
   description: For å kunne bruke tjenestene må scope i autentiseringen mot Maskinporten settes til `nav:pensjonssimulator:simulering`. Dette er simuleringstjenester for tjenestepensjonsordninger i offentlig sektor, og benyttes for å kunne simulere alderspensjon fra folketrygden for brukere med tjenestepensjonsforhold.
-  version: v0.3.0
+  version: v1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no
+  - url: https://pensjon-gw.nav.no
 paths:
   /pensjonssimulator/v4/simuler-alderspensjon:
     post:
@@ -161,7 +162,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AlderspensjonFraFolketrygdenV4'
-        alternativerVedForLavOpptjening:
+        forslagVedForLavOpptjening:
           $ref: '#/components/schemas/ForslagVedForLavOpptjeningV4'
         harUttak:
           type: boolean
