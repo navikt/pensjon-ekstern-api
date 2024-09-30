@@ -5,6 +5,7 @@ info:
   version: 1.0.0
 servers:
   - url: https://pensjon-q2-gw.ekstern.dev.nav.no/uforetrygd/tpordningene
+  - url: https://pensjon-gw.nav.no/uforetrygd/tpordningene
 paths:
   /harMottattUforeEtter62:
     post:
@@ -47,6 +48,7 @@ paths:
     post:
       description: |
         Gir svar på om personen har et løpende, ikke-avsluttet vedtak om uføretrygd på ønsket AFP-uttakstidspunkt eller senere (uavhengig av om det faktisk er utbetalt noe, og uavhengig av alder). Feltet er relevant for veiledning. Bruker er her i en tidskritisk situasjon der hen må velge mellom AFP og uføretrygd. En mulighet kan være å sette behandling av AFP-søknad på vent, og informere bruker om at de må velge mellom AFP og uføretrygd. Å evt. gi simulering av AFP, og be bruker ta kontakt med NAV for veiledning om uføretrygd og konsekvenser av å si fra seg denne, og informere om at bruker må si fra seg uføretrygden dersom de ønsker å ta ut AFP.
+        - Krever token med maskinporten-scope nav:uforetrygd:tpordningene.harlopendevedtakomufore.read
       operationId: harLopendeVedtakOmUfore
       parameters:
         - in: header
@@ -82,6 +84,7 @@ paths:
         - Formålet er det samme som for lopendeVedtakOmUfore – å fange opp om bruker kan ha behov for veiledning om valg mellom AFP og uføretrygd.
         - Åpent spørsmål: Ønsker TP-ordningen også å vite om åpent krav om klage/anke på uføretrygd?
         - Per nå vet vi ikke nøyaktig hvilke tilfeller som vil kunne fanges opp her og hvilke som kunne vært relevante, men som faller utenfor. Dette avhenger av hvilke rutiner vi har for når krav om uføretrygd registreres i pensjonssaksbehandlingssystemet, og det har vi ikke ennå sjekket opp. Vi kan evt. undersøke dette.
+        - Krever token med maskinporten-scope nav:uforetrygd:tpordningene.haruforesoknadunderbehandling.read
       parameters:
         - in: header
           name: x-request-id
