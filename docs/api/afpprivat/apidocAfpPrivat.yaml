@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Pensjon AFP-privat
-  description: Inneholder tjenester for å behandle og hente informasjon om en AFP-privat saker/brukere.
+  description: Inneholder tjenester for å behandle og hente informasjon om en AFP-privat saker/brukere. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/afpprivat/mottarafpprivat`
     søknad.
   version: 1.0.0
 servers:
