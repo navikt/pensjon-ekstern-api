@@ -4,11 +4,16 @@ info:
   description: Tjenester for beregning og simulering av AFP beholdningsgrunnlag.
   version: 1.0.0
 servers:
-  - url: https://template.value/template/value
+  - url: https://pensjonopptjening-gw.ekstern.dev.nav.no
+    description: Dev
+  - url: https://pensjonopptjening-gw.nav.no
+    description: Prod
 paths:
   /opptjening/afp/beholdningsgrunnlag/beregn:
     post:
-      description: Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt uttaksDato.
+      description: "Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt uttaksDato. Krever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.beregn.read"
+      security:
+        - bearerAuth: []
       operationId: beregn
       parameters:
         - in: header
@@ -33,13 +38,23 @@ paths:
                 $ref: '#/components/schemas/Response'
         400:
           description: Feil i request-data fra klient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         401:
           description: Autentisering feilet
         403:
           description: Autorisering til ressurs feilet, feks feil scope i token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /opptjening/afp/beholdningsgrunnlag/simuler:
     post:
-      description: Simulerer beholdningsgrunnlag med tilvekst fra oppgitte inntekter fra og med angitt dato. NB! Grunnlag med fraOgMedDato senere enn siste kjente grunnbeløpsendring vil ikke være lønnsvekstregulert - se https://www.nav.no/grunnbelopet
+      description: "Simulerer beholdningsgrunnlag med tilvekst fra oppgitte inntekter fra og med angitt dato. NB! Grunnlag med fraOgMedDato senere enn siste kjente grunnbeløpsendring vil ikke være lønnsvekstregulert - se https://www.nav.no/grunnbelopet. Krever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.simuler.read"
+      security:
+        - bearerAuth: []
       operationId: simuler
       parameters:
         - in: header
@@ -64,10 +79,18 @@ paths:
                 $ref: '#/components/schemas/Response'
         400:
           description: Feil i request-data fra klient
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         401:
           description: Autentisering feilet
         403:
           description: Autorisering til ressurs feilet, feks feil scope i token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     BeregnRequest:
@@ -128,6 +151,14 @@ components:
           description: Belop per fraOgMedDato
           type: number
           example: 123456
+    ErrorResponse:
+      type: object
+      description: Response ved håndterte feilsituasjoner
+      properties:
+        message:
+          description: Beskrivende melding for feilsituasjonen
+          type: string
+          example: "Litt informasjon"
   securitySchemes:
     bearerAuth:
       type: http
