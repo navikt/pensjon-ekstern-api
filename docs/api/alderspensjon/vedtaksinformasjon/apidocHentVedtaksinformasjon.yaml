@@ -350,7 +350,7 @@ components:
       description: Informasjon om avvik eller spesielle forhold fra regeltjeneste
       type: object
       properties:
-        argumentListeString:
+        argumentListe:
           type: array
           items: {}
         kode:
