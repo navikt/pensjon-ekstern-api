@@ -40,9 +40,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
-        '404':
-          description: Person eller forhold ikke funnet
+          description: Ikke tilgang til person eller feil scope på token fra Maskinporten
       deprecated: false
   /forhold/{ordning}/get:
     get:
