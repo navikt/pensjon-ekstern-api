@@ -91,6 +91,27 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ErUngUforBatchRequest'
+            examples:
+              "Batch oppslag på samme person":
+                value:
+                  - fnr: "16878397960"
+                    dato: "2024-01-01"
+                  - fnr: "16878397960"
+                    dato: "2024-02-01"
+              "Batch oppslag på flere forskjellige personer":
+                value:
+                  - fnr: "08425431529"
+                    dato: "2024-01-01"
+                  - fnr: "16878397960"
+                    dato: "2024-01-01"
+              "Batch oppslag på flere forskjellige personer og datoer":
+                value:
+                  - fnr: "08425431529"
+                    dato: "2024-01-01"
+                  - fnr: "16878397960"
+                    dato: "2024-01-01"
+                  - fnr: "16878397960"
+                    dato: "2024-02-01"
         required: true
       responses:
         200:
@@ -183,21 +204,13 @@ components:
     ErUngUforBatchRequest:
       type: object
       properties:
-        fnr:
+        requests:
           type: array
-          items:
-            type: string
           uniqueItems: true
-          description: Fødselsnummer, 11 siffer
-          example: ["00000000000", "00000010073", "08425431529", "16878397960"]
-        dato:
-          description: Data det sjekkes på. Må være på eller etter 1. januar 2015
-          type: string
-          format: date
-          example: "2024-01-01"
+          items:
+            $ref: '#/components/schemas/ErUngUforRequest'
       required:
-        - fnr
-        - dato
+        - requests
     ErUngUforBatchResponse:
       type: object
       properties:
