@@ -37,9 +37,18 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ErUngUforRequest'
-            example:
-              - fnr: "16878397960"
-                dato: "2024-01-01"
+            examples:
+              "Oppslag på en dato for en person":
+                 value:
+                   fnr: "16878397960"
+                   datoer:
+                     - "2024-01-01"
+              "Oppslag på flere datoer for en person":
+                 value:
+                   fnr: "16878397960"
+                   datoer:
+                     - "2023-01-01"
+                     - "2024-01-01"
         required: true
       responses:
         200:
@@ -49,14 +58,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErUngUforResponse'
               examples:
-                "Person som er ung ufør":
+                "Person som er ung ufør, hvor det ble spurt på en dato":
                   value:
-                    erUngUfor: "true"
-                    tidligsteVirkningsdato: "2023-06-01"
+                    fnr: "16878397960"
+                    datoer:
+                      dato: "2024-01-01"
+                      erUngUfor: "true"
+                      tidligsteVirkningsdato: "2023-06-01"
+                "Person som er ung ufør, hvor det ble spurt på flere datoer":
+                  value:
+                    fnr: "16878397960"
+                    datoer:
+                      - dato: "2024-01-01"
+                        erUngUfor: "true"
+                        tidligsteVirkningsdato: "2023-06-01"
+                      - dato: "2023-01-01"
+                        erUngUfor: "false"
                 "Person som ikke er ung ufør":
                   value:
-                    erUngUfor: "false"
-                    padding: "*************************"
+                    fnr: "08425431529"
+                    datoer:
+                      dato: "2024-01-01"
+                      erUngUfor: "false"
         400:
           description: Feil i request-data fra klient
         401:
@@ -181,58 +204,64 @@ components:
         fnr:
           type: string
           description: Fødselsnummer, 11 siffer
-        dato:
-          description: Data det sjekkes på. Må være på eller etter 1. januar 2015
-          type: string
-          format: date
+        datoer:
+          type: array
+          description: Datoer det sjekkes på. Alle datoene må være på eller etter 1. januar 2015
+          uniqueItems: true
+          items:
+            type: string
+            format: date
       required:
         - fnr
-        - dato
+        - datoer
     ErUngUforResponse:
       type: object
       properties:
+        fnr:
+          type: string
+          description: Fødselsnummer, 11 siffer
+        datoer:
+          type: array
+          uniqueItems: true
+          description: Svaret for dateoene det ble spurt på
+          items:
+            $ref: '#/components/schemas/ErUngUforResponseDates'
+      required:
+        - fnr
+        - datoer
+    ErUngUforResponseDates:
+      type: object
+      properties:
+        dato:
+          type: string
+          format: date
         erUngUfor:
           type: boolean
         tidligsteVirkningsdato:
           type: string
           format: date
-        padding:
-          type: string
-          description: Padding for å sørge for at http svarhodet 'Content-Length' ikke røper om svaret var true eller false. Feltet skal ignoreres av konsumenter av tjenesten
       required:
+        - dato
         - erUngUfor
     ErUngUforBatchRequest:
       type: object
       properties:
-        requests:
+        batch:
           type: array
           uniqueItems: true
           items:
             $ref: '#/components/schemas/ErUngUforRequest'
       required:
-        - requests
+        - batch
     ErUngUforBatchResponse:
       type: object
       properties:
         batch:
           type: array
           items:
-            $ref: '#/components/schemas/FnrErUngUfor'
+            $ref: '#/components/schemas/ErUngUforResponse'
       required:
         - batch
-    FnrErUngUfor:
-      type: object
-      properties:
-        fnr:
-          type: string
-        erUngUfor:
-          type: boolean
-        tidligsteVirkningsdato:
-          type: string
-          format: date
-      required:
-        - fnr
-        - erUngUfor
   securitySchemes:
     maskinporten:
       type: http
