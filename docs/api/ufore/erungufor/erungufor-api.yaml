@@ -115,26 +115,25 @@ paths:
             schema:
               $ref: '#/components/schemas/ErUngUforBatchRequest'
             examples:
-              "Batch oppslag på samme person":
-                value:
-                  - fnr: "16878397960"
-                    dato: "2024-01-01"
-                  - fnr: "16878397960"
-                    dato: "2024-02-01"
               "Batch oppslag på flere forskjellige personer":
                 value:
-                  - fnr: "08425431529"
-                    dato: "2024-01-01"
-                  - fnr: "16878397960"
-                    dato: "2024-01-01"
+                  batch:
+                    - fnr: "08425431529"
+                      datoer:
+                        - "2024-01-01"
+                    - fnr: "16878397960"
+                      datoer:
+                        - "2024-01-01"
               "Batch oppslag på flere forskjellige personer og datoer":
                 value:
-                  - fnr: "08425431529"
-                    dato: "2024-01-01"
-                  - fnr: "16878397960"
-                    dato: "2024-01-01"
-                  - fnr: "16878397960"
-                    dato: "2024-02-01"
+                  batch:
+                    - fnr: "08425431529"
+                      datoer:
+                        - "2024-01-01"
+                    - fnr: "16878397960"
+                      datoer:
+                        - "2023-01-01"
+                        - "2024-01-01"
         required: true
       responses:
         200:
@@ -143,13 +142,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErUngUforBatchResponse'
-              example:
-                batch:
-                  - fnr: "08425431529"
-                    erUngUfor: false
-                  - fnr: "16878397960"
-                    erUngUfor: true
-                    tidligsteVirkningsdato: "2023-06-01"
+              examples:
+                "Batch oppslag på flere forskjellige personer":
+                  value:
+                    batch:
+                      - fnr: "08425431529"
+                        datoer:
+                          - dato: "2024-01-01"
+                            erUngUfor: false
+                      - fnr: "16878397960"
+                        datoer:
+                          - dato: "2024-01-01"
+                            erUngUfor: "true"
+                            tidligsteVirkningsdato: "2023-06-01"
+                "Batch oppslag på flere forskjellige personer og datoer":
+                  value:
+                    batch:
+                      - fnr: "08425431529"
+                        datoer:
+                          - dato: "2024-01-01"
+                            erUngUfor: false
+                      - fnr: "16878397960"
+                        datoer:
+                          - dato: "2024-01-01"
+                            erUngUfor: "true"
+                            tidligsteVirkningsdato: "2023-06-01"
+                          - dato: "2023-01-01"
+                            erUngUfor: "false"
         400:
           description: Feil i request-data fra klient
         401:
