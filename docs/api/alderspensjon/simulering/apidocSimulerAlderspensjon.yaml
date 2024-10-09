@@ -127,6 +127,7 @@ components:
           format: int32
     PensjonsbeholdningPeriode:
       title: PensjonsbeholdningPeriode
+      description: Viser faktisk beløp for restpensjonsbeholdning for alderspensjon fra folketrygden, restgarantipensjonsbeholdning og restgarantitilleggsbeholdning etter beregning av pensjonen på virkningstidspunktet. Uttaksgradsendring, oppfrisking av uttaksgrad og endringer i opptjening, herunder godskriving av ny opptjening samt regulering, vil kunne påvirke størrelsen på beholdningen. Garantipensjonsnivå oppgis som høy eller ordinær sats benyttet i alderspensjonen fra folketrygden.
       type: object
       properties:
         pensjonsbeholdning:
