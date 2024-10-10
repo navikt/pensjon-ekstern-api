@@ -277,6 +277,7 @@ components:
       properties:
         batch:
           type: array
+          uniqueItems: true
           items:
             $ref: '#/components/schemas/ErUngUforResponse'
       required:
