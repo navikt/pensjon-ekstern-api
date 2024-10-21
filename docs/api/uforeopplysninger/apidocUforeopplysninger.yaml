@@ -3,7 +3,9 @@ info:
   version: '1.0'
   title: Pensjon Uføreopplysninger
   description: |-
-    For å kunne benytte tjenesten må konsumenten autentisere seg gjennom ID-porten Virksomhet og ha avtale med NAV. I tillegg må konsumenten ha samtykke fra bruker og hente et samtykketoken fra Altinns Samtykkeløsning. Disse to tokenene sendes sammen med brukers Fnr/Dnr, fra-og-med dato, samt til-og-med dato som inn-parametere til tjenesten. Tjenesten returnerer uføreopplysninger for ønsket periode så fremt samtykket gjelder for perioden Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database. Bruker kan logge seg inn på nav.no for å lese av disse hendelsene.\n\nPåkrevd scope-verdi for bruk av API'et er `nav:helse/v1/uforeopplysninger`.\n\n Samtykke hos Altinn identifiseres med tjenestekode og tjenesteutgavekode `5252_X`, der `X` er 2 eller 3.
+    For å kunne benytte tjenesten må konsumenten autentisere seg gjennom ID-porten Virksomhet og ha avtale med NAV. I tillegg må konsumenten ha samtykke fra bruker og hente et samtykketoken fra Altinns Samtykkeløsning. Disse to tokenene sendes sammen med brukers Fnr/Dnr, fra-og-med dato, samt til-og-med dato som inn-parametere til tjenesten. Tjenesten returnerer uføreopplysninger for ønsket periode så fremt samtykket gjelder for perioden Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database. Bruker kan logge seg inn på nav.no for å lese av disse hendelsene.
+    <br/><br/>Påkrevd scope-verdi for bruk av API'et er `nav:helse/v1/uforeopplysninger`.
+    <br/><br/>Samtykke hos Altinn identifiseres med tjenestekode og tjenesteutgavekode `5252_X`, der `X` er 2 eller 3.
     <br/><br/>Klikk [her](./Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.
   contact: {}
 servers:
@@ -64,7 +66,14 @@ paths:
         '401':
           description: Konsumenten mangler gyldig aksesstoken.
         '403':
-          description: Konsumenten har ikke tilgang til vedtaksinformasjon. Situasjoner som kan gi feilen er som følger.\n\n   * Scope til aksesstoken gir ikke tilgang til vedtaksdata.\n   * Konsumenten mangler gyldig samtykketoken.\n   * Samtykketokenet er ikke utstedt av altinn.no (iss).\n   * Samtykket har passert utløpstidspunktet (ValidToDate).\n   * Organisasjonsnummer som samtykket er i gitt til er ikke i overensstemmelse med organisasjonsnummeret som aksesstokenet er utstedt til.\n   * Fødselsnummeret som har gitt samtykket er ikke i overensstemmelse med fødselsnummeret det spørres på.\n   * Forespurt periode ligger utenfor samtykkeperioden.
+          description: Konsumenten har ikke tilgang til vedtaksinformasjon. Situasjoner som kan gi feilen er som følger.
+            <br/><br/>* Scope til aksesstoken gir ikke tilgang til vedtaksdata.
+            <br/> * Konsumenten mangler gyldig samtykketoken.
+            <br/> * Samtykketokenet er ikke utstedt av altinn.no (iss).
+            <br/> * Samtykket har passert utløpstidspunktet (ValidToDate).
+            <br/> * Organisasjonsnummer som samtykket er i gitt til er ikke i overensstemmelse med organisasjonsnummeret som aksesstokenet er utstedt til.
+            <br/> * Fødselsnummeret som har gitt samtykket er ikke i overensstemmelse med fødselsnummeret det spørres på.
+            <br/> * Forespurt periode ligger utenfor samtykkeperioden.
         '500':
           description: Intern feil i tjenesten.
 components:
@@ -117,7 +126,15 @@ components:
           format: date
           type: string
         status:
-          description: "Tjenesten returnerer et statusfelt som beskriver nå-situasjonen samt en tabell med beregningsvetakshistorikk\"\nStatusfeltet kan ha følgende verdier: \n\"IKKE_SOKT: Dersom det ikke er mottatt søknad om uføretrygd\"\n\"AVSLAG: Dersom det er søkt om uføretrygd og søknaden har blitt avslått. Gjelder ikke avslag på søknad om endring.\"\n\"REKONSTRUKSJON: Det foreligger et åpent krav under rekonstruksjon på saken (ingen historikk kan vises, prøv igjen siden)\"\n\"KLAGE_PA_AVSLAG: Dersom søknad om uføretrygd har blitt avslått, og det foreligger en klage under behandling. Gjelder ikke avslag på søknad om endring.\"\n\"LOPENDE: Dersom det finnes minst et løpende vedtak hvor det ikke er satt tom-dato.\":\n\"OPPHORT: Dersom det eksisterer løpende vedtak og alle vedtak har løpende tom satt (ikke null) på saken\"\n\"UNDER_BEHANDLING: Dersom det foreligger et åpent krav på saken som ikke gjelder rekonstruksjon eller klage på avslag\":"
+          description: "Tjenesten returnerer et statusfelt som beskriver nå-situasjonen samt en tabell med beregningsvetakshistorikk\"
+          <br/>Statusfeltet kan ha følgende verdier: 
+          <br/> \"IKKE_SOKT: Dersom det ikke er mottatt søknad om uføretrygd\"
+          <br/> \"AVSLAG: Dersom det er søkt om uføretrygd og søknaden har blitt avslått. Gjelder ikke avslag på søknad om endring.\"
+          <br/> \"REKONSTRUKSJON: Det foreligger et åpent krav under rekonstruksjon på saken (ingen historikk kan vises, prøv igjen siden)\"
+          <br/> \"KLAGE_PA_AVSLAG: Dersom søknad om uføretrygd har blitt avslått, og det foreligger en klage under behandling. Gjelder ikke avslag på søknad om endring.\"
+          <br/> \"LOPENDE: Dersom det finnes minst et løpende vedtak hvor det ikke er satt tom-dato.\":
+          <br/> \"OPPHORT: Dersom det eksisterer løpende vedtak og alle vedtak har løpende tom satt (ikke null) på saken\"
+          <br/> \"UNDER_BEHANDLING: Dersom det foreligger et åpent krav på saken som ikke gjelder rekonstruksjon eller klage på avslag\":"
           example: LOPENDE
           type: string
           enum:
