@@ -213,9 +213,12 @@ components:
           example: "2024-01-01"
     UforeperioderResponse:
       title: Uforeperioder - response
-      type: array
-      items:
-        $ref: '#/components/schemas/VedtakPeriode'
+      type: object
+      properties:
+        uforeperioder:
+          type: array
+          items:
+            $ref: '#/components/schemas/VedtakPeriode'
     VedtakPeriode:
       title: Vedtaksperiode
       type: object
@@ -229,10 +232,9 @@ components:
           type: string
           format: YYYY-mm-DD
           example: "2024-01-01"
+          nullable: true
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-  security:
-    - bearerAuth: []
