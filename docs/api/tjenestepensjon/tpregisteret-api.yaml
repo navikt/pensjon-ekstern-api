@@ -72,7 +72,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller Ordning ikke funnet
       deprecated: false
@@ -84,6 +84,7 @@ paths:
       description: Opprett et forhold på eksisterende ordning for person.
       operationId: OpprettForholdPut
       requestBody:
+        required: true
         description: Et forhold
         content:
           application/json:
@@ -112,7 +113,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller Ordning ikke funnet
       deprecated: false
@@ -146,11 +147,13 @@ paths:
               schema:
                 type: object
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten.
           content:
             application/json;charset=UTF-8:
               schema:
                 type: object
+        '404':
+          description: Person eller forhold ikke funnet
       deprecated: false
   /forhold/{ordning}/datoSistOpptjening/update:
     patch:
@@ -189,7 +192,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller forhold ikke funnet
       deprecated: false
@@ -223,7 +226,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller forhold ikke funnet
       deprecated: false
@@ -262,6 +265,8 @@ paths:
                 $ref: '#/components/schemas/samhandlerYtelse'
         '401':
           description: Ugyldig access token
+        '403':
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller forhold ikke funnet
         '409':
@@ -303,11 +308,13 @@ paths:
               schema:
                 type: object
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten.
           content:
             application/json;charset=UTF-8:
               schema:
                 type: object
+        '404':
+          description: Person, forhold eller ytelse ikke funnet
       deprecated: false
   /forhold/{ordning}/ytelse/{ytelseid}/put:
     put:
@@ -350,6 +357,8 @@ paths:
                 $ref: '#/components/schemas/samhandlerYtelse'
         '401':
           description: Ugyldig access token
+        '403':
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person, Ytelse eller forhold ikke funnet
       deprecated: false
@@ -406,6 +415,8 @@ components:
     samhandlerForhold:
       title: Forhold med ytelser
       type: object
+      required:
+        - tpNr
       properties:
         kilde:
           type: string
@@ -516,9 +527,9 @@ components:
           items:
             $ref: '#/components/schemas/changeStampDateDto'
         ytelseId:
-          type: string
-          description: Unik Id for ytelse
-          format: long
+          type: integer
+          description: Unik Id for ytelse, av format long.
+          format: int64
           readOnly: true
     innsynForhold:
       title: InnsynForhold
