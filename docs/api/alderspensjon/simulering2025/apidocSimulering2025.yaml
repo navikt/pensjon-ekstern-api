@@ -21,14 +21,14 @@ paths:
               $ref: '#/components/schemas/AlderspensjonSpecV4'
         required: true
       responses:
-        '200':
+        200:
           description: Simulering av alderspensjon utført
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/AlderspensjonResultV4'
-        '400':
-          description: Simulering kunne ikke utføres pga. uakseptabel input. Det kan være: (1) helt uttak ikke etter gradert uttak, (2) inntekt ikke 1. i måneden, (3) inntekter har lik startdato, (4) negativ inntekt.
+        400:
+          description: Simulering kunne ikke utføres pga. uakseptabel input
       security:
         - BearerAuthentication: []
   /pensjonssimulator/v1/tidligst-mulig-uttak:
