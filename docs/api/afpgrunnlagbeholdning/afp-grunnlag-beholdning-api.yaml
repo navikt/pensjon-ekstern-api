@@ -11,7 +11,7 @@ servers:
 paths:
   /opptjening/afp/beholdningsgrunnlag/beregn:
     post:
-      description: "Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt uttaksDato. Krever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.beregn.read"
+      description: "Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt uttaksDato. Krever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.beregn.read. Dersom man bruker delegert tilgang via Altinn er scope: nav:pensjonopptjening/delegert.altinn.ekstern.afp.beholdningsgrunnlag.beregn.read"
       security:
         - bearerAuth: []
       operationId: beregn
@@ -64,7 +64,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /opptjening/afp/beholdningsgrunnlag/simuler:
     post:
-      description: "Simulerer beholdningsgrunnlag med tilvekst fra oppgitte inntekter fra og med angitt dato. NB! Grunnlag med fraOgMedDato senere enn siste kjente grunnbeløpsendring vil ikke være lønnsvekstregulert - se https://www.nav.no/grunnbelopet. Krever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.simuler.read"
+      description: "Simulerer beholdningsgrunnlag med tilvekst fra oppgitte inntekter fra og med angitt dato. NB! Grunnlag med fraOgMedDato senere enn siste kjente grunnbeløpsendring vil ikke være lønnsvekstregulert - se https://www.nav.no/grunnbelopet. Krever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.simuler.read. Dersom man bruker delegert tilgang via Altinn er scope: nav:pensjonopptjening/delegert.altinn.ekstern.afp.beholdningsgrunnlag.simuler.read"
       security:
         - bearerAuth: []
       operationId: simuler
