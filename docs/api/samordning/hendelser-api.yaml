@@ -4,7 +4,7 @@ info:
   description: |-
     Hendelseskø for samordningspliktige vedtak (AP, AFP, OMS), og .
 
-    Påkrevd scope-verdi: `nav:pensjon/v1/samordning`
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/samordning`
   contact: {}
   version: '1.0'
 servers:

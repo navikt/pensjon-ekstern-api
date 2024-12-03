@@ -5,7 +5,7 @@ info:
     API for å behandle forhold mellom person og ordning for eksterne samhandlere,
     og innsyn i registrerte tjenestepensjonsforhold og ytelser.
 
-    Påkrevd scope-verdi: `nav:pensjon/v1/tpregisteret`
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/tpregisteret`
   contact: {}
   version: '1.0'
 servers:
