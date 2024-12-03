@@ -21,7 +21,9 @@ paths:
       tags:
         - Person
       summary: Forholdsliste
-      description: Henter ut liste av forhold.
+      description: Henter ut liste av forhold. Forhold(ene) inkluderer liste av registrerte ytelser. <br>
+        Hvis ordningen har et forhold på person så vil endepunktet svare med en liste av alle forhold på personen.<br> 
+        Hvis ordningen ikke har et forhold på person så vil endepunktet svare 403, for da har ikke ordningen tilgang til personen.
       operationId: ForholdlisteGet
       parameters:
         - name: fnr
