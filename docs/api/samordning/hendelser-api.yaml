@@ -284,7 +284,7 @@ components:
           description: Dato til og med.
           format: date
     ytelseshendelse:
-      title: Ytelsesendelse
+      title: Ytelseshendelse
       type: object
       description: En hendelse tilknyttet tjenstepensjonsytelse.
       properties:
@@ -306,6 +306,17 @@ components:
         ytelseType:
           type: string
           description: Ytelsen er av denne typen.
+        datoFom:
+          type: string
+          description: Dato fra og med.
+          format: date
+          nullable: false
+        datoTom:
+          type: string
+          description: Dato til og med.
+          format: date
+          nullable: true
+
     hendelseTypeCode:
       type: string
       description: Type hendelse for en ytelse.
@@ -313,16 +324,6 @@ components:
         - SLETTING
         - OPPHOR
         - OPPRETT
-    datoFom:
-      type: string
-      description: Dato fra og med.
-      format: date
-      nullable: false
-    datoTom:
-      type: string
-      description: Dato til og med.
-      format: date
-      nullable: true
   securitySchemes:
     Maskinporten:
       type: http
