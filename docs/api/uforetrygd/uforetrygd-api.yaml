@@ -10,12 +10,13 @@ paths:
   /harMottattUforeEtter62:
     post:
       description: |
+        Krever token fra maskinporten med scope **nav:uforetrygd/tpordningene/harmottattuforeetter62.read**
+        
         - Denne gir svar på om det finnes løpende vedtak for uføretrygd (tilbake i tid) for perioden etter at bruker fylte 62 år med netto beregnet uføretrygd > 0. Tjenesten tar bare hensyn til ytelseskomponenten Uføretrygd Ordinær, ikke evt barnetillegg. Hvis verdien er True, vil vilkåret om å ikke ha mottatt uføretrygd ikke være oppfylt ved ønsket uttakstidspunkt.
         - Det garanteres bare at data er riktig for personer som fyller 62 år fra 01.01.2025.
         - Med «løpende» menes her at vedtaket er gyldig. Vedtaket trenger ikke nødvendigvis å gjelde for tidspunktet da tjenesten kalles. F.eks. skal tjenesten også gi True om bruker har vedtak om uføretrygd som er opphørt på kalltidspunktet, men som har gjeldt for tidsrom etter fylte 62, og som har gitt netto utbetaling av uføretrygd i det tidsrommet.
         - Med «netto beregnet uføretrygd» menes her den delen av uføretrygdutbetalingen som er i behold etter etteroppgjøret dersom etteroppgjøret er gjort, eller det som er utbetalt, men uten at det er gjort etteroppgjør for perioden. Vi skal avklare om «netto utbetalt uføretrygd» tar hensyn til om utbetalingen er krevd tilbake på andre måter enn gjennom etteroppgjør, slik som folketrygdloven § 22-15, eller ikke. «Netto» handler her ikke om skattlegging.
         - I privat sektor er det en unntaksregel som gjør at vilkåret om ikke-mottak av uføretrygd kan bli oppfylt på et senere tidspunkt, dersom all uføretrygd utbetalt etter fylte 62 år blir tilbakebetalt som følge av etteroppgjøret for uføretrygd. NAV kjenner ikke til at denne regelen har vært brukt i AFP privat. Vi har ikke vurdert om NAV kan gi opplysninger som sier noe om muligheten for at dette kan skje i fremtidige etteroppgjør, og ser for oss at bruker heller evt. bør få veiledning om muligheten for å bli omfattet av denne unntaksregelen i avslagsbrevet.
-        - Krever token med maskinporten-scope nav:uforetrygd/tpordningene/harmottattuforeetter62.read
       operationId: harMottattUforeEtter62
       parameters:
         - in: header
@@ -47,8 +48,9 @@ paths:
   /harLopendeVedtakOmUfore:
     post:
       description: |
+        Krever token fra maskinporten med scope **nav:uforetrygd/tpordningene/harlopendevedtakomufore.read**
+
         Gir svar på om personen har et løpende, ikke-avsluttet vedtak om uføretrygd på ønsket AFP-uttakstidspunkt eller senere (uavhengig av om det faktisk er utbetalt noe, og uavhengig av alder). Feltet er relevant for veiledning. Bruker er her i en tidskritisk situasjon der hen må velge mellom AFP og uføretrygd. En mulighet kan være å sette behandling av AFP-søknad på vent, og informere bruker om at de må velge mellom AFP og uføretrygd. Å evt. gi simulering av AFP, og be bruker ta kontakt med NAV for veiledning om uføretrygd og konsekvenser av å si fra seg denne, og informere om at bruker må si fra seg uføretrygden dersom de ønsker å ta ut AFP.
-        - Krever token med maskinporten-scope nav:uforetrygd/tpordningene/harlopendevedtakomufore.read
       operationId: harLopendeVedtakOmUfore
       parameters:
         - in: header
@@ -80,11 +82,13 @@ paths:
   /harUforesoknadUnderBehandling:
     post:
       description: |
+        Krever token fra maskinporten med scope **nav:uforetrygd/tpordningene/haruforesoknadunderbehandling.read**
+        
         - Gir svar på om AFP-søkeren på kall-tidspunktet har en søknad om uføretrygd til behandling hos NAV.
         - Formålet er det samme som for lopendeVedtakOmUfore – å fange opp om bruker kan ha behov for veiledning om valg mellom AFP og uføretrygd.
         - Åpent spørsmål: Ønsker TP-ordningen også å vite om åpent krav om klage/anke på uføretrygd?
         - Per nå vet vi ikke nøyaktig hvilke tilfeller som vil kunne fanges opp her og hvilke som kunne vært relevante, men som faller utenfor. Dette avhenger av hvilke rutiner vi har for når krav om uføretrygd registreres i pensjonssaksbehandlingssystemet, og det har vi ikke ennå sjekket opp. Vi kan evt. undersøke dette.
-        - Krever token med maskinporten-scope nav:uforetrygd/tpordningene/haruforesoknadunderbehandling.read
+      operationId: harUforesoknadUnderBehandling
       parameters:
         - in: header
           name: x-request-id
@@ -115,8 +119,9 @@ paths:
   /uforeperioder:
     post:
       description: |
-        - Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
-        - Krever token med maskinporten-scope nav:uforetrygd/tpordningene/uforeperioder.read
+        Krever token fra maskinporten med scope **nav:uforetrygd/tpordningene/uforeperioder.read**
+        
+        Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
       operationId: uforeperioder
       parameters:
         - in: header
