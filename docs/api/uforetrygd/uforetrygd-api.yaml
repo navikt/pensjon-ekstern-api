@@ -48,7 +48,7 @@ paths:
     post:
       description: |
         Gir svar på om personen har et løpende, ikke-avsluttet vedtak om uføretrygd på ønsket AFP-uttakstidspunkt eller senere (uavhengig av om det faktisk er utbetalt noe, og uavhengig av alder). Feltet er relevant for veiledning. Bruker er her i en tidskritisk situasjon der hen må velge mellom AFP og uføretrygd. En mulighet kan være å sette behandling av AFP-søknad på vent, og informere bruker om at de må velge mellom AFP og uføretrygd. Å evt. gi simulering av AFP, og be bruker ta kontakt med NAV for veiledning om uføretrygd og konsekvenser av å si fra seg denne, og informere om at bruker må si fra seg uføretrygden dersom de ønsker å ta ut AFP.
-        - Krever token med maskinporten-scope uforetrygd/tpordningene/harlopendevedtakomufore.read
+        - Krever token med maskinporten-scope nav:uforetrygd/tpordningene/harlopendevedtakomufore.read
       operationId: harLopendeVedtakOmUfore
       parameters:
         - in: header
