@@ -404,9 +404,9 @@ components:
       title: Person med forhold og ytelser
       type: object
       required:
-        - fNr
+        - fnr
       properties:
-        fNr:
+        fnr:
           type: string
           description: personidentifikator
         forhold:
