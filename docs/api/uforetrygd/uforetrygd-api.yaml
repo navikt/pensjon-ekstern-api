@@ -12,7 +12,7 @@ paths:
       description: |
         Krever token fra maskinporten med scope **nav:uforetrygd/tpordningene/harmottattuforeetter62.read**
         
-        - Gir svar på om det finnes løpende vedtak for uføretrygd (tilbake i tid) for perioden etter at bruker fylte 62 år med netto beregnet uføretrygd > 0.
+        - Gir svar på om det finnes løpende vedtak for uføretrygd (tilbake i tid) for perioden etter måneden bruker fylte 62 år med netto beregnet uføretrygd > 0.
         
         Detaljer:
         
