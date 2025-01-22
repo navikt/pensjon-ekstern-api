@@ -32,6 +32,8 @@ title: PO-Pensjon Ekstern API
 
 * [AFP Privat](api/afpprivat/AfpPrivat.html)
 
+* [AFP Privat harAFPoffentlig](api/afpprivat/harAFPoffentlig.html)
+
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
 
 #### Tjenestepensjon / Samordning

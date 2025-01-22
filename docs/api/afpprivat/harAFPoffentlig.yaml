@@ -1,0 +1,80 @@
+openapi: 3.0.1
+info:
+  title: Pensjon AFP-offentlig
+  description: For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten
+    settes til:`nav:pensjon/v1/afpoffentlig`. Inneholder tjenester for å behandle en AFP-offentlig
+    søknad. Her ved å sjekke om det finnes noe offentlig AFP.
+  version: 1.0.0
+
+servers:
+  - url: https://afp-offentlig-q2.ekstern.dev.nav.no
+  - url: https://pensjon-gw.ekstern.dev.nav.no/tjenestepensjon
+security:
+  - Maskinporten:
+      - nav:pensjon/v1/afpoffentlig
+
+paths:
+  /harAFPoffentlig:
+    get:
+      description: Sjekker hvis søker/person har AFP offentlig
+      operationId: harAFPoffentlig
+      parameters:
+        - name: fnr
+          in: header
+          description: Format - String 11.
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: header
+          description: Format - UUID, correlationId
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanResult'
+      deprecated: false
+  /afpoffentlig/get:
+    get:
+      description: Sjekker hvis søker/person har AFP offentlig med bruk av krakenD
+      operationId: harAFPoffentlig
+      parameters:
+        - name: fnr
+          in: header
+          description: Format - String 11.
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: header
+          description: Format - UUID, correlationId
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanResult'
+      deprecated: false
+components:
+  schemas:
+    BooleanResult:
+      title: Result
+      type: object
+      properties:
+        value:
+          type: boolean
+          description: Informasjon om søker har afp-offentlig (true hvis ja, nei ellers)
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
