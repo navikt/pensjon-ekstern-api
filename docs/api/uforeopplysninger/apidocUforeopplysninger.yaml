@@ -5,7 +5,8 @@ info:
   description: |-
     For å kunne benytte tjenesten må konsumenten autentisere seg gjennom ID-porten Virksomhet og ha avtale med NAV. I tillegg må konsumenten ha samtykke fra bruker og hente et samtykketoken fra Altinns Samtykkeløsning. Disse to tokenene sendes sammen med brukers Fnr/Dnr, fra-og-med dato, samt til-og-med dato som inn-parametere til tjenesten. Tjenesten returnerer uføreopplysninger for ønsket periode så fremt samtykket gjelder for perioden Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database. Bruker kan logge seg inn på nav.no for å lese av disse hendelsene.
     <br/><br/>Påkrevd scope-verdi for bruk av API'et er `nav:helse/v1/uforeopplysninger`.
-    <br/><br/>Altinn tjenestekode og tjenesteutgavekode er `5252_X`, hvor `X` er 2 eller 3.<br>API'et forutsetter at tjenestekodens metadata for `fraOgMed` og `tilOgMed` angir samtykkeperioden der datoene har formatet `dd.MM.yyyy`.
+    <br/><br/>Altinn tjenestekode og tjenesteutgavekode er `5252_X`, hvor `X` er 2 eller 3.
+    <br/>Altinn-API'et forutsetter at tjenestekodens metadata for `fraOgMed` og `tilOgMed` angir samtykkeperioden der datoene har formatet `dd.MM.yyyy`.
     <br/><br/>Klikk [her](./Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.
   contact: {}
 servers:
