@@ -9,6 +9,7 @@ info:
   contact: {}
   version: '1.0'
 servers:
+  - url: https://pensjon-q1-gw.ekstern.dev.nav.no/tjenestepensjon
   - url: https://pensjon-gw.ekstern.dev.nav.no/tjenestepensjon
   - url: https://pensjon-gw.nav.no/tjenestepensjon
 security:
