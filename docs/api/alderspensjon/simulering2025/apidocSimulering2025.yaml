@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
   title: Pensjonssimulator API
-  description: For å kunne bruke tjenestene må scope i autentiseringen mot Maskinporten settes til `nav:pensjonssimulator:simulering` (hvis delegering ikke brukes) eller `nav:pensjon/simulering.read` (hvis delegering brukes). Dette er simuleringstjenester for tjenestepensjonsordninger i offentlig sektor, og benyttes for å kunne simulere alderspensjon fra folketrygden for brukere med tjenestepensjonsforhold.
-  version: v1.1.0
+  description: Dette er simuleringstjenester for tjenestepensjonsordninger i offentlig sektor, og benyttes for å kunne simulere alderspensjon fra folketrygden for brukere med tjenestepensjonsforhold. For å kunne bruke tjenestene må scope i autentiseringen mot Maskinporten settes til `nav:pensjonssimulator:simulering` (hvis delegering ikke brukes) eller `nav:pensjon/simulering.read` (hvis delegering brukes).
+  version: v1.1.1
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no
   - url: https://pensjon-gw.nav.no
@@ -236,6 +236,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UttakInntektSpecV1'
+        arIUtlandetEtter16:
+          type: integer
+          format: int32
     UttakInntektSpecV1:
       required:
         - fraOgMedDato
