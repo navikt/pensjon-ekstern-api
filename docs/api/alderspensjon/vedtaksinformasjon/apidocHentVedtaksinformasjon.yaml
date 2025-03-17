@@ -879,9 +879,6 @@ components:
         inntektBruktIAvkorting:
           description: ''
           type: integer
-        osLinjeIdFk:
-          description: ''
-          type: integer
       required:
         - ytelseskomponentType
     BeregningsinformasjonMinstenivatilleggPensjonistpar:
