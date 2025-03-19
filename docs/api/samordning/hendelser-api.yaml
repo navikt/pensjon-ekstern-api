@@ -271,7 +271,7 @@ components:
           description: Identifiserer brukeren (eks. fnr/dnr)
         vedtakId:
           type: string
-          description: Identifiserer vedtak i fagsystemet(Pesys, Gjenny)
+          description: Identifiserer vedtak. (Alder, Omstillingsstøndad, Arbeidsavklaringspenger)
         samId:
           type: string
           description: Samordning-id tilknyttet vedtaket.
