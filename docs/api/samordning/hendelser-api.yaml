@@ -2,8 +2,7 @@ openapi: 3.0.1
 info:
   title: Pensjon Samordningspliktige hendelser.
   description: |-
-    Hendelseskø for samordningspliktige vedtak (AP, AFP, OMS), og .
-
+    Hendelseskø for samordningspliktige vedtak (AP, AFP, AAP og OMS).
     For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/samordning`
   contact: {}
   version: '1.0'
