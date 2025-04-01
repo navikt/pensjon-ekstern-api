@@ -351,6 +351,7 @@ components:
         - fraOgMedDato
         - garantiPensjonsBeholdning
         - garantiPensjonsNiva
+        - garantitilleggsbeholdning
         - pensjonsBeholdning
       type: object
       properties:
@@ -358,6 +359,9 @@ components:
           type: integer
           format: int32
         garantiPensjonsBeholdning:
+          type: integer
+          format: int32
+        garantitilleggsbeholdning:
           type: integer
           format: int32
         garantiPensjonsNiva:
