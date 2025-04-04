@@ -1,0 +1,276 @@
+openapi: 3.0.1
+info:
+  title: AFP etterfulgt av Alderspensjon API
+  description: Dette er en tjeneste for å simulere folketrygdberegnet AFP etterfulgt av alderspensjon fra folketrygden for personer som er født før 1963, og skal brukes av tjenestepensjonsordninger i offentlig sektor for veiledning. For å kunne bruke tjenestene må scope i autentiseringen mot Maskinporten settes til `nav:pensjonssimulator:simulering` (hvis delegering ikke brukes) eller `nav:pensjon/simulering.read` (hvis delegering brukes).
+  version: v0.93
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no
+  - url: https://pensjon-gw.nav.no
+paths:
+  /pensjonssimulator/v0/simuler-afp-etterfulgt-av-alderspensjon:
+
+    post:
+      tags:
+        - afp-etterfulgt-av-alderspensjon-controller
+      summary: Simuler afp etterfulgt av alderspensjon
+      description: Lager en prognose for utbetaling av afp etterfulgt av alderspensjon.
+      operationId: simulerAfpEtterfulgtAvAlderspensjonV0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AfpEtterfulgtAvAlderspensjonSpecV0'
+        required: true
+      responses:
+        200:
+          description: Simulering av afp etterfulgt av alderspensjon utført.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AfpEtterfulgtAvAlderspensjonResultV0'
+        400:
+          description: Simulering kunne ikke utføres pga. uakseptabel input.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AfpEtterfulgtAvAlderspensjonResultV0'
+      security:
+        - BearerAuthentication: [ ]
+components:
+  schemas:
+    AfpEtterfulgtAvAlderspensjonSpecV0:
+      type: object
+      properties:
+        personId:
+          type: string
+        sivilstandVedPensjonering:
+          type: string
+        uttakFraOgMedDato:
+          type: string
+        fremtidigAarligInntektTilAfpUttak:
+          type: integer
+          format: int32
+        inntektSisteMaanedOver1G:
+          type: boolean
+        fremtidigAarligInntektUnderAfpUttak:
+          type: integer
+          format: int32
+        aarIUtlandetEtter16:
+          type: integer
+          format: int32
+        epsPensjon:
+          type: boolean
+        eps2G:
+          type: boolean
+    AarsakIkkeSuccessV0:
+      type: object
+      properties:
+        statusKode:
+          type: string
+        statusBeskrivelse:
+          type: string
+      required:
+        - statusBeskrivelse
+        - statusKode
+    AfpEtterfulgtAvAlderspensjonResultV0:
+      type: object
+      properties:
+        simuleringSuksess:
+          type: boolean
+        aarsakListeIkkeSuksess:
+          type: array
+          items:
+            "$ref": "#/components/schemas/AarsakIkkeSuccessV0"
+        folketrygdberegnetAfp:
+          "$ref": "#/components/schemas/FolketrygdberegnetAfpV0"
+        alderspensjonFraFolketrygden:
+          type: array
+          items:
+            "$ref": "#/components/schemas/AlderspensjonFraFolketrygdenV0"
+      required:
+        - aarsakListeIkkeSuksess
+        - alderspensjonFraFolketrygden
+        - simuleringSuksess
+    AlderspensjonFraFolketrygdenV0:
+      type: object
+      properties:
+        fraOgMedDato:
+          type: string
+          format: date
+        andelKapittel19:
+          type: number
+          format: double
+        alderspensjonKapittel19:
+          "$ref": "#/components/schemas/AlderspensjonKapittel19V0"
+        andelKapittel20:
+          type: number
+          format: double
+        alderspensjonKapittel20:
+          "$ref": "#/components/schemas/AlderspensjonKapittel20V0"
+        sumMaanedligUtbetaling:
+          type: integer
+          format: int32
+      required:
+        - fraOgMedDato
+        - sumMaanedligUtbetaling
+    AlderspensjonKapittel19V0:
+      type: object
+      properties:
+        grunnpensjon:
+          "$ref": "#/components/schemas/GrunnpensjonV0"
+        tilleggspensjon:
+          "$ref": "#/components/schemas/TilleggspensjonV0"
+        pensjonstillegg:
+          "$ref": "#/components/schemas/PensjonstilleggV0"
+        forholdstall:
+          type: number
+          format: double
+      required:
+        - forholdstall
+        - grunnpensjon
+        - pensjonstillegg
+        - tilleggspensjon
+    AlderspensjonKapittel20V0:
+      type: object
+      properties:
+        inntektspensjon:
+          "$ref": "#/components/schemas/InntektspensjonV0"
+        garantipensjon:
+          "$ref": "#/components/schemas/GarantipensjonV0"
+        delingstall:
+          type: number
+          format: double
+      required:
+        - delingstall
+        - garantipensjon
+        - inntektspensjon
+    FolketrygdberegnetAfpV0:
+      type: object
+      properties:
+        fraOgMedDato:
+          type: string
+          format: date
+        tidligereInntekt:
+          type: integer
+          format: int32
+        afpGrad:
+          type: integer
+          format: int32
+        grunnpensjon:
+          "$ref": "#/components/schemas/GrunnpensjonV0"
+        tilleggspensjon:
+          "$ref": "#/components/schemas/TilleggspensjonV0"
+        saertillegg:
+          "$ref": "#/components/schemas/SaertilleggV0"
+        maanedligAfpTillegg:
+          type: integer
+          format: int32
+        sumMaanedligUtbetaling:
+          type: integer
+          format: int32
+      required:
+        - afpGrad
+        - fraOgMedDato
+        - grunnpensjon
+        - maanedligAfpTillegg
+        - sumMaanedligUtbetaling
+    GarantipensjonV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        garantipensjonssats:
+          type: number
+          format: double
+        trygdetid:
+          type: integer
+          format: int32
+      required:
+        - maanedligUtbetaling
+        - trygdetid
+    GrunnpensjonV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        grunnbeloep:
+          type: integer
+          format: int32
+        grunnpensjonsats:
+          type: number
+          format: double
+        trygdetid:
+          type: integer
+          format: int32
+      required:
+        - grunnbeloep
+        - maanedligUtbetaling
+        - trygdetid
+    InntektspensjonV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        pensjonsbeholdningFoerUttak:
+          type: integer
+          format: int32
+      required:
+        - maanedligUtbetaling
+        - pensjonsbeholdningFoerUttak
+    PensjonstilleggV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        minstepensjonsnivaaSats:
+          type: number
+          format: double
+      required:
+        - maanedligUtbetaling
+    SaertilleggV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        saertilleggsats:
+          type: number
+          format: double
+      required:
+        - maanedligUtbetaling
+    TilleggspensjonV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        grunnbeloep:
+          type: integer
+          format: int32
+        sluttpoengTall:
+          type: number
+          format: double
+        antallPoengaarTilOgMed1991:
+          type: integer
+          format: int32
+        antallPoengaarFraOgMed1992:
+          type: integer
+          format: int32
+      required:
+        - antallPoengaarFraOgMed1992
+        - antallPoengaarTilOgMed1991
+        - grunnbeloep
+        - maanedligUtbetaling
+        - sluttpoengTall
+  securitySchemes:
+    BearerAuthentication:
+      type: http
+      description: >-
+        NAV-intern informasjon: For å anskaffe et token i dev kan du bruke
+        https://pensjon-maskinporten-test.intern.dev.nav.no/
+      scheme: bearer
+      bearerFormat: JWT

@@ -12,9 +12,11 @@ title: PO-Pensjon Ekstern API
 
 * [Beregn Folketrygdbeholdning](api/alderspensjon/folketrygdbeholdning/folketrygdbeholdning.html)
 
-* [Simuler Alderspensjon V3](api/alderspensjon/simulering/simulerAlderspensjonV3.html)
+* [Simuler Alderspensjon V3 (for personer født før 1963)](api/alderspensjon/simulering/simulerAlderspensjonV3.html)
+  
+* [Simuler AFP etterfulgt av Alderspensjon (for personer født før 1963)](api/alderspensjon/simuler-afp-etterfulgt-av-alder/afpogalder.html)
 
-* [Simuler Alderspensjon 2025](api/alderspensjon/simulering2025/simulering2025.html)
+* [Simuler Alderspensjon 2025 (for personer født fra og med 1963)](api/alderspensjon/simulering2025/simulering2025.html)
 
 * [Hent Vedtaksinformasjon](api/alderspensjon/vedtaksinformasjon/hentVedtaksinformasjon.html)
 
