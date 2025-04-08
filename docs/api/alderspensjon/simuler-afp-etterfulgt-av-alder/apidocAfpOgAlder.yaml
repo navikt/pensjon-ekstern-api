@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: AFP etterfulgt av Alderspensjon API
   description: Dette er en tjeneste for å simulere folketrygdberegnet AFP etterfulgt av alderspensjon fra folketrygden for personer som er født før 1963, og skal brukes av tjenestepensjonsordninger i offentlig sektor for veiledning. For å kunne bruke tjenestene må scope i autentiseringen mot Maskinporten settes til `nav:pensjonssimulator:simulering` (hvis delegering ikke brukes) eller `nav:pensjon/simulering.read` (hvis delegering brukes).
-  version: v0.93
+  version: v0.94
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no
   - url: https://pensjon-gw.nav.no
