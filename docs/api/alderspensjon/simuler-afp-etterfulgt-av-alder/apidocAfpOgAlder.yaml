@@ -42,25 +42,34 @@ components:
       type: object
       properties:
         personId:
+          description: Typisk fnr
           type: string
         sivilstandVedPensjonering:
+          description: Sivilstand ved uttakstidspunkt
           type: string
         uttakFraOgMedDato:
+          description: Tidspunkt for start av uttak av AFP
           type: string
         fremtidigAarligInntektTilAfpUttak:
+          description: Forventet inntekt frem til uttak av AFP
           type: integer
           format: int32
         inntektSisteMaanedOver1G:
+          description: Man må ha pensjonsgivende inntekt på uttakstidspunktet som minst tilsvarer en årsinntekt på 1G for å kunne få AFP
           type: boolean
         fremtidigAarligInntektUnderAfpUttak:
+          description: Man kan ta ut AFP i offentlig sektor samtidig som man jobber. Da vil AFP-beløpet reduseres. Når man søker AFP, oppgir man hvor mye man forventer å tjene samtidig som man får AFP. AFP blir redusert ut fra dette.
           type: integer
           format: int32
         aarIUtlandetEtter16:
+          description: Brukes som basis for utregning av trygdetid
           type: integer
           format: int32
         epsPensjon:
+          description: Angir om ektefelle/partner/samboer vil motta pensjon ved uttak av AFP
           type: boolean
         eps2G:
+          description: Angir om ektefelle/partner/samboer vil ha en årlig inntekt over 2G ved uttak av AFP
           type: boolean
     AarsakIkkeSuccessV0:
       type: object
@@ -150,12 +159,21 @@ components:
         fraOgMedDato:
           type: string
           format: date
-        tidligereInntekt:
+        beregnetTidligereInntekt:
+          description: Har betydning for beregning av utbetalingsgrad for AFP. Når man oppgir hva man forventer å tjene, beregnes en inntekstgrad. Det er hvor hvor mye forventet inntekt er av tidligere inntekt. Inntekstgraden brukes til å regne ut en utbetalingsgrad, altså hvor mye man skal ha utbetalt i AFP. Regelverket sier at pensjonen ikke kan være mer enn 70 prosent av tidligere inntekt. Tallet for "tidligere inntekt" beregnes ved å ta gjennomsnittet av de tre beste av de fem siste årene før året før uttak av AFP.
+          type: integer
+          format: int32
+        fremtidigAarligInntektTilAfpUttak:
+          description: Antatt inntekt frem til uttak brukt som grunnlag for beregning
           type: integer
           format: int32
         afpGrad:
+          description: Utbetalingsgrad, regnes ut fra beregnetTidligereInntekt og fremtidigAarligInntektTilAfpUttak, afpGrad = 100% - fremtidigAarligInntektTilAfpUttak/beregnetTidligereInntekt
           type: integer
           format: int32
+        afpAvkortetTil70Prosent:
+          description: Angir om 70%-regel har blitt anvendt, regelverket sier at pensjonen ikke kan være mer enn 70 prosent av beregnetTidligereInntekt. Foreløpig ikke implementert i APIet, så vil returnere false inntil videre.
+          type: boolean
         grunnpensjon:
           "$ref": "#/components/schemas/GrunnpensjonV0"
         tilleggspensjon:
@@ -166,6 +184,7 @@ components:
           type: integer
           format: int32
         sumMaanedligUtbetaling:
+          description: Utledet felt, summen av månedlig utebetaling av grunnpensjon, tilleggspensjon, særtillegg og afp-tillegg
           type: integer
           format: int32
       required:
