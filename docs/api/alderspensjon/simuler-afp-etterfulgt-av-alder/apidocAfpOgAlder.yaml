@@ -172,7 +172,7 @@ components:
           type: integer
           format: int32
         afpAvkortetTil70Prosent:
-          description: Angir om 70%-regel har blitt anvendt, regelverket sier at pensjonen ikke kan være mer enn 70 prosent av beregnetTidligereInntekt. Foreløpig ikke implementert i APIet, så vil returnere false inntil videre.
+          description: Angir om 70%-regel har blitt anvendt, regelverket sier at pensjonen ikke kan være mer enn 70 prosent av beregnetTidligereInntekt.
           type: boolean
         grunnpensjon:
           "$ref": "#/components/schemas/GrunnpensjonV0"
