@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Pensjon AFP-offentlig
   description: For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten
-    settes til:`nav:pensjon/v1/afpoffentlig`. Inneholder tjenester for å behandle en AFP-offentlig
+    settes til:`nav:pensjon/v1/afpoffentlig`. Inneholder tjenester for å behandle en AFP-privat
     søknad. Her ved å sjekke om det finnes noe offentlig AFP.
   version: 1.0.0
 
@@ -63,7 +63,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BooleanResult'
-      deprecated: false
+      deprecated: true
 components:
   schemas:
     BooleanResult:
