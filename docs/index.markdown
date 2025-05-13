@@ -44,6 +44,8 @@ title: PO-Pensjon Ekstern API
 
 * [Samordningspliktige Hendelser](api/samordning/hendelser-api.html)
 
+* [Refusjonskrav](api/refusjonskrav/refusjonskrav.html)
+
 #### Felles
 
 * [AFP Beholdningsgrunnlag](api/afpgrunnlagbeholdning/afp-grunnlag-beholdning.html)

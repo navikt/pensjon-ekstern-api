@@ -1,0 +1,100 @@
+openapi: 3.0.1
+info:
+  title: Pensjon Refusjonskrav for samordningspliktige vedtak.
+  description: |-
+    REST-tjeneste for refusjon tilknyttet samordningspliktige vedtak.
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/refusjonskrav`
+  contact: {}
+  version: '1.0'
+servers:
+  - url: https://pensjon-refusjonskrav.ekstern.dev.nav.no
+security:
+  - Maskinporten: []
+paths:
+  /api/refusjonskrav:
+    post:
+      summary: Oppretter refusjonskrav
+      description: Endepunktet oppretter refusjonskrav med liste av periodiserte beløp.
+      operationId: RefusjonskravPost
+      requestBody:
+        required: true
+        description: En ytelse
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/refusjonskrav'
+      responses:
+        '201':
+          description: OK
+        '400':
+          description: Ulovlig trekk
+        '401':
+          description: Ugyldig access token
+        '403':
+          description: Ikke tilgang til person eller feil scope på token fra Maskinporten
+        '404':
+          description: Elementet finnes ikke.
+        '409':
+          description: Allerede registrert eller utenfor frist/Funksjonell feil.
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    refusjonskrav:
+      title: Refusjonskrav request body
+      type: object
+      required:
+        - pid
+        - tpNr
+        - samId
+        - refusjonskrav
+        - periodisertBelopListe
+      properties:
+        pid:
+          type: string
+          description: Unik personidentifikasjon
+        tpNr:
+          type: string
+          description: Tjenestepensjonsordingens nummer
+        samId:
+          type: number
+          description: Samordningsid
+          format: int64
+        refusjonskrav:
+          type: boolean
+          description: True hvis refusjonskrav
+        periodisertBelopListe:
+          type: array
+          description: Liste av periodiserte beløp, evt tom liste.
+          items:
+            $ref: '#/components/schemas/refusjonstrekk'
+    refusjonstrekk:
+      title: refusjonstrekk
+      type: object
+      description: Et refusjonstrekk
+      required:
+        - belop
+        - kravstillersRef
+        - datoFom
+        - datoTom
+      properties:
+        belop:
+          type: number
+          description: beløpet som inngår i refusjonstrekket
+        kravstillersRef:
+          type: string
+          description: Kravstillers referanse
+        datoFom:
+          type: string
+          description: Dato fra og med.
+          format: date-time
+        datoTom:
+          type: string
+          description: Dato til og med.
+          format: date-time
+  securitySchemes:
+    Maskinporten:
+      type: http
+      description: "Bearer token utstedt av Maskinporten."
+      scheme: Bearer
+      in: header
