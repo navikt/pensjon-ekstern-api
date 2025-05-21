@@ -7,8 +7,9 @@ info:
 
     Tjenesten returnerer den samordningspliktige informasjonen om en brukers vedtak.
 servers:
-  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/vedtak/informasjon
-  - url: https://pensjon-gw.nav.no/pensjon/vedtak/informasjon
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/vedtak/
+  - url: https://pensjon-q1-gw.ekstern.dev.nav.no/pensjon/vedtak/
+  - url: https://pensjon-gw.nav.no/pensjon/vedtak/
 paths:
   /informasjon:
     get:
@@ -876,9 +877,6 @@ components:
               description: ''
               type: string
         inntektBruktIAvkorting:
-          description: ''
-          type: integer
-        osLinjeIdFk:
           description: ''
           type: integer
       required:

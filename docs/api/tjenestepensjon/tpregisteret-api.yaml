@@ -5,10 +5,11 @@ info:
     API for å behandle forhold mellom person og ordning for eksterne samhandlere,
     og innsyn i registrerte tjenestepensjonsforhold og ytelser.
 
-    Påkrevd scope-verdi: `nav:pensjon/v1/tpregisteret`
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/tpregisteret`
   contact: {}
   version: '1.0'
 servers:
+  - url: https://pensjon-q1-gw.ekstern.dev.nav.no/tjenestepensjon/q1
   - url: https://pensjon-gw.ekstern.dev.nav.no/tjenestepensjon
   - url: https://pensjon-gw.nav.no/tjenestepensjon
 security:
@@ -21,7 +22,9 @@ paths:
       tags:
         - Person
       summary: Forholdsliste
-      description: Henter ut liste av forhold.
+      description: Henter ut liste av forhold. Forhold(ene) inkluderer liste av registrerte ytelser. <br>
+        Hvis ordningen har et forhold på person så vil endepunktet svare med en liste av alle forhold på personen.<br> 
+        Hvis ordningen ikke har et forhold på person så vil endepunktet svare 403, for da har ikke ordningen tilgang til personen.
       operationId: ForholdlisteGet
       parameters:
         - name: fnr
@@ -72,7 +75,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller Ordning ikke funnet
       deprecated: false
@@ -84,6 +87,7 @@ paths:
       description: Opprett et forhold på eksisterende ordning for person.
       operationId: OpprettForholdPut
       requestBody:
+        required: true
         description: Et forhold
         content:
           application/json:
@@ -112,7 +116,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller Ordning ikke funnet
       deprecated: false
@@ -146,11 +150,13 @@ paths:
               schema:
                 type: object
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten.
           content:
             application/json;charset=UTF-8:
               schema:
                 type: object
+        '404':
+          description: Person eller forhold ikke funnet
       deprecated: false
   /forhold/{ordning}/datoSistOpptjening/update:
     patch:
@@ -189,7 +195,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller forhold ikke funnet
       deprecated: false
@@ -223,7 +229,7 @@ paths:
         '401':
           description: Ugyldig access token
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller forhold ikke funnet
       deprecated: false
@@ -262,6 +268,8 @@ paths:
                 $ref: '#/components/schemas/samhandlerYtelse'
         '401':
           description: Ugyldig access token
+        '403':
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller forhold ikke funnet
         '409':
@@ -303,11 +311,13 @@ paths:
               schema:
                 type: object
         '403':
-          description: Ikke tilgang til forhold eller feil scope på token fra Maskinporten.
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten.
           content:
             application/json;charset=UTF-8:
               schema:
                 type: object
+        '404':
+          description: Person, forhold eller ytelse ikke funnet
       deprecated: false
   /forhold/{ordning}/ytelse/{ytelseid}/put:
     put:
@@ -350,6 +360,8 @@ paths:
                 $ref: '#/components/schemas/samhandlerYtelse'
         '401':
           description: Ugyldig access token
+        '403':
+          description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person, Ytelse eller forhold ikke funnet
       deprecated: false
@@ -393,9 +405,9 @@ components:
       title: Person med forhold og ytelser
       type: object
       required:
-        - fNr
+        - fnr
       properties:
-        fNr:
+        fnr:
           type: string
           description: personidentifikator
         forhold:
@@ -406,6 +418,8 @@ components:
     samhandlerForhold:
       title: Forhold med ytelser
       type: object
+      required:
+        - tpNr
       properties:
         kilde:
           type: string
@@ -413,7 +427,7 @@ components:
         tpNr:
           type: string
           description: Tjenestepensjonsnummer
-        tpOrdingNavn:
+        tpOrdningNavn:
           type: string
           readOnly: true
           description: Navn på tjenestepensjonsordning.
@@ -516,9 +530,9 @@ components:
           items:
             $ref: '#/components/schemas/changeStampDateDto'
         ytelseId:
-          type: string
-          description: Unik Id for ytelse
-          format: long
+          type: integer
+          description: Unik Id for ytelse, av format long.
+          format: int64
           readOnly: true
     innsynForhold:
       title: InnsynForhold

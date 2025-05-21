@@ -1,0 +1,82 @@
+openapi: 3.0.1
+info:
+  title: Pensjon AFP-offentlig
+  description: "Denne tjenesten brukes av Fellesordningen for AFP for å behandle søknader om AFP i privat sektor.
+  Tjenesten sjekker om personer har tidsbegrenset AFP i offentlig sektor i alderen 62 til 67 år for årskull 1962 og tidligere.
+  Den sjekker også for medlemmer i Pensjonsordningen for apotekvirksomhet.\n\n 
+  Tjenesten sjekker om personer mottar AFP på tidspunktet tjenesten kalles, den sjekker også om det har vært innvilget AFP tidligere og som er opphørt.
+  For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/v1/afpoffentlig`"
+  version: 1.0.0
+
+servers:
+  - url: https://afp-offentlig-q2.ekstern.dev.nav.no
+  - url: https://pensjon-gw.ekstern.dev.nav.no/tjenestepensjon
+security:
+  - Maskinporten:
+      - nav:pensjon/v1/afpoffentlig
+
+paths:
+  /harAFPoffentlig:
+    get:
+      description: Sjekker hvis søker/person har AFP offentlig
+      operationId: harAFPoffentlig
+      parameters:
+        - name: fnr
+          in: header
+          description: Format - String 11.
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: header
+          description: Format - UUID, correlationId
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanResult'
+      deprecated: false
+  /afpoffentlig/get:
+    get:
+      description: Sjekker hvis søker/person har AFP offentlig med bruk av krakenD
+      operationId: harAFPoffentlig
+      parameters:
+        - name: fnr
+          in: header
+          description: Format - String 11.
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: header
+          description: Format - UUID, correlationId
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanResult'
+      deprecated: true
+components:
+  schemas:
+    BooleanResult:
+      title: Result
+      type: object
+      properties:
+        value:
+          type: boolean
+          description: Informasjon om søker har afp-offentlig (true hvis ja, nei ellers)
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

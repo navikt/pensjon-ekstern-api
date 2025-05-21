@@ -2,9 +2,8 @@ openapi: 3.0.1
 info:
   title: Pensjon Samordningspliktige hendelser.
   description: |-
-    Hendelseskø for samordningspliktige vedtak (AP, AFP, OMS), og .
-
-    Påkrevd scope-verdi: `nav:pensjon/v1/samordning`
+    Hendelseskø for samordningspliktige vedtak (AP, AFP, AAP og OMS).
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/samordning`
   contact: {}
   version: '1.0'
 servers:
@@ -271,7 +270,7 @@ components:
           description: Identifiserer brukeren (eks. fnr/dnr)
         vedtakId:
           type: string
-          description: Identifiserer vedtak i fagsystemet(Pesys, Gjenny)
+          description: Identifiserer vedtak. (Alder, Omstillingsstøndad, Arbeidsavklaringspenger)
         samId:
           type: string
           description: Samordning-id tilknyttet vedtaket.
@@ -284,7 +283,7 @@ components:
           description: Dato til og med.
           format: date
     ytelseshendelse:
-      title: Ytelsesendelse
+      title: Ytelseshendelse
       type: object
       description: En hendelse tilknyttet tjenstepensjonsytelse.
       properties:
@@ -306,6 +305,17 @@ components:
         ytelseType:
           type: string
           description: Ytelsen er av denne typen.
+        datoFom:
+          type: string
+          description: Dato fra og med.
+          format: date
+          nullable: false
+        datoTom:
+          type: string
+          description: Dato til og med.
+          format: date
+          nullable: true
+
     hendelseTypeCode:
       type: string
       description: Type hendelse for en ytelse.
@@ -313,16 +323,6 @@ components:
         - SLETTING
         - OPPHOR
         - OPPRETT
-    datoFom:
-      type: string
-      description: Dato fra og med.
-      format: date
-      nullable: false
-    datoTom:
-      type: string
-      description: Dato til og med.
-      format: date
-      nullable: true
   securitySchemes:
     Maskinporten:
       type: http

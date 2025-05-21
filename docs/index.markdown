@@ -12,9 +12,11 @@ title: PO-Pensjon Ekstern API
 
 * [Beregn Folketrygdbeholdning](api/alderspensjon/folketrygdbeholdning/folketrygdbeholdning.html)
 
-* [Simuler Alderspensjon V3](api/alderspensjon/simulering/simulerAlderspensjonV3.html)
+* [Simuler Alderspensjon V3 (for personer født før 1963)](api/alderspensjon/simulering/simulerAlderspensjonV3.html)
+  
+* [Simuler AFP etterfulgt av Alderspensjon (for personer født før 1963)](api/alderspensjon/simuler-afp-etterfulgt-av-alder/afpogalder.html)
 
-* [Simuler Alderspensjon 2025](api/alderspensjon/simulering2025/simulering2025.html)
+* [Simuler Alderspensjon 2025 (for personer født fra og med 1963)](api/alderspensjon/simulering2025/simulering2025.html)
 
 * [Hent Vedtaksinformasjon](api/alderspensjon/vedtaksinformasjon/hentVedtaksinformasjon.html)
 
@@ -32,6 +34,8 @@ title: PO-Pensjon Ekstern API
 
 * [AFP Privat](api/afpprivat/AfpPrivat.html)
 
+* [AFP Privat harAFPoffentlig](api/afpprivat/harAFPoffentlig.html)
+
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
 
 #### Tjenestepensjon / Samordning
@@ -39,6 +43,8 @@ title: PO-Pensjon Ekstern API
 * [Tjenestepensjon](api/tjenestepensjon/tjenestepensjon.html)
 
 * [Samordningspliktige Hendelser](api/samordning/hendelser-api.html)
+
+* [Refusjonskrav](api/refusjonskrav/refusjonskrav.html)
 
 #### Felles
 
