@@ -224,7 +224,7 @@ components:
       properties:
         fnr:
           type: string
-          description: Fødselsnummer/personidentifikator
+          description: Fødselsnummer/personidentifikator.
           example: "12345678910"
         fornavn:
           type: string
@@ -258,26 +258,24 @@ components:
           description: Telefonnummer til søker
         prioritet:
           type: number
-          description: Prioritet på telefonnummer til søker
+          description: Ønsket prioriteringsrekkefølge for kontakt, hvis søker er registrert med flere telefonnumre
         landkode:
           type: string
           description: Landkode på telefonnummer til søker
     Adresse:
       title: Adresse
       type: object
-      description: Adressen til adressaten
+      description: Adresse
       properties:
         adresselinje1:
           type: string
-          description: Adressen til adressaten
+          description: Første linje i adressen
         adresselinje2:
           type: string
-          description: Dersom personen har en annen adresse enn der vedkommende er
-            registrert bosatt
+          description: Eventuell andre linje i adressatens adresse (kan f.eks. være leilighetsnummer, eller C/O-adresse)
         adresselinje3:
           type: string
-          description: Dersom personen har en annen adresse enn der vedkommende er
-            registrert bosatt.
+          description: Eventuell tredje linje i adressatens adresse
         postnummer:
           type: string
           description: Postnummer
@@ -308,7 +306,7 @@ components:
     Soknad:
       title: Søknad
       type: object
-      description: Inneholder informasjon fra søknaden
+      description: Inneholder informasjon fra søknaden. Opplysningene er oppgitt av søker.
       properties:
         harHattPermisjonSistePeriode:
           type: boolean
@@ -339,7 +337,7 @@ components:
           description: Informasjon om ansattelsestype, heltid, deltid, midlertidig eller sesongansatt.
         opphoerArsak:
           type: string
-          description: Informasjon om årsak til opphør av arbeidsforhold.
+          description: Informasjon om årsak til opphør av arbeidsforhold. Mulige verdier er "Pensjonert", "Oppsigelse", "Annet"
         harStillingUnder20ProsentEtter53Ar:
           type: boolean
           description: Informasjon om søkers stillingprosent har vært under 20% etter fylt 53 år.
@@ -355,7 +353,7 @@ components:
     Arbeidsgiver:
       title: Arbeidsgiver
       type: object
-      description: Informasjon om arbeidsgiver
+      description: Informasjon om arbeidsgiver. Opplysningene er hentet fra Aa-registeret og søker
       properties:
         navn:
           type: string
