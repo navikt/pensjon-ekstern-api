@@ -228,21 +228,21 @@ components:
           example: "12345678910"
         fornavn:
           type: string
-          description: Fornavn til søker
+          description: Fornavn til søker. Deles ikke for brukere med diskresjonskode 6/7
           example: Gylden
         mellomnavn:
           type: string
-          description: Mellomnavn til søker
+          description: Mellomnavn til søker. Deles ikke for brukere med diskresjonskode 6/7
           example: Dal
         etternavn:
           type: string
-          description: Etternavn til søker
+          description: Etternavn til søker. Deles ikke for brukere med diskresjonskode 6/7
           example: Maskin
         telefonnr:
           $ref: '#/components/schemas/Telefonnummer'
         epost:
           type: string
-          description: Epost til søker
+          description: Epost til søker. Opplysningen er hentet fra søker. Deles ikke for brukere med diskresjonskode 6/7
         kontaktAdresse:
           $ref: '#/components/schemas/Adresse'
         diskresjonskode:
@@ -255,17 +255,17 @@ components:
       properties:
         nummer:
           type: string
-          description: Telefonnummer til søker
+          description: Telefonnummer til søker. Deles ikke for brukere med diskresjonskode 6/7
         prioritet:
           type: number
-          description: Ønsket prioriteringsrekkefølge for kontakt, hvis søker er registrert med flere telefonnumre
+          description: Ønsket prioriteringsrekkefølge for kontakt, hvis søker er registrert med flere telefonnumre. Deles ikke for brukere med diskresjonskode 6/7
         landkode:
           type: string
-          description: Landkode på telefonnummer til søker
+          description: Landkode på telefonnummer til søker. Deles ikke for brukere med diskresjonskode 6/7
     Adresse:
       title: Adresse
       type: object
-      description: Adresse. Opplysningene kommer fra Kartverket og Matrikkelen
+      description: Adresse. Opplysningene kommer fra Kartverket og Matrikkelen. Deles ikke for brukere med diskresjonskode 6/7
       properties:
         adresselinje1:
           type: string
@@ -353,7 +353,7 @@ components:
     Arbeidsgiver:
       title: Arbeidsgiver
       type: object
-      description: Informasjon om arbeidsgiver. Opplysningene er hentet fra Aa-registeret og søker
+      description: Informasjon om arbeidsgiver. Opplysningene er hentet fra Aa-registeret og søker. Deles ikke for brukere med diskresjonskode 6/7
       properties:
         navn:
           type: string
