@@ -40,6 +40,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BooleanResult'
+        401:
+          description: Ugyldig aksesstoken til tjenesten.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Get401ApplicationJsonResponse'
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Get403ApplicationJsonResponse'
       deprecated: false
   /afpoffentlig/get:
     get:
