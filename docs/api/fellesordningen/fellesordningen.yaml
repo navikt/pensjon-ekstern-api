@@ -220,7 +220,7 @@ components:
     PersonInfo:
       title: PersonInfo
       type: object
-      description: Inneholder personinformasjon
+      description: Inneholder personinformasjon. Opplysningene er hentet fra Folkeregisteret og søker.
       properties:
         fnr:
           type: string
@@ -247,11 +247,11 @@ components:
           $ref: '#/components/schemas/Adresse'
         diskresjonskode:
           type: string
-          description: Informasjon om søker har diskresjonskode 6/7
+          description: Informasjon om søker har diskresjonskode 6/7. Opplysningene kommer fra Folkeregisteret
     Telefonnummer:
       title: Telefonnummer
       type: object
-      description: Telefonnummer til søker
+      description: Telefonnummer til søker. Opplysningene kommer fra søker
       properties:
         nummer:
           type: string
@@ -265,7 +265,7 @@ components:
     Adresse:
       title: Adresse
       type: object
-      description: Adresse
+      description: Adresse. Opplysningene kommer fra Kartverket og Matrikkelen
       properties:
         adresselinje1:
           type: string
@@ -288,7 +288,7 @@ components:
     KravInfo:
       title: KravInfo
       type: object
-      description: Inneholder kravinformasjon
+      description: Inneholder kravinformasjon. Opplysningene kommer fra Nav
       properties:
         oensketVirkningFom:
           type: string
