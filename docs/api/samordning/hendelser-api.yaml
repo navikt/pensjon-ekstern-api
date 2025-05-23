@@ -2,7 +2,9 @@ openapi: 3.0.1
 info:
   title: Pensjon Samordningspliktige hendelser.
   description: |-
-    Hendelseskø for samordningspliktige vedtak (AP, AFP, AAP og OMS).
+    - Hendelseskø for samordningspliktige vedtak fattet av NAV(AP, AFP, AAP og OMS).
+    - Hendelseskø for ytelser registrert av tjenestepensjonordningene.
+    
     For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/samordning`
   contact: {}
   version: '1.0'
@@ -95,7 +97,7 @@ paths:
       deprecated: true
   /hendelser/vedtak:
     get:
-      summary: Les samordningspliktige hendelser.
+      summary: Les samordningspliktige hendelser for vedtak fatatt av NAV.
       description: "Endepunktet returnerer en feed som inneholder hendelser om vedtak fattet av NAV, som påvirker en angitt tjenestepensjonsordning. 
                     \n\nFeeden benytter paginering, som deler opp feeden i sider basert på angitt antall hendelser per side. Hver side inneholder en liste med _hendelser_, samt en _nextUrl_ som peker til neste side av feeden. Siste side er nådd når _nextUrl_ er _null_.
                     \n\nSekvensnummer kan benyttes som offset for feeden. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_."
