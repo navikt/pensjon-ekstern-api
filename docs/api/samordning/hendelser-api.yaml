@@ -98,9 +98,11 @@ paths:
   /hendelser/vedtak:
     get:
       summary: Les samordningspliktige hendelser for vedtak fatatt av NAV.
-      description: "Endepunktet returnerer en feed som inneholder hendelser om vedtak fattet av NAV, som påvirker en angitt tjenestepensjonsordning. 
-                    \n\nFeeden benytter paginering, som deler opp feeden i sider basert på angitt antall hendelser per side. Hver side inneholder en liste med _hendelser_, samt en _nextUrl_ som peker til neste side av feeden. Siste side er nådd når _nextUrl_ er _null_.
-                    \n\nSekvensnummer kan benyttes som offset for feeden. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_."
+      description: |-
+        Endepunktet returnerer en liste av hendelser for vedtak fattet av NAV, som påvirker en angitt tjenestepensjonsordning.\
+        Listen benytter paginering, som er delt opp i sider basert på angitt antall hendelser per side.\
+        En side inneholder en liste med _hendelser_, samt en _nextUrl_ som peker til neste side. Siste side er nådd når _nextUrl_ er _null_.\
+        Sekvensnummer kan benyttes som offset for listen. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_."
       operationId: HendelserVedtakGet
       parameters:
         - name: tpnr
@@ -179,9 +181,11 @@ paths:
   /hendelser/ytelser:
     get:
       summary: Les hendelser for tjenestepensjonordning.
-      description: "Endepunktet returnerer en liste av hendelser for ytelser som er registrert hos andre tjenestepensjonsordninger.
-                    \n\Listen benytter paginering, som deler opp listen i sider basert på angitt antall hendelser per side. Hver side inneholder en liste med hendelser_ for ytelser, samt en _nextUrl_ som peker til neste side av listen. Siste side er nådd når _nextUrl_ er _null_.
-                    \n\nSekvensnummer kan benyttes som offset for listen. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_."
+      description: |- 
+        Endepunktet returnerer en liste av hendelser for ytelser som er registrert hos andre tjenestepensjonsordninger.\
+        Listen benytter paginering, som deler opp listen i sider basert på angitt antall hendelser per side.\
+        En side inneholder en liste med hendelser_ for ytelser, samt en _nextUrl_ som peker til neste side av listen. Siste side er nådd når _nextUrl_ er _null_.\
+        Sekvensnummer kan benyttes som offset for listen. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_.
       operationId: HendelserYtelserGet
       parameters:
         - name: tpnr
