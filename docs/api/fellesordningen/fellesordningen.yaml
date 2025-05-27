@@ -49,7 +49,11 @@ paths:
                 $ref: '#/components/schemas/SokereDto'
   /uforeperioder:
     get:
-      description: Henter uføreperioder 3 år tilbake i tid fra ønsket virkningstidspunkt. Ønsket virkningsdato forventes å stemme overens med det som er registrert hos NAV. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
+      description: "Henter uføreperioder for gitte brukere. <br>
+       Ønsket virkningsdato forventes å stemme overens med det som er registrert hos NAV. <br>
+       Tjenesten leverer de komplette uføreperiodene som var gyldige dagen etter tre år før ønsket virkningsdato og alle påfølgende perioder. <br>
+       Dette inkluderer perioder som var påstartet før denne datoen så lenge til-og-med-datoen er senere eller åpen. <br>
+       For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`."
       operationId: afpprivatHentUforeperioder
       parameters:
         - name: Authorization
