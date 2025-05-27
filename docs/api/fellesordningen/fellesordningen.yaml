@@ -10,7 +10,7 @@ servers:
 paths:
   /sokere:
     get:
-      description: Henter søkere mellom gitte tidspunkt. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
+      description: Henter søkere som har en AFP Privat-sak hos Nav med ventestatus mellom gitte tidspunkt.For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til:`nav:pensjon/afpprivat/fellesordningen`.
       operationId: hentAfpPrivatSokere
       parameters:
         - name: Authorization
