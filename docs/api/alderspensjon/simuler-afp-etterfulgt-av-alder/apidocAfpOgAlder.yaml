@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: AFP etterfulgt av Alderspensjon API
   description: Dette er en tjeneste for å simulere folketrygdberegnet AFP etterfulgt av alderspensjon fra folketrygden for personer som er født før 1963, og skal brukes av tjenestepensjonsordninger i offentlig sektor for veiledning. For å kunne bruke tjenestene må scope i autentiseringen mot Maskinporten settes til `nav:pensjonssimulator:simulering` (hvis delegering ikke brukes) eller `nav:pensjon/simulering.read` (hvis delegering brukes).
-  version: v0.94
+  version: v0.95
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no
   - url: https://pensjon-gw.nav.no
@@ -51,7 +51,7 @@ components:
           description: Tidspunkt for start av uttak av AFP
           type: string
         fremtidigAarligInntektTilAfpUttak:
-          description: Forventet inntekt frem til uttak av AFP
+          description: Forventet inntekt frem til uttak av AFP, optional. Dersom den ikke sendes med i input, blir siste lignet inntekt for person brukt som fremtidig inntekt frem til uttak i beregning av simulert pensjon
           type: integer
           format: int32
         inntektSisteMaanedOver1G:
@@ -131,11 +131,7 @@ components:
           "$ref": "#/components/schemas/TilleggspensjonV0"
         pensjonstillegg:
           "$ref": "#/components/schemas/PensjonstilleggV0"
-        forholdstall:
-          type: number
-          format: double
       required:
-        - forholdstall
         - grunnpensjon
         - pensjonstillegg
         - tilleggspensjon
@@ -146,11 +142,7 @@ components:
           "$ref": "#/components/schemas/InntektspensjonV0"
         garantipensjon:
           "$ref": "#/components/schemas/GarantipensjonV0"
-        delingstall:
-          type: number
-          format: double
       required:
-        - delingstall
         - garantipensjon
         - inntektspensjon
     FolketrygdberegnetAfpV0:
@@ -163,8 +155,11 @@ components:
           description: Har betydning for beregning av utbetalingsgrad for AFP. Når man oppgir hva man forventer å tjene, beregnes en inntekstgrad. Det er hvor hvor mye forventet inntekt er av tidligere inntekt. Inntekstgraden brukes til å regne ut en utbetalingsgrad, altså hvor mye man skal ha utbetalt i AFP. Regelverket sier at pensjonen ikke kan være mer enn 70 prosent av tidligere inntekt. Tallet for "tidligere inntekt" beregnes ved å ta gjennomsnittet av de tre beste av de fem siste årene før året før uttak av AFP.
           type: integer
           format: int32
-        fremtidigAarligInntektTilAfpUttak:
-          description: Antatt inntekt frem til uttak brukt som grunnlag for beregning
+        sisteLignetInntektBrukt:
+          description: true dersom fremtidigAarligInntektTilAfpUttak ikke er fylt ut i request. Siste lignet inntekt er da brukt som antatt inntekt frem til uttak i grunnlag for beregning av simulert AFP.
+          type: boolean
+        sisteLignetInntektAar:
+          description: Optional. Årstallet for siste lignet inntekt brukt som antatt inntekt frem til uttak i grunnlag for beregning av simulert AFP. Kun relevant dersom sisteLignetInntektBrukt er true.
           type: integer
           format: int32
         afpGrad:
@@ -199,9 +194,9 @@ components:
         maanedligUtbetaling:
           type: integer
           format: int32
-        garantipensjonssats:
-          type: number
-          format: double
+        garantipensjonsbeholdningForUttak:
+          type: integer
+          format: int32
         trygdetid:
           type: integer
           format: int32
@@ -256,9 +251,6 @@ components:
         maanedligUtbetaling:
           type: integer
           format: int32
-        saertilleggsats:
-          type: number
-          format: double
       required:
         - maanedligUtbetaling
     TilleggspensjonV0:
