@@ -939,6 +939,12 @@ components:
             apKap19UtenGJR:
               description: ''
               type: integer
+            referansebelop:
+              description: 'Differanse mellom AP med og uten GJR, justert til 100% uttaksgrad.'
+              type: integer
+            metode:
+              description: 'Beregningstekniske metoden som er benyttet for å fastsette gjenlevendetillegget. Verdier REFERANSEBELOP, VIDEREFOR'
+              type: string
     Inntektspensjon:
       title: Inntektspensjon
       description: ''
