@@ -3,7 +3,7 @@ info:
   title: Pensjon Refusjonskrav for samordningspliktige vedtak.
   description: |-
     REST-tjeneste for refusjon tilknyttet samordningspliktige vedtak.
-    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/refusjonskrav`
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/refusjonskrav`
   contact: {}
   version: '1.0'
 servers:
