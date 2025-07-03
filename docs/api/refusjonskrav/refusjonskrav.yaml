@@ -38,6 +38,16 @@ paths:
           description: Allerede registrert eller utenfor frist/Funksjonell feil.
         '500':
           description: Internal server error
+  /api/ping:
+    get:
+      summary: Ping test
+      description: Endepunktet tester kontakt med refusjonkrav.
+      operationId: PingGet
+      responses:
+        '200':
+          description: OK, med "true" i body
+        '401':
+          description: Ugyldig access token
 components:
   schemas:
     refusjonskrav:
