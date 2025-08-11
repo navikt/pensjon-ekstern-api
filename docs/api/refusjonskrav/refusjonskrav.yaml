@@ -97,11 +97,13 @@ components:
         datoFom:
           type: string
           description: Dato fra og med.
-          format: date-time
+          pattern: '\d{4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{2}:\d{2}\.\d{3}'
+          example: '2025-01-01T00:00:00.000'
         datoTom:
           type: string
           description: Dato til og med.
-          format: date-time
+          pattern: '\d{4}-\d{1,2}-\d{1,2}T\d{1,2}:\d{2}:\d{2}\.\d{3}'
+          example: '2025-01-01T00:00:00.000'
   securitySchemes:
     Maskinporten:
       type: http
