@@ -228,12 +228,12 @@ components:
         maanedligUtbetaling:
           type: integer
           format: int32
-        pensjonsbeholdningFoerUttak:
+        pensjonsbeholdningForUttak:
           type: integer
           format: int32
       required:
         - maanedligUtbetaling
-        - pensjonsbeholdningFoerUttak
+        - pensjonsbeholdningForUttak
     PensjonstilleggV0:
       type: object
       properties:
