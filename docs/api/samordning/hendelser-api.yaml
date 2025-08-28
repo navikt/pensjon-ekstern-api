@@ -270,6 +270,11 @@ components:
       properties:
         ytelsesType:
           type: string
+          enum:
+            - ALDER
+            - AFP
+            - OMS
+            - AAP
           description: Samordningspliktig ytelse knyttet til hendelse
         identifikator:
           type: string
@@ -310,6 +315,18 @@ components:
             $ref: '#/components/schemas/hendelseTypeCode'
         ytelseType:
           type: string
+          enum:
+            - ALDER
+            - UFORE
+            - GJENLEVENDE
+            - BARN
+            - AFP
+            - OPPSATT_BTO_PEN
+            - SAERALDER
+            - PAASLAGSPENSJON
+            - OVERGANGSTILLEGG
+            - BETINGET_TP
+            - LIVSVARIG_AFP
           description: Ytelsen er av denne typen.
         datoFom:
           type: string
