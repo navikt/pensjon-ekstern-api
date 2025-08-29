@@ -11,9 +11,11 @@ servers:
 paths:
   /opptjening/afp/beholdningsgrunnlag/beregn:
     post:
-      description: "Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt uttaksDato. Krever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.beregn.read. Dersom man bruker delegert tilgang via Altinn er scope: nav:pensjonopptjening/afpbeholdningsgrunnlag/beregn.read"
+      description: "Beregner AFP beholdningsgrunnlag for angitt personId fra og med angitt uttaksDato. 
+                    \n\nKrever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.beregn.read. 
+                    \nDersom man bruker delegert tilgang via Altinn er scope: nav:pensjonopptjening/afpbeholdningsgrunnlag/beregn.read"
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       operationId: beregn
       parameters:
         - in: header
@@ -64,9 +66,19 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /opptjening/afp/beholdningsgrunnlag/simuler:
     post:
-      description: "Simulerer beholdningsgrunnlag med tilvekst fra oppgitte inntekter fra og med angitt dato. NB! Grunnlag med fraOgMedDato senere enn siste kjente grunnbeløpsendring vil ikke være lønnsvekstregulert - se https://www.nav.no/grunnbelopet. Krever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.simuler.read. Dersom man bruker delegert tilgang via Altinn er scope: nav:pensjonopptjening/afpbeholdningsgrunnlag/simuler.read"
+      description: "Simulerer beholdningsgrunnlag med tilvekst fra oppgitte inntekter fra og med angitt dato.
+                    \n\nOppgitte inntekter håndteres ulikt avhengig av hvilke opplysninger som er tilgjengelig i NAVs opptjeningsregister. 
+                    \nGenerelt gjelder det at inntekter som er registrert i NAVs opptjeningsregister trumfer eventuelle inntekter oppgitt som 'FremtidigInntekt' for samme inntektsår - dette er valgt for å gi et så korrekt resultat som mulig.
+                    \nOpptjeningsregisterets inntekter vil alltid benyttes for alle inntektsår frem til og med det siste inntektsåret som er godskrevet brukers pensjonsbeholdning (inneværende år - 2).
+                    \nDersom opptjeningsregisteret har mottatt inntekter fra Skatteetaten for år senere enn (inneværende år - 2) vil disse også trumfe eventeulle inntekter oppgitt som 'FremtidigInntekt' for det samme året, selv om inntektene enda ikke er godskrevet brukers pensjonsbeholdning.
+                    \nKonsekvensen av dette er at det spesielt er to scenarioer man må være klar over:
+                    \n  1. Oppgitt 'FremtidigInntekt' for (inneværende år - 1) vil ikke bli benyttet i simuleringen dersom opptjeningsregisteret allerede har registrert inntekter for dette året. Her vil opptjeningsregisterets inntekter benyttes.
+                    \n  2. Dersom man kun oppgir 'FremtidigInntekt' fra og med inneværende år eller senere, vil det kunne oppstå et hull i inntektene dersom opptjeningsregisteret ikke har mottatt inntekter fra Skatteetaten for (inneværende år - 1).                          
+                    \nnNB! Grunnlag med fraOgMedDato senere enn siste kjente grunnbeløpsendring vil ikke være lønnsvekstregulert - se https://www.nav.no/grunnbelopet.                                    
+                    \n\n\nKrever audience-restricted maskinportentoken for ressurs: https://server-url/opptjening/afp/beholdningsgrunnlag og scope: nav:pensjonopptjening:ekstern.afp.beholdningsgrunnlag.simuler.read. 
+                    \nDersom man bruker delegert tilgang via Altinn er scope: nav:pensjonopptjening/afpbeholdningsgrunnlag/simuler.read"
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       operationId: simuler
       parameters:
         - in: header
