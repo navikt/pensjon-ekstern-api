@@ -10,7 +10,7 @@ info:
   contact: {}
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no
-  - url: https://pensjon-q1-gw.ekstern.dev.nav.no
+  - url: https://pensjon-q2-gw.ekstern.dev.nav.no
   - url: https://pensjon-gw.nav.no
 paths:
   /simuler/alderspensjon/v3:
