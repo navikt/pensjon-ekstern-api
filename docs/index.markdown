@@ -2,9 +2,9 @@
 # Feel free to add content and custom Front Matter to this file.
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-title: PO-Pensjon Ekstern API
+title: Pensjon Ekstern-API
 ---
-## PO-Pensjon Ekstern API
+## Pensjon ekstern-API
 
 ### Eksponerte tjenester
 
@@ -26,11 +26,11 @@ title: PO-Pensjon Ekstern API
 
 * [Uføreopplysninger](api/uforeopplysninger/uforeopplysninger.html)
 
-* [Uføretrygd ifbm AFP offentlig](api/uforetrygd/Uforetrygd.html)
+* [Uføretrygd ifbm AFP i offentlig sektor](api/uforetrygd/Uforetrygd.html)
 
 * [Er ung ufør](api/ufore/erungufor/ErUngUfor.html)
 
-#### AFP Privat
+#### AFP i privat sektor
 
 * [AFP Privat](api/afpprivat/AfpPrivat.html)
 
@@ -38,7 +38,7 @@ title: PO-Pensjon Ekstern API
 
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
 
-#### Tjenestepensjon / Samordning
+#### Tjenestepensjon/samordning
 
 * [Tjenestepensjon](api/tjenestepensjon/tjenestepensjon.html)
 
