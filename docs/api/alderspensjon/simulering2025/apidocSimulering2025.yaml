@@ -1,18 +1,38 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: Pensjonssimulator API
-  description: Dette er simuleringstjenester for tjenestepensjonsordninger i offentlig sektor, og benyttes for å kunne simulere alderspensjon fra folketrygden for brukere med tjenestepensjonsforhold. For å kunne bruke tjenestene må scope i autentiseringen mot Maskinporten settes til `nav:pensjonssimulator:simulering` (hvis delegering ikke brukes) eller `nav:pensjon/simulering.read` (hvis delegering brukes).
-  version: v1.1.1
+  description: >-
+    Tjenester for simulering av pensjon.\
+
+    Klienter må autentisere seg via Maskinporten – se hver enkelt tjeneste for
+    hvilket *scope* som skal brukes.\
+    
+    I testmiljøet ("dev") må det benyttes syntetiske personer fra Test-Norge.
+  version: v1.2.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no
   - url: https://pensjon-gw.nav.no
 paths:
-  /pensjonssimulator/v4/simuler-alderspensjon:
+  /api/v4/simuler-alderspensjon:
     post:
       tags:
-        - alderspensjon-controller
-      summary: Simuler alderspensjon
-      description: Lager en prognose for utbetaling av alderspensjon
+        - Alderspensjon V4
+      summary: Simuler alderspensjon for personer født i 1963 eller senere.
+      description: >-
+        Lager en prognose for utbetaling av alderspensjon for personer født i
+        1963 eller senere.\
+        
+        Dette er en tjeneste for offentlige tjenestepensjonsordninger.\
+        
+        Personen må være medlem av tjenestepensjonsordningen.\
+
+        \
+
+        *Scope*:\
+
+        – Uten delegering: **nav:pensjonssimulator:simulering**\
+
+        – Med delegering: **nav:pensjon/simulering.read**
       operationId: simulerAlderspensjon
       requestBody:
         content:
@@ -21,22 +41,128 @@ paths:
               $ref: '#/components/schemas/AlderspensjonSpecV4'
         required: true
       responses:
-        200:
-          description: Simulering av alderspensjon utført
+        '200':
+          description: Simulering av alderspensjon utført.
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/AlderspensjonResultV4'
-        400:
-          description: Simulering kunne ikke utføres pga. uakseptabel input
+        '400':
+          description: >-
+            Simulering kunne ikke utføres pga. uakseptable inndata. Det kan
+            være:\
+
+            (1) helt uttak ikke etter gradert uttak,\
+
+            (2) inntekt ikke 1. i måneden,\
+
+            (3) inntekter har lik startdato, \
+
+            (4) negativ inntekt.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AlderspensjonResultV4'
       security:
         - BearerAuthentication: []
-  /pensjonssimulator/v1/tidligst-mulig-uttak:
+  /api/v3/simuler-alderspensjon:
     post:
       tags:
-        - uttak-controller
+        - Alderspensjon V3
+      summary: Simuler alderspensjon for personer født før 1963.
+      description: >-
+        Lager en prognose for utbetaling av alderspensjon for personer født før 1963.\
+        
+        Dette er en tjeneste for offentlige tjenestepensjonsordninger.\
+        
+        Personen må være medlem av tjenestepensjonsordningen.\
+
+        \
+
+        *Scope*: **nav:pensjon/v3/alderspensjon**
+      operationId: simulerAlderspensjonV3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlderspensjonSpecV3'
+        required: true
+      responses:
+        '200':
+          description: Simulering av alderspensjon utført.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AlderspensjonResultV3'
+        '400':
+          description: >-
+            Simulering kunne ikke utføres pga. uakseptable inndata. Det kan
+            være:\
+
+            (1) helt uttak ikke etter gradert uttak,\
+
+            (2) inntekt ikke 1. i måneden,\
+
+            (3) inntekter har lik startdato, \
+
+            (4) negativ inntekt.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AlderspensjonResultV3'
+      security:
+        - BearerAuthentication: []
+  /api/v3/simuler-alderspensjon-privat-afp:
+    post:
+      tags:
+        - Alderspensjon og privat AFP (kun test)
+      summary: Simuler alderspensjon og privat AFP
+      description: >-
+        Lager en prognose for utbetaling av alderspensjon og privat avtalefestet
+        pensjon.\
+        
+        Dette er en tjeneste for pensjonsportaler.\
+        
+        *Foreløpig tilbys denne tjenesten kun i testmiljø ("dev") med syntetiske personer fra Test-Norge.*\
+
+        \
+
+        *Scope*: **nav:pensjon/simulering/alderspensjonogprivatafp**
+      operationId: simulerAlderspensjonOgPrivatAfpV3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlderspensjonOgPrivatAfpSpecV3'
+        required: true
+      responses:
+        '200':
+          description: Simulering av alderspensjon og privat AFP utført.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV3'
+        '400':
+          description: Simulering kunne ikke utføres pga. uakseptable inndata.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV3'
+      security:
+        - BearerAuthentication: []
+  /api/v1/tidligst-mulig-uttak:
+    post:
+      tags:
+        - Uttak
       summary: Tidligst mulig uttak
-      description: Finner tidligst mulig dato for uttak av alderspensjon
+      description: |-
+        Finner den tidligst mulige dato for uttak av alderspensjon.\
+        Dette er en tjeneste for offentlige tjenestepensjonsordninger.\
+        Personen må være medlem av tjenestepensjonsordningen.\
+        \
+        *Scope*:\
+        – Uten delegering: **nav:pensjonssimulator:simulering**\
+        – Med delegering: **nav:pensjon/simulering.read**
       operationId: tidligstMuligUttak
       requestBody:
         content:
@@ -53,12 +179,19 @@ paths:
                 $ref: '#/components/schemas/TidligstMuligUttakResultV1'
       security:
         - BearerAuthentication: []
-  /pensjonssimulator/v1/simuler-folketrygdbeholdning:
+  /api/v1/simuler-folketrygdbeholdning:
     post:
       tags:
-        - beholdning-controller
+        - Beholdning
       summary: Simuler folketrygdbeholdning
-      description: Lager en prognose for pensjonsbeholdning i folketrygden
+      description: |-
+        Lager en prognose for pensjonsbeholdning i folketrygden.\
+        Dette er en tjeneste for offentlige tjenestepensjonsordninger.\
+        Personen må være medlem av tjenestepensjonsordningen.\
+        \
+        *Scope*:\
+        – Uten delegering: **nav:pensjonssimulator:simulering**\
+        – Med delegering: **nav:pensjon/simulering.read**
       operationId: simulerFolketrygdbeholdning
       requestBody:
         content:
@@ -75,12 +208,57 @@ paths:
                 $ref: '#/components/schemas/FolketrygdBeholdningResultV1'
       security:
         - BearerAuthentication: []
-  /pensjonssimulator/v1/status:
+  /api/v0/simuler-afp-etterfulgt-av-alderspensjon:
+    post:
+      tags:
+        - Offentlig AFP etterfulgt av alderspensjon
+      summary: Simuler AFP etterfulgt av alderspensjon
+      description: >-
+        Lager en prognose for utbetaling av avtalefestet pensjon (AFP) i
+        offentlig sektor, etterfulgt av alderspensjon.\
+        
+        Dette er en tjeneste for offentlige tjenestepensjonsordninger.\
+        
+        Personen må være medlem av tjenestepensjonsordningen.\
+
+        \
+
+        *Scope*:\
+
+        – Uten delegering: **nav:pensjonssimulator:simulering**\
+
+        – Med delegering: **nav:pensjon/simulering.read**
+      operationId: simulerAfpEtterfulgtAvAlderspensjonV0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AfpEtterfulgtAvAlderspensjonSpecV0'
+        required: true
+      responses:
+        '200':
+          description: Simulering av AFP etterfulgt av alderspensjon utført.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AfpEtterfulgtAvAlderspensjonResultV0'
+        '400':
+          description: Simulering kunne ikke utføres pga. uakseptabel input.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AfpEtterfulgtAvAlderspensjonResultV0'
+      security:
+        - BearerAuthentication: []
+  /api/v1/status:
     get:
       tags:
-        - status-controller
-      summary: Status
-      description: Sjekker status for applikasjonens helsetilstand
+        - Tjenestestatus
+      summary: Status for tjenestene
+      description: >-
+        Sjekker om tjenestene er oppe og kjører.\
+
+        Krever intet *scope*.
       operationId: status
       responses:
         '200':
@@ -130,10 +308,6 @@ components:
         fraOgMedDato:
           type: string
     AlderspensjonFraFolketrygdenV4:
-      required:
-        - delytelseListe
-        - fraOgMedDato
-        - uttaksgrad
       type: object
       properties:
         fraOgMedDato:
@@ -146,12 +320,11 @@ components:
         uttaksgrad:
           type: integer
           format: int32
-    AlderspensjonResultV4:
       required:
-        - aarsakListeIkkeSuksess
-        - alderspensjon
-        - harUttak
-        - simuleringSuksess
+        - delytelseListe
+        - fraOgMedDato
+        - uttaksgrad
+    AlderspensjonResultV4:
       type: object
       properties:
         simuleringSuksess:
@@ -168,9 +341,12 @@ components:
           $ref: '#/components/schemas/ForslagVedForLavOpptjeningV4'
         harUttak:
           type: boolean
-    ForslagVedForLavOpptjeningV4:
       required:
-        - heltUttakFraOgMedDato
+        - aarsakListeIkkeSuksess
+        - alderspensjon
+        - harUttak
+        - simuleringSuksess
+    ForslagVedForLavOpptjeningV4:
       type: object
       properties:
         gradertUttak:
@@ -178,10 +354,9 @@ components:
         heltUttakFraOgMedDato:
           type: string
           format: date
-    GradertUttakV4:
       required:
-        - fraOgMedDato
-        - uttaksgrad
+        - heltUttakFraOgMedDato
+    GradertUttakV4:
       type: object
       properties:
         fraOgMedDato:
@@ -190,10 +365,10 @@ components:
         uttaksgrad:
           type: integer
           format: int32
-    PensjonDelytelseV4:
       required:
-        - belop
-        - pensjonsType
+        - fraOgMedDato
+        - uttaksgrad
+    PensjonDelytelseV4:
       type: object
       properties:
         pensjonsType:
@@ -201,21 +376,338 @@ components:
         belop:
           type: integer
           format: int32
-    PensjonSimuleringStatusV4:
       required:
-        - statusBeskrivelse
-        - statusKode
+        - belop
+        - pensjonsType
+    PensjonSimuleringStatusV4:
       type: object
       properties:
         statusKode:
           type: string
         statusBeskrivelse:
           type: string
-    TidligstMuligUttakSpecV1:
       required:
-        - fodselsdato
-        - heltUttakFraOgMedDato
-        - personId
+        - statusBeskrivelse
+        - statusKode
+    AlderspensjonSpecV3:
+      type: object
+      properties:
+        fnr:
+          type: string
+        sivilstandVedPensjonering:
+          type: string
+          enum:
+            - ENKE
+            - GIFT
+            - GJES
+            - GJPA
+            - GJSA
+            - GLAD
+            - 'NULL'
+            - PLAD
+            - REPA
+            - SAMB
+            - SEPA
+            - SEPR
+            - SKIL
+            - SKPA
+            - UGIF
+        forsteUttak:
+          $ref: '#/components/schemas/UttaksperiodeSpecV3'
+        heltUttak:
+          $ref: '#/components/schemas/UttaksperiodeSpecV3'
+        arIUtlandetEtter16:
+          type: integer
+          format: int32
+        epsPensjon:
+          type: boolean
+        eps2G:
+          type: boolean
+        fremtidigInntektListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/InntektSpecV3'
+        simulerMedAfpPrivat:
+          type: boolean
+      required:
+        - fnr
+        - forsteUttak
+        - sivilstandVedPensjonering
+    InntektSpecV3:
+      type: object
+      properties:
+        arligInntekt:
+          type: integer
+          format: int32
+        fomDato:
+          type: string
+          format: date-time
+      required:
+        - arligInntekt
+        - fomDato
+    UttaksperiodeSpecV3:
+      type: object
+      properties:
+        datoFom:
+          type: string
+          format: date-time
+        grad:
+          type: integer
+          format: int32
+      required:
+        - datoFom
+        - grad
+    AlderspensjonFraFolketrygdenResultV3:
+      type: object
+      properties:
+        datoFom:
+          type: string
+        delytelser:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelytelseResultV3'
+        uttaksgrad:
+          type: integer
+          format: int32
+    AlderspensjonResultV3:
+      type: object
+      properties:
+        pensjonsperioder:
+          type: array
+          items:
+            $ref: '#/components/schemas/PensjonsperiodeResultV3'
+        simuleringsdataListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimuleringsdataResultV3'
+        pensjonsbeholdningsperioder:
+          type: array
+          items:
+            $ref: '#/components/schemas/PensjonsbeholdningPeriodeResultV3'
+        alderspensjonFraFolketrygden:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlderspensjonFraFolketrygdenResultV3'
+        harUttak:
+          type: boolean
+        harTidligereUttak:
+          type: boolean
+        afpPrivatBeholdningVedUttak:
+          type: integer
+          format: int32
+        sisteGyldigeOpptjeningsAr:
+          type: integer
+          format: int32
+      required:
+        - harTidligereUttak
+        - harUttak
+    DelytelseResultV3:
+      type: object
+      properties:
+        pensjonstype:
+          type: string
+        belop:
+          type: integer
+          format: int32
+    GarantipensjonsnivaaResultV3:
+      type: object
+      properties:
+        belop:
+          type: number
+          format: double
+        satsType:
+          type: string
+        sats:
+          type: number
+          format: double
+        tt_anv:
+          type: integer
+          format: int32
+    PensjonsbeholdningPeriodeResultV3:
+      type: object
+      properties:
+        pensjonsbeholdning:
+          type: number
+          format: double
+        garantipensjonsbeholdning:
+          type: number
+          format: double
+        garantitilleggsbeholdning:
+          type: number
+          format: double
+        datoFom:
+          type: string
+        garantipensjonsniva:
+          $ref: '#/components/schemas/GarantipensjonsnivaaResultV3'
+    PensjonsperiodeResultV3:
+      type: object
+      properties:
+        arligUtbetaling:
+          type: integer
+          format: int32
+        datoFom:
+          type: string
+    SimuleringsdataResultV3:
+      type: object
+      properties:
+        poengArTom1991:
+          type: integer
+          format: int32
+        poengArFom1992:
+          type: integer
+          format: int32
+        sluttpoengtall:
+          type: number
+          format: double
+        anvendtTrygdetid:
+          type: integer
+          format: int32
+        basisgp:
+          type: number
+          format: double
+        basistp:
+          type: number
+          format: double
+        basispt:
+          type: number
+          format: double
+        forholdstallUttak:
+          type: number
+          format: double
+        delingstallUttak:
+          type: number
+          format: double
+        uforegradVedOmregning:
+          type: integer
+          format: int32
+        datoFom:
+          type: string
+    AlderspensjonOgPrivatAfpSpecV3:
+      type: object
+      properties:
+        personident:
+          type: string
+        sivilstatusVedPensjonering:
+          type: string
+          enum:
+            - ENKE
+            - GIFT
+            - GJES
+            - GJPA
+            - GJSA
+            - GLAD
+            - 'NULL'
+            - PLAD
+            - REPA
+            - SAMB
+            - SEPA
+            - SEPR
+            - SKIL
+            - SKPA
+            - UGIF
+        foersteUttak:
+          $ref: '#/components/schemas/ApOgPrivatAfpUttakSpecV3'
+        heltUttak:
+          $ref: '#/components/schemas/ApOgPrivatAfpUttakSpecV3'
+        aarligInntektFoerUttak:
+          type: integer
+          format: int32
+        antallInntektsaarEtterHeltUttak:
+          type: integer
+          format: int32
+        aarIUtlandetEtter16:
+          type: integer
+          format: int32
+        harEpsPensjon:
+          type: boolean
+        harEpsPensjonsgivendeInntektOver2G:
+          type: boolean
+        simulerPrivatAfp:
+          type: boolean
+      required:
+        - foersteUttak
+        - personident
+        - sivilstatusVedPensjonering
+    ApOgPrivatAfpUttakSpecV3:
+      type: object
+      properties:
+        fomDato:
+          type: string
+          format: date
+        grad:
+          type: integer
+          format: int32
+        aarligInntekt:
+          type: integer
+          format: int32
+      required:
+        - fomDato
+        - grad
+    AlderspensjonOgPrivatAfpResultV3:
+      type: object
+      properties:
+        alderspensjonsperioder:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApOgPrivatAfpAlderspensjonsperiodeResultV3'
+        privatAfpPerioder:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApOgPrivatAfpPrivatAfpPeriodeResultV3'
+        harNaavaerendeUttak:
+          type: boolean
+        harTidligereUttak:
+          type: boolean
+      required:
+        - alderspensjonsperioder
+        - harNaavaerendeUttak
+        - harTidligereUttak
+        - privatAfpPerioder
+    ApOgPrivatAfpAlderspensjonsperiodeResultV3:
+      type: object
+      properties:
+        alder:
+          type: integer
+          format: int32
+        beloep:
+          type: integer
+          format: int32
+        datoFom:
+          type: string
+        uttaksperiode:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApOgPrivatAfpUttaksperiodeResultV3'
+      required:
+        - alder
+        - beloep
+        - datoFom
+        - uttaksperiode
+    ApOgPrivatAfpPrivatAfpPeriodeResultV3:
+      type: object
+      properties:
+        alder:
+          type: integer
+          format: int32
+        beloep:
+          type: integer
+          format: int32
+      required:
+        - alder
+        - beloep
+    ApOgPrivatAfpUttaksperiodeResultV3:
+      type: object
+      properties:
+        startmaaned:
+          type: integer
+          format: int32
+        uttaksgrad:
+          type: integer
+          format: int32
+      required:
+        - startmaaned
+        - uttaksgrad
+    TidligstMuligUttakSpecV1:
       type: object
       properties:
         personId:
@@ -239,9 +731,10 @@ components:
         arIUtlandetEtter16:
           type: integer
           format: int32
-    UttakInntektSpecV1:
       required:
-        - fraOgMedDato
+        - fodselsdato
+        - personId
+    UttakInntektSpecV1:
       type: object
       properties:
         arligInntekt:
@@ -250,10 +743,9 @@ components:
         fraOgMedDato:
           type: string
           format: date
-    TidligstMuligUttakFeilV1:
       required:
-        - beskrivelse
-        - type
+        - fraOgMedDato
+    TidligstMuligUttakFeilV1:
       type: object
       properties:
         type:
@@ -264,9 +756,10 @@ components:
             - TEKNISK_FEIL
         beskrivelse:
           type: string
-    TidligstMuligUttakResultV1:
       required:
-        - tidligstMuligeUttakstidspunktListe
+        - beskrivelse
+        - type
+    TidligstMuligUttakResultV1:
       type: object
       properties:
         tidligstMuligeUttakstidspunktListe:
@@ -275,10 +768,9 @@ components:
             $ref: '#/components/schemas/TidligstMuligUttakV1'
         feil:
           $ref: '#/components/schemas/TidligstMuligUttakFeilV1'
-    TidligstMuligUttakV1:
       required:
-        - tidligstMuligeUttaksdato
-        - uttaksgrad
+        - tidligstMuligeUttakstidspunktListe
+    TidligstMuligUttakV1:
       type: object
       properties:
         uttaksgrad:
@@ -287,9 +779,10 @@ components:
         tidligstMuligeUttaksdato:
           type: string
           format: date
-    BeholdningInntektSpecV1:
       required:
-        - fraOgMedDato
+        - tidligstMuligeUttaksdato
+        - uttaksgrad
+    BeholdningInntektSpecV1:
       type: object
       properties:
         arligInntekt:
@@ -297,10 +790,9 @@ components:
           format: int32
         fraOgMedDato:
           type: string
-    FolketrygdBeholdningSpecV1:
       required:
-        - personId
-        - uttaksdato
+        - fraOgMedDato
+    FolketrygdBeholdningSpecV1:
       type: object
       properties:
         personId:
@@ -318,21 +810,19 @@ components:
           type: boolean
         eps2G:
           type: boolean
-    FolketrygdBeholdningResultV1:
       required:
-        - pensjonsBeholdningsPeriodeListe
+        - personId
+        - uttaksdato
+    FolketrygdBeholdningResultV1:
       type: object
       properties:
         pensjonsBeholdningsPeriodeListe:
           type: array
           items:
             $ref: '#/components/schemas/PensjonsbeholdningPeriodeV1'
-    GarantipensjonNivaaV1:
       required:
-        - anvendtTrygdetid
-        - belop
-        - sats
-        - satsType
+        - pensjonsBeholdningsPeriodeListe
+    GarantipensjonNivaaV1:
       type: object
       properties:
         belop:
@@ -346,13 +836,12 @@ components:
         anvendtTrygdetid:
           type: integer
           format: int32
-    PensjonsbeholdningPeriodeV1:
       required:
-        - fraOgMedDato
-        - garantiPensjonsBeholdning
-        - garantiPensjonsNiva
-        - garantitilleggsbeholdning
-        - pensjonsBeholdning
+        - anvendtTrygdetid
+        - belop
+        - sats
+        - satsType
+    PensjonsbeholdningPeriodeV1:
       type: object
       properties:
         pensjonsBeholdning:
@@ -369,18 +858,253 @@ components:
         fraOgMedDato:
           type: string
           format: date
-    StatusV1:
       required:
-        - status
+        - fraOgMedDato
+        - garantiPensjonsBeholdning
+        - garantiPensjonsNiva
+        - garantitilleggsbeholdning
+        - pensjonsBeholdning
+    AfpEtterfulgtAvAlderspensjonSpecV0:
+      type: object
+      properties:
+        personId:
+          type: string
+        sivilstandVedPensjonering:
+          type: string
+        uttakFraOgMedDato:
+          type: string
+        fremtidigAarligInntektTilAfpUttak:
+          type: integer
+          format: int32
+        inntektSisteMaanedOver1G:
+          type: boolean
+        fremtidigAarligInntektUnderAfpUttak:
+          type: integer
+          format: int32
+        aarIUtlandetEtter16:
+          type: integer
+          format: int32
+        epsPensjon:
+          type: boolean
+        eps2G:
+          type: boolean
+    AarsakIkkeSuccessV0:
+      type: object
+      properties:
+        statusKode:
+          type: string
+        statusBeskrivelse:
+          type: string
+      required:
+        - statusBeskrivelse
+        - statusKode
+    AfpEtterfulgtAvAlderspensjonResultV0:
+      type: object
+      properties:
+        simuleringSuksess:
+          type: boolean
+        aarsakListeIkkeSuksess:
+          type: array
+          items:
+            $ref: '#/components/schemas/AarsakIkkeSuccessV0'
+        folketrygdberegnetAfp:
+          $ref: '#/components/schemas/FolketrygdberegnetAfpV0'
+        alderspensjonFraFolketrygden:
+          type: array
+          items:
+            $ref: '#/components/schemas/AlderspensjonFraFolketrygdenV0'
+      required:
+        - aarsakListeIkkeSuksess
+        - alderspensjonFraFolketrygden
+        - simuleringSuksess
+    AlderspensjonFraFolketrygdenV0:
+      type: object
+      properties:
+        fraOgMedDato:
+          type: string
+          format: date
+        andelKapittel19:
+          type: number
+          format: double
+        alderspensjonKapittel19:
+          $ref: '#/components/schemas/AlderspensjonKapittel19V0'
+        andelKapittel20:
+          type: number
+          format: double
+        alderspensjonKapittel20:
+          $ref: '#/components/schemas/AlderspensjonKapittel20V0'
+        sumMaanedligUtbetaling:
+          type: integer
+          format: int32
+      required:
+        - fraOgMedDato
+        - sumMaanedligUtbetaling
+    AlderspensjonKapittel19V0:
+      type: object
+      properties:
+        grunnpensjon:
+          $ref: '#/components/schemas/GrunnpensjonV0'
+        tilleggspensjon:
+          $ref: '#/components/schemas/TilleggspensjonV0'
+        pensjonstillegg:
+          $ref: '#/components/schemas/PensjonstilleggV0'
+      required:
+        - grunnpensjon
+        - pensjonstillegg
+        - tilleggspensjon
+    AlderspensjonKapittel20V0:
+      type: object
+      properties:
+        inntektspensjon:
+          $ref: '#/components/schemas/InntektspensjonV0'
+        garantipensjon:
+          $ref: '#/components/schemas/GarantipensjonV0'
+      required:
+        - garantipensjon
+        - inntektspensjon
+    FolketrygdberegnetAfpV0:
+      type: object
+      properties:
+        fraOgMedDato:
+          type: string
+          format: date
+        beregnetTidligereInntekt:
+          type: integer
+          format: int32
+        sisteLignetInntektBrukt:
+          type: boolean
+        sisteLignetInntektAar:
+          type: integer
+          format: int32
+        afpGrad:
+          type: integer
+          format: int32
+        afpAvkortetTil70Prosent:
+          type: boolean
+        grunnpensjon:
+          $ref: '#/components/schemas/GrunnpensjonV0'
+        tilleggspensjon:
+          $ref: '#/components/schemas/TilleggspensjonV0'
+        saertillegg:
+          $ref: '#/components/schemas/SaertilleggV0'
+        maanedligAfpTillegg:
+          type: integer
+          format: int32
+        sumMaanedligUtbetaling:
+          type: integer
+          format: int32
+      required:
+        - afpAvkortetTil70Prosent
+        - afpGrad
+        - fraOgMedDato
+        - grunnpensjon
+        - maanedligAfpTillegg
+        - sisteLignetInntektBrukt
+        - sumMaanedligUtbetaling
+    GarantipensjonV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        garantipensjonsbeholdningForUttak:
+          type: integer
+          format: int32
+        trygdetid:
+          type: integer
+          format: int32
+      required:
+        - maanedligUtbetaling
+        - trygdetid
+    GrunnpensjonV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        grunnbeloep:
+          type: integer
+          format: int32
+        grunnpensjonsats:
+          type: number
+          format: double
+        trygdetid:
+          type: integer
+          format: int32
+      required:
+        - grunnbeloep
+        - maanedligUtbetaling
+        - trygdetid
+    InntektspensjonV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        pensjonsbeholdningForUttak:
+          type: integer
+          format: int32
+      required:
+        - maanedligUtbetaling
+        - pensjonsbeholdningForUttak
+    PensjonstilleggV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        minstepensjonsnivaaSats:
+          type: number
+          format: double
+      required:
+        - maanedligUtbetaling
+    SaertilleggV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+      required:
+        - maanedligUtbetaling
+    TilleggspensjonV0:
+      type: object
+      properties:
+        maanedligUtbetaling:
+          type: integer
+          format: int32
+        grunnbeloep:
+          type: integer
+          format: int32
+        sluttpoengTall:
+          type: number
+          format: double
+        antallPoengaarTilOgMed1991:
+          type: integer
+          format: int32
+        antallPoengaarFraOgMed1992:
+          type: integer
+          format: int32
+      required:
+        - antallPoengaarFraOgMed1992
+        - antallPoengaarTilOgMed1991
+        - grunnbeloep
+        - maanedligUtbetaling
+        - sluttpoengTall
+    StatusV1:
       type: object
       properties:
         status:
           type: string
+      required:
+        - status
   securitySchemes:
     BearerAuthentication:
       type: http
       description: >-
-        NAV-intern informasjon: For å anskaffe et token i dev kan du bruke
-        https://pensjon-maskinporten-test.intern.dev.nav.no/
+        Nav-intern informasjon:\
+
+        For å anskaffe et token i dev kan du bruke
+        [pensjon-maskinporten-test](https://pensjon-maskinporten-test.intern.dev.nav.no/)
+      name: BearerAuthentication
       scheme: bearer
       bearerFormat: JWT
