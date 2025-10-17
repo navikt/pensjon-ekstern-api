@@ -8,12 +8,12 @@ info:
     hvilket *scope* som skal brukes.\
     
     I testmiljøet ("dev") må det benyttes syntetiske personer fra Test-Norge.
-  version: v1.2.0
+  version: v1.2.1
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no
   - url: https://pensjon-gw.nav.no
 paths:
-  /api/v4/simuler-alderspensjon:
+  /pensjonssimulator/v4/simuler-alderspensjon:
     post:
       tags:
         - Alderspensjon V4
@@ -65,7 +65,7 @@ paths:
                 $ref: '#/components/schemas/AlderspensjonResultV4'
       security:
         - BearerAuthentication: []
-  /api/v3/simuler-alderspensjon:
+  /simuler/alderspensjon/v3:
     post:
       tags:
         - Alderspensjon V3
@@ -112,7 +112,7 @@ paths:
                 $ref: '#/components/schemas/AlderspensjonResultV3'
       security:
         - BearerAuthentication: []
-  /api/v3/simuler-alderspensjon-privat-afp:
+  /pensjonssimulator/v3/simuler-alderspensjon-privat-afp:
     post:
       tags:
         - Alderspensjon og privat AFP (kun test)
@@ -150,7 +150,7 @@ paths:
                 $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV3'
       security:
         - BearerAuthentication: []
-  /api/v1/tidligst-mulig-uttak:
+  /pensjonssimulator/v1/tidligst-mulig-uttak:
     post:
       tags:
         - Uttak
@@ -179,7 +179,7 @@ paths:
                 $ref: '#/components/schemas/TidligstMuligUttakResultV1'
       security:
         - BearerAuthentication: []
-  /api/v1/simuler-folketrygdbeholdning:
+  /pensjonssimulator/v1/simuler-folketrygdbeholdning:
     post:
       tags:
         - Beholdning
@@ -208,7 +208,7 @@ paths:
                 $ref: '#/components/schemas/FolketrygdBeholdningResultV1'
       security:
         - BearerAuthentication: []
-  /api/v0/simuler-afp-etterfulgt-av-alderspensjon:
+  /pensjonssimulator/v0/simuler-afp-etterfulgt-av-alderspensjon:
     post:
       tags:
         - Offentlig AFP etterfulgt av alderspensjon
@@ -250,7 +250,7 @@ paths:
                 $ref: '#/components/schemas/AfpEtterfulgtAvAlderspensjonResultV0'
       security:
         - BearerAuthentication: []
-  /api/v1/status:
+  /pensjonssimulator/v1/status:
     get:
       tags:
         - Tjenestestatus
