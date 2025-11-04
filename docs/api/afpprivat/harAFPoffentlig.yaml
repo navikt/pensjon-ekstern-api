@@ -27,6 +27,15 @@ paths:
           required: true
           schema:
             type: string
+        - name: ytelseType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - AFP
+              - LIVSVARIG_AFP
+            default: AFP
         - name: correlationId
           in: header
           description: Format - UUID, correlationId
