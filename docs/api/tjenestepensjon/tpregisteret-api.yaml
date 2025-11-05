@@ -47,6 +47,33 @@ paths:
         '403':
           description: Ikke tilgang til person eller feil scope på token fra Maskinporten
       deprecated: false
+  /forhold/readAll/get:
+    get:
+      tags:
+        - Person
+      summary: ReadAll - Forholdsliste for SPK
+      description: Henter ut liste av forhold. Forhold(ene) inkluderer liste av registrerte ytelser. <br>
+        Hvis ordning ikke er SPK vil endepunktet svare 403.
+      operationId: ForholdlisteReadAllGet
+      parameters:
+        - name: fnr
+          in: header
+          description: Person identifikator
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/samhandlerPersonDto'
+        '401':
+          description: Ugyldig access token
+        '403':
+          description: Ikke tilgang til person eller feil scope på token fra Maskinporten
+      deprecated: false
   /forhold/{ordning}/get:
     get:
       tags:
