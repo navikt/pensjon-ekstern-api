@@ -1,0 +1,93 @@
+openapi: 3.0.4
+info:
+  title: Uføretrygd
+  description: Tjenester for tp-ordningene ifbm særalderspåslag
+  version: 1.0.0
+servers:
+  - url: https://pensjon-q2-gw.ekstern.dev.nav.no/uforetrygd/tpordningene/saralderspaslag
+  - url: https://pensjon-gw.nav.no/uforetrygd/tpordningene/saralderspaslag
+paths:
+  /uforeperioder:
+    post:
+      description: |
+        Krever token fra maskinporten med scope **nav:uforetrygd/tpordningene/saralderspaslag.read**
+        
+        - Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
+      operationId: uforeperioder
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UforeperioderRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UforeperioderResponse'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+        404:
+          description: Finner ikke person
+components:
+  schemas:
+    UforeperioderRequest:
+      title: Uforeperioder - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fraOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-01-01"
+        tilOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-01-01"
+    UforeperioderResponse:
+      title: Uforeperioder - response
+      type: object
+      properties:
+        uforeperioder:
+          type: array
+          items:
+            $ref: '#/components/schemas/Uforeperiode'
+    Uforeperiode:
+      title: Uforeperiode
+      type: object
+      description: Uforeperiode
+      properties:
+        fraOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-01-01"
+        tilOgMedDato:
+          type: string
+          format: YYYY-mm-DD
+          example: "2024-01-01"
+          nullable: true
+        uforegrad:
+          type: integer
+          example: 100
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

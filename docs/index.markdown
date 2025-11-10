@@ -26,6 +26,8 @@ title: Pensjon Ekstern-API
 
 * [Uføretrygd ifbm AFP i offentlig sektor](api/uforetrygd/Uforetrygd.html)
 
+* [Uføretrygd ifbm særalderspåslag](api/uforetrygd-saralderspaslag/Uforetrygd-Saralderspaslag.html)
+
 * [Er ung ufør](api/ufore/erungufor/ErUngUfor.html)
 
 #### AFP i privat sektor
