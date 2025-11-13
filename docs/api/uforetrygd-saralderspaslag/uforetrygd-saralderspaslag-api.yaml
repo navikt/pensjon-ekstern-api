@@ -48,6 +48,9 @@ components:
     UforeperioderRequest:
       title: Uforeperioder - request
       type: object
+      required:
+        - personId
+        - fraOgMedDato
       properties:
         personId:
           type: string
@@ -59,11 +62,14 @@ components:
           example: "2024-01-01"
         tilOgMedDato:
           type: string
+          nullable: true
           format: YYYY-mm-DD
           example: "2024-01-01"
     UforeperioderResponse:
       title: Uforeperioder - response
       type: object
+      required:
+        - uforeperioder
       properties:
         uforeperioder:
           type: array
@@ -72,6 +78,9 @@ components:
     Uforeperiode:
       title: Uforeperiode
       type: object
+      required:
+        - fraOgMedDato
+        - uforegrad
       description: Uforeperiode
       properties:
         fraOgMedDato:
