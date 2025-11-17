@@ -47,13 +47,12 @@ paths:
         '403':
           description: Ikke tilgang til person eller feil scope på token fra Maskinporten
       deprecated: false
-  /forhold/readAll/get:
+  /forhold/readAll:
     get:
       tags:
         - Person
       summary: ReadAll - Forholdsliste for SPK
-      description: Henter ut liste av forhold. Forhold(ene) inkluderer liste av registrerte ytelser. <br>
-        Hvis ordning ikke er SPK vil endepunktet svare 403.
+      description: Henter ut liste av forhold. Forhold(ene) inkluderer liste av registrerte ytelser.
       operationId: ForholdlisteReadAllGet
       parameters:
         - name: fnr
@@ -73,6 +72,9 @@ paths:
           description: Ugyldig access token
         '403':
           description: Ikke tilgang til person eller feil scope på token fra Maskinporten
+      security:
+        - Maskinporten:
+          - nav:pensjon/v1/tpregisteret.readall
       deprecated: false
   /forhold/{ordning}/get:
     get:
