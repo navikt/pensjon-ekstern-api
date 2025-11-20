@@ -10,7 +10,7 @@ paths:
   /uforeperioder:
     post:
       description: |
-        Krever token fra maskinporten med scope **nav:uforetrygd/tpordningene/saralderspaslag.read**
+        Krever token fra maskinporten med scope **nav:uforetrygd/tpordningene/uforeperioder.read**
         
         - Henter en persons uføreperioder som overlapper helt eller delvis med input-datoene
       operationId: uforeperioder
