@@ -323,6 +323,9 @@ components:
             - AFP
             - OPPSATT_BTO_PEN
             - SAERALDER
+            - TIDLIGPENSJON
+            - TIDLIGPEN_OVERGANG
+            - SAERALDERSPAASLAG
             - PAASLAGSPENSJON
             - OVERGANGSTILLEGG
             - BETINGET_TP
