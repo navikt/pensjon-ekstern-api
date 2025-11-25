@@ -1,9 +1,10 @@
 openapi: 3.0.1
 info:
   title: Pensjon AFP-offentlig
-  description: "Denne tjenesten brukes av Fellesordningen for AFP for å behandle søknader om AFP i privat sektor.
-  Tjenesten sjekker om personer har AFP eller livsvarig AFP i offentlig sektor i alderen 62 til 67 år for årskull 1962 og tidligere.
-  Den sjekker også for medlemmer i Pensjonsordningen for apotekvirksomhet.\n\n 
+  description: "Denne tjenesten brukes av Fellesordningen for AFP for å behandle søknader om AFP i privat sektor.\n\n
+  Tjenesten sjekker om personer har AFP eller livsvarig AFP i offentlig sektor.\n\n
+  AFP i alderen 62 til 67 år for årskull født 1962 og tidligere og for medlemmer i pensjonsordningen for apotekvirksomhet. 
+  Livsvarig AFP for årskull født 1963 og senere.\n\n 
   Tjenesten sjekker om personer mottar AFP eller livsvarig AFP på tidspunktet tjenesten kalles. Den sjekker også om det har vært innvilget AFP tidligere og som er opphørt.
   For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/v1/afpoffentlig`"
   version: 1.0.0
