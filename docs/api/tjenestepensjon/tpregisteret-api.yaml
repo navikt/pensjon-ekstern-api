@@ -5,7 +5,9 @@ info:
     API for å behandle forhold mellom person og ordning for eksterne samhandlere,
     og innsyn i registrerte tjenestepensjonsforhold og ytelser.
 
-    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/tpregisteret`
+    For å kunne bruke API'et må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/tpregisteret`
+    
+    Spesikfikt for tjenesten `/forhold/readAll` gjelder eget scope: `nav:pensjon/v1/tpregisteret.readall`
     
     Opprettelse av ytelse av type `UFORE` eller `GJENLEVENDE` vil det ikke returneres vedtakopplysninger.
     Dette må hentes med hentSamordningsdata (SOAP)
