@@ -3,10 +3,18 @@ info:
   version: '1.0'
   title: Pensjon Uføreopplysninger
   description: |-
-    For å kunne benytte tjenesten må konsumenten autentisere seg gjennom ID-porten Virksomhet og ha avtale med NAV. I tillegg må konsumenten ha samtykke fra bruker og hente et samtykketoken fra Altinns Samtykkeløsning. Disse to tokenene sendes sammen med brukers Fnr/Dnr, fra-og-med dato, samt til-og-med dato som inn-parametere til tjenesten. Tjenesten returnerer uføreopplysninger for ønsket periode så fremt samtykket gjelder for perioden Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database. Bruker kan logge seg inn på nav.no for å lese av disse hendelsene.
-    <br/><br/>Påkrevd scope-verdi for bruk av API'et er `nav:helse/v1/uforeopplysninger`.
-    <br/><br/>Altinn tjenestekode og tjenesteutgavekode er `5252_X`, hvor `X` er 2 eller 3.
-    <br/>Altinn-API'et forutsetter at tjenestekodens metadata for `fraOgMed` og `tilOgMed` angir samtykkeperioden der datoene har formatet `dd.MM.yyyy`.
+    For å kunne benytte tjenesten må konsumenten autentisere seg gjennom Maskinporten og ha avtale med NAV.<br>
+    I tillegg må konsumenten ha samtykke fra bruker og benytte samtykketoken.<br>
+    I en overgangsfase mellom Altinn 2 og modernisert plattform Altinn 3 vil Nav støtte både gammelt samtykketoken fra 
+    Altinn 2 og det nye samtykketokenet fra Maskinporten.<br><br>
+    Token sammen med brukers Fnr/Dnr, fra-og-med dato, samt til-og-med dato benyttes som inn-parametere til tjenesten.<br> 
+    Tjenesten returnerer uføreopplysninger for ønsket periode så lenge samtykket gjelder for perioden.<br>
+    Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database hos Nav. 
+    Bruker kan logge seg inn på nav.no for å få innsyn i disse hendelsene.<br><br>
+    Påkrevd scope-verdi for bruk av API'et er `nav:helse/v1/uforeopplysninger`.<br><br>
+    Altinn tjenestekode og tjenesteutgavekode for AltInn 2 er `5252_X`, hvor `X` er 2 eller 3.<br><br>
+    For Altinn 2 forutsetter Altinn API’et at tjenestekodens metadata for `fraOgMed` og `tilOgMed` angir samtykkeperioden der datoene har formatet `dd.MM.yyyy`.<br><br>
+    For Altinn 3 fra og med januar 2026 så er tjenestekode og tjenesteutgave byttet ut med verdien `nav_samtykke_dsop_aap-ufore`.<br><br>
     <br/><br/>Klikk [her](./Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.
   contact: {}
 servers:
