@@ -3,8 +3,7 @@ info:
   version: '1.0'
   title: Pensjon Uføreopplysninger
   description: |-
-    For å kunne benytte tjenesten må konsumenten autentisere seg gjennom Maskinporten og ha avtale med NAV.</br>
-    Konsumenten må også ha gyldig samtykke fra den det hentes uføreopplysninger for, utstedt av Altinn.</br>
+    API for å finne uføreopplysninger på Nav-brukere.</br>
     Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database hos Nav.<br>
     Bruker kan logge seg inn på nav.no for å få innsyn i disse hendelsene.<br>
     
@@ -21,7 +20,8 @@ info:
     * Altinn 2: Samtykkeperioden er definert av `fraOgMed` og `tilOgMed`.
     * Altinn 3: Samtykkeperioden er definert av `fraogmed` og `tilogmed`.
     
-    Klikk [her](./Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.
+    Klikk [her](./Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.</br>
+    Se også Digitaliseringsdirektoratets dokumentasjon for datakonsumenter, [Samtykke for datakonsument – Altinn](https://docs.altinn.studio/nb/authorization/guides/system-vendor/consent/)
   contact: {}
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/dsop-ufo
