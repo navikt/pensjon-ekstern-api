@@ -1,8 +1,7 @@
 openapi: 3.0.1
 info:
   title: Pensjon AFP-privat
-  description: Inneholder tjenester for å behandle og hente informasjon om en AFP-privat saker/brukere. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/afpprivat/mottarafpprivat`
-    søknad.
+  description: Inneholder tjenester for å behandle og hente informasjon om en AFP-privat saker/brukere.
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/afp-privat/
@@ -10,7 +9,7 @@ servers:
 paths:
   /mottarAfpPrivat:
     post:
-      description: Hent ut informasjon om bruker mottar AFP-privat.
+      description: Hent ut informasjon om bruker mottar AFP-privat fra og med gitt tidspunkt. Scope mot Maskinporten settes til `nav:pensjon/afpprivat/mottarafpprivat`.
       operationId: mottarafpprivat
       parameters:
         - in: header
@@ -38,7 +37,39 @@ paths:
         401:
           description: Autentisering feilet
         403:
-          description: Autorisering til ressurs feilet, feks feil scope i token		  
+          description: Autorisering til ressurs feilet, feks feil scope i token
+  /mottar-eller-har-mottatt-afpprivat:
+    post:
+      description: Hent ut informasjon om bruker mottar eller har mottatt AFP-privat. Scope mot Maskinporten settes til `nav:pensjon/afpprivat/mottarellerharmottattafpprivat`.
+      operationId: mottarellerharmottattafpprivat
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MottarEllerHarMottattAfpPrivatRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MottarEllerHarMottattAfpPrivatResponse'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+
 components:
   schemas:
     MottarAfpPrivatRequest:
@@ -59,6 +90,20 @@ components:
       type: object
       properties:
         mottarAfpPrivat:
+          type: boolean
+    MottarEllerHarMottattAfpPrivatRequest:
+      title: Mottar eller har mottatt AFP Privat - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+    MottarEllerHarMottattAfpPrivatResponse:
+      title: Mottar eller har mottatt AFP Privat - response
+      type: object
+      properties:
+        mottarEllerHarMottattAfpPrivat:
           type: boolean
   securitySchemes:
     bearerAuth:
