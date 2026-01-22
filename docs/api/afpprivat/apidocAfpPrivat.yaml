@@ -40,7 +40,7 @@ paths:
           description: Autorisering til ressurs feilet, feks feil scope i token
   /mottar-eller-har-mottatt-afpprivat:
     post:
-      description: Hent ut informasjon om bruker mottar eller har mottatt AFP-privat. Scope mot Maskinporten settes til `nav:pensjon/afpprivat/mottarellerharmottattafpprivat`.
+      description: Hent ut informasjon om bruker mottar eller har mottatt AFP-privat. Scope mot Maskinporten settes til `nav:pensjon/afpprivat/mottarafpprivat`.
       operationId: mottarellerharmottattafpprivat
       parameters:
         - in: header
