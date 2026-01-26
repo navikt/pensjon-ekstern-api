@@ -7,9 +7,11 @@ info:
 
     For å kunne bruke API'et må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/tpregisteret`
     
-    Spesikfikt for tjenesten `/forhold/readAll` gjelder eget scope: `nav:pensjon/v1/tpregisteret.readall`
+    Spesifikt for tjenesten `/forhold/readAll` gjelder eget scope: `nav:pensjon/v1/tpregisteret.readall`
     
-    Opprettelse av ytelse av type `UFORE` eller `GJENLEVENDE` vil det ikke returneres vedtakopplysninger.
+    Spesifikt for tjenesten `/hasForhold` gjelder eget scope: `nav:pensjon/tpregisteret/forhold.check`
+    
+    Ved opprettelse av ytelsene `UFORE` og `GJENLEVENDE` returneres ikke vedtakopplysninger.
     Dette må hentes med hentSamordningsdata (SOAP)
   contact: {}
   version: '1.0'
@@ -77,6 +79,37 @@ paths:
       security:
         - Maskinporten:
           - nav:pensjon/v1/tpregisteret.readall
+      deprecated: false
+  /hasForhold:
+    post:
+      tags:
+        - Person
+      summary: Sjekk om person har forhold i TP-registeret  - For Norsk Pensjon
+      description: Sjekk om person har forhold i TP-registeret
+      operationId: HasForholdPost
+      requestBody:
+        required: true
+        description: Personidentifikator
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+          '200':
+            description: OK
+            content:
+              application/json;charset=UTF-8:
+                schema:
+                  type: object
+                  properties:
+                    forhold:
+                      type: boolean
+                  required:
+                    - forhold
+          '401':
+            description: Ugyldig access token
+          '403':
+            description: Feil scope på token fra Maskinporten
       deprecated: false
   /forhold/{ordning}/get:
     get:
