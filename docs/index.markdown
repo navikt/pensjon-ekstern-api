@@ -47,7 +47,7 @@ title: Pensjon Ekstern-API
 * [Refusjonskrav](api/refusjonskrav/refusjonskrav.html)
 
 #### Norsk Pensjon
-* [Sjekk tjenestepensjonsordning](api/norskpensjon/norskpensjon.html)
+* [Sjekk tjenestepensjonsforhold](api/norskpensjon/norskpensjon.html)
 
 #### Felles
 
