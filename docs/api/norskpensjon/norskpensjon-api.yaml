@@ -1,0 +1,48 @@
+openapi: 3.0.1
+info:
+  title: Norsk Pensjon
+  description: "Tjenesten brukes av Norsk Pensjon.\n\n
+  \n\n 
+  Tjenesten sjekker om person har registrert forhold i en tjenestepensjonsordning på tidspunktet tjenesten kalles.
+  \n\n
+  For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/tpregisteret/forhold.check`"
+  version: 1.0.0
+
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/tjenestepensjon
+  - url: https://pensjon-gw.nav.no/tjenestepensjon
+security:
+  - Maskinporten:
+      - nav:pensjon/tpregisteret/forhold.check
+
+paths:
+  /hasForhold:
+    post:
+      summary: Sjekk om person har registrert forhold i Tjenestepensjonsregisteret
+      description: Sjekk om person har registrert forhold i Tjenestepensjonsregisteret
+      operationId: HasForholdPost
+      requestBody:
+        required: true
+        description: Personidentifikator
+        content:
+          application/json:
+            schema:
+              type: string
+              pattern: '^[0-9]{11}$'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+                properties:
+                  forhold:
+                    type: boolean
+                required:
+                  - forhold
+        '401':
+          description: Ugyldig access token
+        '403':
+          description: Feil scope på token fra Maskinporten
+      deprecated: false
