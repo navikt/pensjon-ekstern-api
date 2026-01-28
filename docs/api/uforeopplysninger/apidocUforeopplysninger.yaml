@@ -62,12 +62,12 @@ paths:
             type: string
             format: date
           description: Format - date (as full-date in RFC3339). Til-og-med-dato på ISO-8601 format for vedtak som ønskes returnert. Dersom parameteren ikke er spesifisert, brukes samtykkeperiodens sluttdato.
-        - name: NAV-Samtykke-Token
+        - name: NAV-Samtykke-Token (Altinn 2)
           in: header
-          required: true
+          required: false
           schema:
             type: string
-          description: Base64-kodet JWT-samtykketoken utstedt av Altinn.
+          description: Brukes kun for Altinn 2. Base64-kodet JWT-samtykketoken utstedt av Altinn.
       responses:
         '200':
           description: Returnerer vedtakene som ble funnet. Returneres også dersom brukeren ikke finnes i fagsystemet (så lenge det er et gyldig fnr/dnr).
