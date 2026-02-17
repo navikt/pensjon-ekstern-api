@@ -1,0 +1,79 @@
+openapi: 3.0.1
+info:
+  title: Uføretrygd Lånekassen API
+  description: #TODO
+  version: 1.0.0
+servers:
+  - url: https://pensjon-q2-gw.ekstern.dev.nav.no/uforetrygd/lanekassen
+  - url: https://pensjon-gw.nav.no/uforetrygd/lanekassen
+paths:
+  /sak:
+    post:
+      description: |
+        Krever token fra maskinporten med scope **nav:uforetrygd/lanekassen/sak.read**
+        
+        - Utleverer informasjon om gitt bruker sin uføretrygd som Lånekassen benytter for å vurdere sletting av gjeld.
+      operationId: sak
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SakRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SakResponse'
+        400:
+          description: Feil i request-data fra klient
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token
+components:
+  schemas:
+    SakRequest:
+      title: Sak - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        dato:
+          type: string
+          format: date
+          description: Datoformat YYYY-MM-DD
+          example: "2025-01-01"
+    SakResponse:
+      title: Sak - response
+      type: object
+      properties:
+        harUforetrygdUtbetalt:
+          type: boolean
+          example: true
+          description: #TODO
+        uforegrad:
+          type: number
+          description: Uføregrad i prosent på gitt dato
+          example: 100
+        harBarnetillegg:
+          type: boolean
+          example: false
+          description: Har barnetillegg på gitt dato
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
