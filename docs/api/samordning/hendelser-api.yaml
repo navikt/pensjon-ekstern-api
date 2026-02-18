@@ -5,6 +5,7 @@ info:
     - Hendelseskø for samordningspliktige vedtak fattet av NAV(AP, AFP, AAP og OMS).
     - Hendelseskø for ytelser registrert av tjenestepensjonordningene.
     - Hendelseskø for personendringer fra Nav.
+    - Hendelseskø for manglende refusjonskrav (purring).
     
     For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/samordning`
   contact: {}
@@ -345,6 +346,89 @@ paths:
               schema:
                 type: object
       deprecated: false
+  /hendelser/manglendeRefusjonskrav:
+    get:
+      summary: Les hendelser for manglende refusjonskrav (purring på samordningpliktige vedtak).
+      description: |-
+        Endepunktet returnerer en liste av hendelser for manglende refusjonskrav.\
+        Listen benytter paginering, som deler opp listen i sider basert på angitt antall hendelser per side.\
+        En side inneholder en liste med _hendelser_ for manglendeRefusjonskrav, samt en _nextUrl_ som peker til neste side av listen. Siste side er nådd når _nextUrl_ er _null_.\
+        Sekvensnummer kan benyttes som offset for listen. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_.
+      operationId: HendelserManglendeRefusjonskravGet
+      parameters:
+        - name: tpnr
+          in: query
+          description: Id for ordning som manglende refusjonskrav (purring) vedrører.
+          required: true
+          schema:
+            type: string
+        - name: side
+          in: query
+          description: Sidenummer for paginert søk.
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: antall
+          in: query
+          description: Antall hendelser per side.
+          required: false
+          schema:
+            type: number
+            format: int64
+            default: 10000
+        - name: sekvensnummer
+          in: query
+          description: Start innlesningen fra dette sekvensnummeret.
+          required: false
+          schema:
+            type: number
+            format: int64
+            default: 1
+        - name: Authorization
+          in: header
+          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                title: Feed
+                type: object
+                properties:
+                  hendelser:
+                    type: array
+                    description: Liste av manglendeRefusjonskrav.
+                    items:
+                      $ref: '#/components/schemas/manglendeRefusjonskrav'
+                  sisteSekvensnummer:
+                    type: string
+                    description: Siste sekvensnummer fra forrige side
+                    format: long
+                  sisteLesteSekvensnummer:
+                    type: string
+                    description: Det nyeste sekvensnummeret
+                    format: long
+                  nextUrl:
+                    type: string
+                    description: Lenke til neste side
+        '401':
+          description: Ugyldig access token
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+      deprecated: false
 components:
   schemas:
     vedtakshendelse:
@@ -478,6 +562,34 @@ components:
             - FODSELSNUMMER
             - ADRESSE
             - DOEDSFALL
+
+    manglendeRefusjonskrav:
+      title: ManglendeRefusjonskrav
+      type: object
+      description: En hendelse tilknyttet manglendeRefusjonskrav (purring) fra nav.
+      properties:
+        sekvensnummer:
+          type: string
+          description: Sekvensnummer.
+          format: long
+          nullable: false
+        tpnr:
+          type: string
+          description: Id for tjenestepensjonsordning.
+          nullable: false
+        fnr:
+          type: string
+          description: Identifiserer brukeren (eks. fnr/dnr)
+          nullable: false
+        samId:
+          type: string
+          description: Samordning-id tilknyttet vedtaket.
+          nullable: false
+        svarfrist:
+          type: string
+          description: Dato for svarfrist på purring.
+          format: date
+          nullable: false
 
     hendelseTypeCode:
       type: string
