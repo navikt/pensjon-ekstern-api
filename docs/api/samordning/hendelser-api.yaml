@@ -295,7 +295,7 @@ paths:
             default: 10000
         - name: sekvensnummer
           in: query
-          description: Start innlesningen fra dette sekvensnummeret
+          description: Start innlesningen fra dette sekvensnummeret.
           required: false
           schema:
             type: number
@@ -437,17 +437,17 @@ components:
           format: long
         tpnr:
           type: string
-          description: Organisasjonsnummeret til tjenestepensjonsordning.
+          description: Id for tjenestepensjonsordning.
         fnr:
           type: string
           description: Identifiserer brukeren (eks. fnr/dnr)
         fnrGammelt:
           type: string
-          description: Tidligere identifikator brukeren (eks. fnr/dnr)
+          description: Tidligere identifikator for brukeren (eks. fnr/dnr) (dersom meldingskode er FODSELSNUMMER)
           nullable: true
         sivilstand:
           type: string
-          description: Oppdatert sivilstand på brukeren (dersom meldingskode er SIVILSTAND)
+          description: Oppdatert sivilstand for brukeren (dersom meldingskode er SIVILSTAND)
           nullable: true
           enum:
            - UOPPGITT
