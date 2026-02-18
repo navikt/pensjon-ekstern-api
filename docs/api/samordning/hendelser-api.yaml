@@ -4,6 +4,7 @@ info:
   description: |-
     - Hendelseskø for samordningspliktige vedtak fattet av NAV(AP, AFP, AAP og OMS).
     - Hendelseskø for ytelser registrert av tjenestepensjonordningene.
+    - Hendelseskø for personendringer fra Nav.
     
     For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/samordning`
   contact: {}
@@ -184,7 +185,7 @@ paths:
       description: |- 
         Endepunktet returnerer en liste av hendelser for ytelser som er registrert hos andre tjenestepensjonsordninger.\
         Listen benytter paginering, som deler opp listen i sider basert på angitt antall hendelser per side.\
-        En side inneholder en liste med hendelser_ for ytelser, samt en _nextUrl_ som peker til neste side av listen. Siste side er nådd når _nextUrl_ er _null_.\
+        En side inneholder en liste med _hendelser_ for ytelser, samt en _nextUrl_ som peker til neste side av listen. Siste side er nådd når _nextUrl_ er _null_.\
         Sekvensnummer kan benyttes som offset for listen. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_.
       operationId: HendelserYtelserGet
       parameters:
@@ -237,6 +238,89 @@ paths:
                     description: Liste av ytelseshendelser.
                     items:
                       $ref: '#/components/schemas/ytelseshendelse'
+                  sisteSekvensnummer:
+                    type: string
+                    description: Siste sekvensnummer fra forrige side
+                    format: long
+                  sisteLesteSekvensnummer:
+                    type: string
+                    description: Det nyeste sekvensnummeret
+                    format: long
+                  nextUrl:
+                    type: string
+                    description: Lenke til neste side
+        '401':
+          description: Ugyldig access token
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: object
+      deprecated: false
+  /hendelser/personer:
+    get:
+      summary: Les hendelser for personendringer.
+      description: |-
+        Endepunktet returnerer en liste av hendelser for personendringer som er oppdatert fra Nav.\
+        Listen benytter paginering, som deler opp listen i sider basert på angitt antall hendelser per side.\
+        En side inneholder en liste med _hendelser_ for personendringer, samt en _nextUrl_ som peker til neste side av listen. Siste side er nådd når _nextUrl_ er _null_.\
+        Sekvensnummer kan benyttes som offset for listen. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_.
+      operationId: HendelserPersonerGet
+      parameters:
+        - name: tpnr
+          in: query
+          description: Id for ordning som personendringer vedrører.
+          required: true
+          schema:
+            type: string
+        - name: side
+          in: query
+          description: Sidenummer for paginert søk.
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: antall
+          in: query
+          description: Antall hendelser per side.
+          required: false
+          schema:
+            type: number
+            format: int64
+            default: 10000
+        - name: sekvensnummer
+          in: query
+          description: Start innlesningen fra dette sekvensnummeret
+          required: false
+          schema:
+            type: number
+            format: int64
+            default: 1
+        - name: Authorization
+          in: header
+          description: 'Standard Authorization-header som inneholder et Base64-kodet Bearer-token (JWT-aksesstoken) utstedt av Maskinporten (Difi). Verdien må starte med "Bearer ", deretter følger tokenstrengen.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                title: Feed
+                type: object
+                properties:
+                  hendelser:
+                    type: array
+                    description: Liste av personendringer.
+                    items:
+                      $ref: '#/components/schemas/personendringer'
                   sisteSekvensnummer:
                     type: string
                     description: Siste sekvensnummer fra forrige side
@@ -341,6 +425,59 @@ components:
           description: Dato til og med.
           format: date
           nullable: true
+
+    personendringer:
+      title: Personendringer
+      type: object
+      description: En hendelse tilknyttet personendringer fra nav.
+      properties:
+        sekvensnummer:
+          type: string
+          description: Sekvensnummer.
+          format: long
+        tpnr:
+          type: string
+          description: Organisasjonsnummeret til tjenestepensjonsordning.
+        fnr:
+          type: string
+          description: Identifiserer brukeren (eks. fnr/dnr)
+        fnrGammelt:
+          type: string
+          description: Tidligere identifikator brukeren (eks. fnr/dnr)
+          nullable: true
+        sivilstand:
+          type: string
+          description: Oppdatert sivilstand på brukeren (dersom meldingskode er SIVILSTAND)
+          nullable: true
+          enum:
+           - UOPPGITT
+           - UGIFT
+           - GIFT
+           - ENKE_ELLER_ENKEMANN
+           - SKILT
+           - SEPARERT
+           - REGISTRERT_PARTNER
+           - SEPARERT_PARTNER
+           - SKILT_PARTNER
+           - GJENLEVENDE_PARTNER
+        sivilstandDato:
+          type: string
+          description: Dato for oppdatert sivilstand på brukeren (dersom meldingskode er SIVILSTAND)
+          format: date
+          nullable: true
+        doedsdato:
+          type: string
+          description: Dato for dødsfall (dersom meldingskode er DOEDSFALL)
+          format: date
+          nullable: true
+        meldingskode:
+          type: string
+          description: Type meldingkode.
+          enum:
+            - SIVILSTAND
+            - FODSELSNUMMER
+            - ADRESSE
+            - DOEDSFALL
 
     hendelseTypeCode:
       type: string
