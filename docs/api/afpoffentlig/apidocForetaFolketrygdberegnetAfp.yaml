@@ -1,0 +1,221 @@
+openapi: 3.0.1
+info:
+  title: Pensjon AFP Offentlig - Foreta Folketrygdberegnet AFP
+  description: API for å beregne AFP (Avtalefestet pensjon) basert på befolkningens folketrygdberegning for offentlig sektor. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/afp-offentlig`.
+  version: 1.0.0
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/afp-offentlig
+paths:
+  /foreta-folketrygdberegnet-afp:
+    post:
+      description: Foreta beregning av AFP basert på folketrygdberegning for offentlig ordning
+      operationId: foretaFolketrygdberegnetAfp
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        description: Request med brukerinformasjon og parametere for AFP-beregning
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForetaFolketrygdBeregnetAfpRequest'
+        required: true
+      responses:
+        200:
+          description: OK - Beregning utført vellykket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForetaFolketrygdBeregnetAfpResponse'
+        400:
+          description: Feil i request-data fra klient. F.eks ugyldig fødselsnummer eller dato-format
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, f.eks feil scope i token
+        409:
+          description: Konflikt - Vilkårsprøving eller andre valideringer feilet. Se responsdetaljer for spesifikk feil
+        500:
+          description: Intern serverfeil
+
+components:
+  schemas:
+    ForetaFolketrygdBeregnetAfpRequest:
+      title: Foreta Folketrygdberegnet AFP - Request
+      type: object
+      required:
+        - fnr
+        - virkFom
+        - afpOrdning
+      properties:
+        fnr:
+          type: string
+          description: Fødselsnummer på personen, 11 siffer
+          example: "01234567890"
+        virkFom:
+          type: string
+          format: date
+          description: Virkningstidspunkt fra (YYYY-MM-DD) for AFP-beregningen
+          example: "2025-01-01"
+        afpOrdning:
+          type: string
+          description: AFP-ordning type (AFPKOM)
+          example: "AFPKOM"
+          enum:
+            - AFPKOM
+            - AFPSTAT
+            - FINANS
+            - KONV_K
+            - KONV_O
+            - LONHO
+            - NAVO
+        tpNummer:
+          type: integer
+          description: Tjenestepensjonsordnings nummer (valgfritt)
+          example: 1234
+          nullable: true
+        inntektMndForUttak:
+          type: integer
+          description: Månedlig arbeidsinntekt før uttak (valgfritt)
+          example: 50000
+          nullable: true
+        inntektArForUttak:
+          type: integer
+          description: Årlig arbeidsinntekt før uttak (valgfritt)
+          example: 600000
+          nullable: true
+        antallArUtland:
+          type: integer
+          description: Antall år oppholdt i utlandet (valgfritt)
+          example: 5
+          nullable: true
+        sivilstand:
+          type: string
+          description: Sivilstand (valgfritt).
+          example: "GIFT"
+          enum:
+            - ENKE
+            - GIFT
+            - GJES
+            - GJPA
+            - GJSA
+            - GLAD
+            - PLAD
+            - SAMB
+            - REPA
+            - SEPA
+            - SEPR
+            - SKIL
+            - SKPA
+            - UGIF
+          nullable: true
+        epsMottarYtelse:
+          type: boolean
+          description: Om ektefelle/partner mottar ytelse (valgfritt)
+          example: true
+          nullable: true
+        epsOver2G:
+          type: boolean
+          description: Om ektefelle/partner har inntekt over 2G (valgfritt)
+          example: false
+          nullable: true
+
+    ForetaFolketrygdBeregnetAfpResponse:
+      title: Foreta Folketrygdberegnet AFP - Response
+      type: object
+      properties:
+        folketrygdberegnetAfp:
+          $ref: '#/components/schemas/FolketrygdberegnetAfp'
+
+    FolketrygdberegnetAfp:
+      title: Folketrygdberegnet AFP detaljer
+      type: object
+      properties:
+        totalbelopAfp:
+          type: integer
+          description: Totalt beløp for AFP
+          example: 150000
+          nullable: true
+        virkFom:
+          type: string
+          format: date
+          description: Virkningstidspunkt fra (YYYY-MM-DD)
+          example: "2025-01-01"
+          nullable: true
+        tidligereArbeidsinntekt:
+          type: integer
+          description: Tidligere arbeidsinntekt
+          example: 500000
+          nullable: true
+        grunnbelop:
+          type: integer
+          description: Grunnbeløp brukt i beregning
+          example: 100000
+          nullable: true
+        sluttpoengtall:
+          type: number
+          format: double
+          description: Sluttpoeng­tall
+          example: 1.2
+          nullable: true
+        trygdetid:
+          type: integer
+          description: Trygdetid i år
+          example: 40
+          nullable: true
+        poengar:
+          type: integer
+          description: Total poengår
+          example: 40
+          nullable: true
+        poengarFor92:
+          type: integer
+          description: Poengår før 1992
+          example: 15
+          nullable: true
+        poengarEtter91:
+          type: integer
+          description: Poengår etter 1991
+          example: 25
+          nullable: true
+        grunnpensjon:
+          type: integer
+          description: Grunnpensjon beløp
+          example: 80000
+          nullable: true
+        tilleggspensjon:
+          type: integer
+          description: Tilleggspensjon beløp
+          example: 50000
+          nullable: true
+        afpTillegg:
+          type: integer
+          description: AFP-tillegg beløp
+          example: 20000
+          nullable: true
+        fremtidigPensjonspoeng:
+          type: number
+          format: double
+          description: Fremtidig pensjonspoeng
+          example: 1.15
+          nullable: true
+        sertillegg:
+          type: integer
+          description: Særtillegg beløp
+          example: 5000
+          nullable: true
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
