@@ -30,6 +30,8 @@ title: Pensjon Ekstern-API
 
 * [Er ung ufør](api/ufore/erungufor/ErUngUfor.html)
 
+* [Lånekassen - sletting av gjeld](api/uforetrygd-lanekassen/Uforetrygd-lanekassen.html)
+
 #### AFP i privat sektor
 
 * [AFP Privat](api/afpprivat/AfpPrivat.html)
