@@ -11,9 +11,9 @@ paths:
   /sak:
     post:
       description: |
-        Krever token fra maskinporten med scope **nav:uforetrygd/lanekassen/sak.read**
+        Gir nødvendig informasjon til Lånekassen ifbm søknad om sletting av gjeld.
         
-        - Utleverer informasjon om gitt bruker sin uføretrygd som Lånekassen benytter for å vurdere sletting av gjeld.
+        - Krever token fra maskinporten med scope **nav:uforetrygd/lanekassen/slettgjeld.read**
       operationId: sak
       parameters:
         - in: header
@@ -43,7 +43,43 @@ paths:
         403:
           description: Autorisering til ressurs feilet, feks feil scope i token.
         404:
-          description: Fant ingen sak for gitt personId og dato.
+          description: Fant ingen sak for angitt personId og dato.
+  /barnetillegg:
+    post:
+      description: |
+        Gir nødvendig informasjon til Lånekassen ifbm etterkontroll av gjeldssletting.
+        
+        - Krever token fra maskinporten med scope **nav:uforetrygd/lanekassen/slettgjeld.read**
+      operationId: barnetillegg
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarnetilleggRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarnetilleggResponse'
+        400:
+          description: Feil i request-data fra klient.
+        401:
+          description: Autentisering feilet.
+        403:
+          description: Autorisering til ressurs feilet, feks feil scope i token.
+        404:
+          description: Fant ingen sak for angitt personId og årstall.
 components:
   schemas:
     SakRequest:
@@ -57,7 +93,7 @@ components:
         dato:
           type: string
           format: YYYY-mm-DD
-          description: Datoformat YYYY-mm-DD.
+          description: Støtter kun datoer fra og med 2015-01-01
           example: "2025-01-01"
     SakResponse:
       title: Sak - response
@@ -66,15 +102,15 @@ components:
         harUforetrygdUtbetalt:
           type: boolean
           example: true
-          description: Har bruker uføretrygd utbetalt på gitt dato.
+          description: Har bruker uføretrygd utbetalt på angitt dato.
         uforegrad:
           type: number
-          description: Uføregrad i prosent på gitt dato.
+          description: Uføregrad i prosent på angitt dato.
           example: 100
         harBarnetillegg:
           type: boolean
           example: false
-          description: Har barnetillegg på gitt dato.
+          description: Har barnetillegg på angitt dato.
         statusBeregning:
           $ref: '#/components/schemas/StatusBeregning'
     StatusBeregning:
@@ -88,6 +124,26 @@ components:
         - ENDELIG
         - USIKKER
       example: ENDELIG
+    BarnetilleggRequest:
+      title: Barnetillegg - request
+      type: object
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer.
+          example: "01234567890"
+        arstall:
+          type: integer
+          description: Støtter kun årstall fra og med 2015
+          example: 2025
+    BarnetilleggResponse:
+      title: Barnetillegg - response
+      type: object
+      properties:
+        utbetaltBarnetillegg:
+          type: integer
+          description: Netto utbetalt barnetillegg for angitt år
+          example: 5000
   securitySchemes:
     bearerAuth:
       type: http
