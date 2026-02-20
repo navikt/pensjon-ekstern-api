@@ -40,6 +40,10 @@ title: Pensjon Ekstern-API
 
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
 
+#### AFP i offentlig sektor
+
+* [Foreta folketrygdberegnet Afp](api/afpoffentlig/foretaFolketrygdberegnetAfp.html)
+
 #### Tjenestepensjon/samordning
 
 * [Tjenestepensjon](api/tjenestepensjon/tjenestepensjon.html)
