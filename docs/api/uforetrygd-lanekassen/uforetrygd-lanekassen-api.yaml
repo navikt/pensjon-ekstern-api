@@ -14,7 +14,7 @@ paths:
         Informasjon om en brukers sak på angitt dato.
         Kalles fra Lånekassen ifbm søknad om sletting av gjeld.
         
-        - Krever token fra maskinporten med scope **nav:uforetrygd/lanekassen/gjeldsletting.read**
+        - Krever token fra maskinporten med scope **nav:uforetrygd/lanekassen/gjeldssletting.read**
       operationId: sak
       parameters:
         - in: header
@@ -52,7 +52,7 @@ paths:
         
         Kalles fra Lånekassen ifbm etterkontroll av gjeldssletting.
         
-        - Krever token fra maskinporten med scope **nav:uforetrygd/lanekassen/gjeldsletting.read**
+        - Krever token fra maskinporten med scope **nav:uforetrygd/lanekassen/gjeldssletting.read**
       operationId: barnetillegg
       parameters:
         - in: header
