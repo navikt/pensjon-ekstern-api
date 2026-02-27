@@ -20,6 +20,7 @@ info:
     * Altinn 2: Samtykkeperioden er definert av `fraOgMed` og `tilOgMed`.
     * Altinn 3: Samtykkeperioden er definert av `fraogmed` og `tilogmed`.
     
+    Du kan finne info om ressursen og dens metadata her: [https://platform.tt02.altinn.no/resourceregistry/api/v1/resource/nav_samtykke_dsop_aap-ufore](https://platform.tt02.altinn.no/resourceregistry/api/v1/resource/nav_samtykke_dsop_aap-ufore)<br>
     Klikk [her](./Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.</br>
     Se også Digitaliseringsdirektoratets dokumentasjon for datakonsumenter, [Samtykke for datakonsument – Altinn](https://docs.altinn.studio/nb/authorization/guides/system-vendor/consent/)
   contact: {}
