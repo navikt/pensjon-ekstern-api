@@ -113,21 +113,21 @@ components:
       title: Sak
       type: object
       properties:
-        harUforetrygdUtbetalt:
-          type: boolean
-          nullable: false
-          example: true
-          description: Har bruker uføretrygd utbetalt på angitt dato.
         uforegrad:
           type: number
           nullable: false
           description: Uføregrad i prosent på angitt dato.
           example: 100
-        harBarnetillegg:
+        harUforetrygdUtbetalt:
+          type: boolean
+          nullable: false
+          example: true
+          description: Har uføretrygd utbetalt på angitt dato.
+        harBarnetilleggUtbetalt:
           type: boolean
           nullable: false
           example: false
-          description: Har barnetillegg på angitt dato.
+          description: Har utbetalt barnetillegg på angitt dato.
         statusBeregning:
           $ref: '#/components/schemas/StatusBeregning'
     StatusBeregning:
@@ -167,7 +167,7 @@ components:
         utbetaltBarnetillegg:
           type: integer
           nullable: false
-          description: Netto utbetalt barnetillegg for angitt år
+          description: Netto utbetalt barnetillegg for barn som fyller 17 eller 18 i angitt år
           example: 5000
   securitySchemes:
     bearerAuth:
