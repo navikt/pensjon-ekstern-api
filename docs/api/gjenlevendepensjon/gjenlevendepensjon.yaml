@@ -4,15 +4,15 @@ info:
   description: Tjeneste for å hente informasjon om gjeldende vedtak for gjenlevendepensjon.
   version: 1.0.0
 servers:
-  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/pen/
-  - url: https://pensjon-gw.nav.no/pensjon/pen/
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon
+  - url: https://pensjon-gw.nav.no/pensjon
 paths:
-  /api/pensjon/ekstern/gjenlevendepensjon:
+  /gjenlevendepensjon:
     post:
       description: >-
         Henter gjeldende vedtak for gjenlevendepensjon for en gitt person.
         Returnerer en liste med vedtak inkludert beregningsdetaljer.
-        Scope mot Maskinporten settes til `nav:pensjon/gjenlevendepensjon`.
+        Scope mot Maskinporten settes til `nav:pensjon/vedtaksinformasjon.read`.
       operationId: hentGjenlevendepensjonInformasjon
       parameters:
         - in: header

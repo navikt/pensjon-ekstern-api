@@ -4,7 +4,7 @@ info:
   version: '1.0'
   description: |-
     For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/vedtaksinformasjon.read`. 
-    Tjenesten støtter også scopet `nav:pensjon/v1/vedtaksinformasjon`, men dette skal fases ut.
+    Tjenesten støtter også scopet `nav:pensjon/vedtaksinformasjon.read`, men dette skal fases ut.
 
     Tjenesten returnerer den samordningspliktige informasjonen om en brukers vedtak.
 servers:
