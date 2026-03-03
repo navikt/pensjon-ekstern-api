@@ -1,0 +1,352 @@
+openapi: 3.0.1
+info:
+  title: Pensjon Gjenlevendepensjon
+  description: Tjeneste for å hente informasjon om gjeldende vedtak for gjenlevendepensjon.
+  version: 1.0.0
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/pen/
+  - url: https://pensjon-gw.nav.no/pensjon/pen/
+paths:
+  /api/pensjon/ekstern/gjenlevendepensjon:
+    post:
+      description: >-
+        Henter gjeldende vedtak for gjenlevendepensjon for en gitt person.
+        Returnerer en liste med vedtak inkludert beregningsdetaljer.
+        Scope mot Maskinporten settes til `nav:pensjon/gjenlevendepensjon`.
+      operationId: hentGjenlevendepensjonInformasjon
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HentGjenlevendeInformasjonRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HentGjenlevendeInformasjonResponse'
+        400:
+          description: Feil i request-data fra klient (f.eks. ugyldig fødselsnummer)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, f.eks. feil scope i token
+        500:
+          description: Intern feil i tjenesten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+components:
+  schemas:
+    HentGjenlevendeInformasjonRequest:
+      title: Hent gjenlevendepensjon informasjon - request
+      type: object
+      required:
+        - personId
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fomDato:
+          type: string
+          format: date
+          description: Valgfri fra-og-med-dato for å begrense søket
+          example: "2024-01-01"
+
+    HentGjenlevendeInformasjonResponse:
+      title: Hent gjenlevendepensjon informasjon - response
+      type: object
+      properties:
+        pensjonVedtakListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/GjenlevendeInformasjonDto'
+
+    GjenlevendeInformasjonDto:
+      title: Gjenlevendepensjon vedtak
+      type: object
+      properties:
+        vedtakId:
+          type: integer
+          format: int64
+          description: Unik identifikator for vedtaket
+        virkningFom:
+          type: string
+          format: date
+          description: Vedtakets virkningstidspunkt fra og med
+        virkningTom:
+          type: string
+          format: date
+          nullable: true
+          description: Vedtakets virkningstidspunkt til og med
+        vedtaksKode:
+          $ref: '#/components/schemas/VedtakTypeDto'
+        beregningListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/BeregningDto'
+
+    VedtakTypeDto:
+      type: string
+      description: Type vedtak
+      enum:
+        - AFPEO
+        - ANKE
+        - AVSL
+        - ENDRING
+        - ERSTATNING
+        - ETTERGIV_GJELD
+        - FORGANG
+        - FRYS
+        - GOMR
+        - INTERNKON
+        - KLAGE
+        - MTK
+        - OMGJ_TILBAKE
+        - OPPHOR
+        - OPPTJ
+        - REGULERING
+        - SAK_OMKOST
+        - SAMMENSTOT
+        - TILBAKEKR
+        - UT_VURDERING_EO
+        - UTSEND_AVTALELAND
+
+    BeregningDto:
+      title: Beregning
+      type: object
+      properties:
+        virkningFom:
+          type: string
+          format: date
+          nullable: true
+          description: Beregningens virkningstidspunkt fra og med
+        virkningTom:
+          type: string
+          format: date
+          nullable: true
+          description: Beregningens virkningstidspunkt til og med
+        brutto:
+          type: integer
+          nullable: true
+          description: Brutto månedsbeløp
+        netto:
+          type: integer
+          nullable: true
+          description: Netto månedsbeløp
+        resultatKode:
+          $ref: '#/components/schemas/ResultatTypeDto'
+        p67Beregning:
+          type: boolean
+          nullable: true
+        afpPensjonsgrad:
+          type: integer
+          nullable: true
+        bruttoGrunnpensjon:
+          type: integer
+          nullable: true
+          description: Brutto grunnpensjon
+        nettoGrunnpensjon:
+          type: integer
+          nullable: true
+          description: Netto grunnpensjon
+        grunnpensjonsats:
+          type: number
+          format: double
+          nullable: true
+          description: Grunnpensjonsats
+        bruttoTilleggspensjon:
+          type: integer
+          nullable: true
+          description: Brutto tilleggspensjon
+        nettoTilleggspensjon:
+          type: integer
+          nullable: true
+          description: Netto tilleggspensjon
+        bruttoSertillegg:
+          type: integer
+          nullable: true
+          description: Brutto særtillegg
+        nettoSertillegg:
+          type: integer
+          nullable: true
+          description: Netto særtillegg
+        sertilleggSats:
+          type: number
+          format: double
+          nullable: true
+          description: Særtilleggsats
+        bruttoAFPtillegg:
+          type: integer
+          nullable: true
+        nettoAFPtillegg:
+          type: integer
+          nullable: true
+        ektefelletillegg:
+          type: integer
+          nullable: true
+        bruttoBarnetilleggFellesbarn:
+          type: integer
+          nullable: true
+        nettoBarnetilleggFellesbarn:
+          type: integer
+          nullable: true
+        antallBarnetilleggFellesbarn:
+          type: integer
+          nullable: true
+        bruttoBarnetilleggSerkullsbarn:
+          type: integer
+          nullable: true
+        nettoBarnetilleggSerkullsbarn:
+          type: integer
+          nullable: true
+        antallBarnetilleggSerkullsbarn:
+          type: integer
+          nullable: true
+        nettoVentetillegg:
+          type: integer
+          nullable: true
+        ventetilleggProsent:
+          type: number
+          format: double
+          nullable: true
+        paragraf851Tillegg:
+          type: integer
+          nullable: true
+        yrkesskadegrad:
+          type: integer
+          nullable: true
+          description: Yrkesskadegrad i prosent
+        uforegrad:
+          type: integer
+          nullable: true
+        involvertePersonerNokkelinfoListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/BeregningNokkelinfoDto'
+        fremtidigPensjonsgivendeInntektBruker:
+          type: integer
+          nullable: true
+          description: Fremtidig pensjonsgivende inntekt for bruker
+
+    ResultatTypeDto:
+      type: string
+      nullable: true
+      description: Resultattype for beregningen
+      enum:
+        - AP2011_GJP
+        - AP2011_GJP_UP
+        - AP2011_GJP_UP_YP
+        - AP_GJP
+        - AP_GJP_UP
+        - AP_GJP_UP_YP
+        - GJP
+        - GJP_FAR
+        - GJP_MOR
+        - GJP_UP
+        - GJP_UP_YP
+        - GJR
+        - KONV_GJENL
+        - UP_GJP
+        - UP_GJP_UP
+        - UP_GJP_UP_YP
+        - UT_GJT
+
+    BeregningNokkelinfoDto:
+      title: Beregning nøkkelinfo
+      type: object
+      properties:
+        spt:
+          $ref: '#/components/schemas/SluttpoengtallDto'
+        ypt:
+          $ref: '#/components/schemas/SluttpoengtallDto'
+        opt:
+          $ref: '#/components/schemas/SluttpoengtallDto'
+        anvendtTrygdetid:
+          type: integer
+          nullable: true
+          description: Anvendt trygdetid i antall år
+        anvendtIBeregningen:
+          type: boolean
+          nullable: true
+
+    SluttpoengtallDto:
+      title: Sluttpoengtall
+      type: object
+      nullable: true
+      properties:
+        poengtall:
+          type: number
+          format: double
+          nullable: true
+          description: Sluttpoengtall
+        poengrekke:
+          $ref: '#/components/schemas/PoengrekkeDto'
+
+    PoengrekkeDto:
+      title: Poengrekke
+      type: object
+      nullable: true
+      properties:
+        pa:
+          type: integer
+          nullable: true
+          description: Poengår totalt
+        pa_f92:
+          type: integer
+          nullable: true
+          description: Poengår før 1992
+        pa_e91:
+          type: integer
+          nullable: true
+          description: Poengår etter 1991
+        tpiFaktor:
+          type: number
+          format: double
+          nullable: true
+
+    ProblemDetail:
+      title: Feildetaljer (RFC 9457)
+      type: object
+      properties:
+        type:
+          type: string
+          description: URI som identifiserer problemtypen
+          example: "gjenlevendepensjon:ugyldig-input"
+        title:
+          type: string
+          example: "gjenlevendepensjon"
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+          example: "Ugyldig input til tjenesten"
+        correlationId:
+          type: string
+          description: Korrelasjons-ID for feilsøking
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    security:
+      - bearerAuth: []
