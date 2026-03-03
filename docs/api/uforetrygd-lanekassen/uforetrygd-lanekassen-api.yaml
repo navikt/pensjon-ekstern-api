@@ -88,17 +88,18 @@ components:
     SakRequest:
       title: Sak - request
       type: object
+      required:
+        - personId
+        - dato
       properties:
         personId:
           type: string
-          required: true
           nullable: false
           description: Fødselsnummer, 11 siffer.
           example: "01234567890"
         dato:
           type: string
           format: YYYY-mm-DD
-          required: true
           nullable: false
           description: Støtter kun datoer fra og med 2015-01-01
           example: "2025-01-01"
@@ -147,16 +148,17 @@ components:
     BarnetilleggRequest:
       title: Barnetillegg - request
       type: object
+      required:
+        - personId
+        - arstall
       properties:
         personId:
           type: string
-          required: true
           nullable: false
           description: Fødselsnummer, 11 siffer.
           example: "01234567890"
         arstall:
           type: integer
-          required: true
           nullable: false
           description: Støtter kun årstall fra og med 2015 og til og med forrige år
           example: 2025
