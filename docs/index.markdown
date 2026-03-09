@@ -40,6 +40,10 @@ title: Pensjon Ekstern-API
 
 * [Dokumentasjon Fellesordningen](fellesordningen/fellesordningen.markdown)
 
+#### Gjenlevendepensjon
+
+* [Gjenlevendepensjon informasjon](api/gjenlevendepensjon/gjenlevendepensjon.html)
+
 #### AFP i offentlig sektor
 
 * [Foreta folketrygdberegnet Afp](api/afpoffentlig/foretaFolketrygdberegnetAfp.html)
