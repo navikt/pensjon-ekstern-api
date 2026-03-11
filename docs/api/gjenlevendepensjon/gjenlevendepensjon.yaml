@@ -107,27 +107,14 @@ components:
       type: string
       description: Type vedtak
       enum:
-        - AFPEO
-        - ANKE
         - AVSL
         - ENDRING
-        - ERSTATNING
-        - ETTERGIV_GJELD
         - FORGANG
-        - FRYS
         - GOMR
-        - INTERNKON
-        - KLAGE
-        - MTK
-        - OMGJ_TILBAKE
         - OPPHOR
         - OPPTJ
         - REGULERING
-        - SAK_OMKOST
         - SAMMENSTOT
-        - TILBAKEKR
-        - UT_VURDERING_EO
-        - UTSEND_AVTALELAND
 
     BeregningDto:
       title: Beregning
@@ -251,23 +238,12 @@ components:
       nullable: true
       description: Resultattype for beregningen
       enum:
-        - AP2011_GJP
-        - AP2011_GJP_UP
-        - AP2011_GJP_UP_YP
-        - AP_GJP
-        - AP_GJP_UP
-        - AP_GJP_UP_YP
         - GJP
         - GJP_FAR
         - GJP_MOR
         - GJP_UP
         - GJP_UP_YP
         - GJR
-        - KONV_GJENL
-        - UP_GJP
-        - UP_GJP_UP
-        - UP_GJP_UP_YP
-        - UT_GJT
 
     BeregningNokkelinfoDto:
       title: Beregning nøkkelinfo
