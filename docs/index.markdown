@@ -44,6 +44,10 @@ title: Pensjon Ekstern-API
 
 * [Gjenlevendepensjon informasjon](api/gjenlevendepensjon/gjenlevendepensjon.html)
 
+#### Krigspensjon
+
+* [Krigspensjon informasjon](api/krigspensjon/krigspensjon.html)
+
 #### AFP i offentlig sektor
 
 * [Foreta folketrygdberegnet Afp](api/afpoffentlig/foretaFolketrygdberegnetAfp.html)
