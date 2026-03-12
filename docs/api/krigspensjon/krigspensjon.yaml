@@ -1,0 +1,204 @@
+openapi: 3.0.1
+info:
+  title: Pensjon Krigspensjon
+  description: Tjeneste for å hente informasjon om gjeldende vedtak for krigspensjon.
+  version: 1.0.0
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon
+  - url: https://pensjon-gw.nav.no/pensjon (ikke implementert enda)
+paths:
+  /krigspensjon:
+    post:
+      description: >-
+        Henter gjeldende vedtak for krigspensjon for en gitt person.
+        Returnerer en liste med vedtak inkludert beregningsdetaljer for krigspensjon.
+        Scope mot Maskinporten settes til `nav:pensjon/vedtaksinformasjon.read`.
+      operationId: hentKrigspensjonInformasjon
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HentKrigspensjonInformasjonRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HentKrigspensjonInformasjonResponse'
+        400:
+          description: Feil i request-data fra klient (f.eks. ugyldig fødselsnummer)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, f.eks. feil scope i token
+        500:
+          description: Intern feil i tjenesten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+components:
+  schemas:
+    HentKrigspensjonInformasjonRequest:
+      title: Hent krigspensjon informasjon - request
+      type: object
+      required:
+        - personId
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fomDato:
+          type: string
+          format: date
+          description: Valgfri fra-og-med-dato for å begrense søket
+          example: "2024-01-01"
+
+    HentKrigspensjonInformasjonResponse:
+      title: Hent krigspensjon informasjon - response
+      type: object
+      properties:
+        pensjonVedtakListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/KrigspensjonInformasjonDto'
+
+    KrigspensjonInformasjonDto:
+      title: Krigspensjon vedtak
+      type: object
+      properties:
+        vedtakId:
+          type: integer
+          format: int64
+          description: Unik identifikator for vedtaket
+        virkningFom:
+          type: string
+          format: date
+          description: Vedtakets virkningstidspunkt fra og med
+        virkningTom:
+          type: string
+          format: date
+          nullable: true
+          description: Vedtakets virkningstidspunkt til og med
+        vedtaksKode:
+          $ref: '#/components/schemas/VedtakTypeDto'
+        typeKrigspensjon:
+          $ref: '#/components/schemas/KrigspensjonTypeDto'
+        beregningListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/BeregningDto'
+
+    VedtakTypeDto:
+      type: string
+      nullable: true
+      description: Type vedtak
+      enum:
+        - AVSL
+        - ENDRING
+        - FORGANG
+        - GOMR
+        - OPPHOR
+        - OPPTJ
+        - REGULERING
+        - SAMMENSTOT
+
+    KrigspensjonTypeDto:
+      type: string
+      nullable: true
+      description: Type krigspensjon
+      enum:
+        - BP
+        - EP
+        - MIL_BARNEP
+        - MIL_GJENLEV
+        - MIL_INV
+        - SIVIL_BARNEP
+        - SIVIL_GJENLEV
+        - SIVIL_INV
+        - UP
+
+    BeregningDto:
+      title: Beregning
+      type: object
+      properties:
+        virkningFom:
+          type: string
+          format: date
+          nullable: true
+          description: Beregningens virkningstidspunkt fra og med
+        virkningTom:
+          type: string
+          format: date
+          nullable: true
+          description: Beregningens virkningstidspunkt til og med
+        krigOgGammelYrkesskade:
+          $ref: '#/components/schemas/KrigpensjonBeregningDto'
+
+    KrigpensjonBeregningDto:
+      title: Krig og gammel yrkesskade beregning
+      type: object
+      nullable: true
+      properties:
+        belop:
+          type: integer
+          nullable: true
+          description: Beløp til utbetaling
+        pensjongrad:
+          type: integer
+          nullable: true
+          description: Pensjonsgrad i prosent
+        grunnlag:
+          type: integer
+          nullable: true
+          description: Grunnlag for utbetaling
+        forholdstallYG:
+          type: number
+          format: double
+          nullable: true
+          description: Forholdstall for yrkesskadegrad
+
+    ProblemDetail:
+      title: Feildetaljer (RFC 9457)
+      type: object
+      properties:
+        type:
+          type: string
+          description: URI som identifiserer problemtypen
+          example: "krigspensjon:ugyldig-input"
+        title:
+          type: string
+          example: "krigspensjon"
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+          example: "Ugyldig input til tjenesten"
+        correlationId:
+          type: string
+          description: Korrelasjons-ID for feilsøking
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    security:
+      - bearerAuth: []
