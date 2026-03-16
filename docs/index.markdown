@@ -48,6 +48,10 @@ title: Pensjon Ekstern-API
 
 * [Krigspensjon informasjon](api/krigspensjon/krigspensjon.html)
 
+#### Yrkesskade
+
+* [Yrkesskade informasjon](api/yrkesskade/yrkesskade.html)
+
 #### AFP i offentlig sektor
 
 * [Foreta folketrygdberegnet Afp](api/afpoffentlig/foretaFolketrygdberegnetAfp.html)
