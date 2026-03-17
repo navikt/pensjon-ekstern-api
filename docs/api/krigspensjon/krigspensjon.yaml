@@ -124,15 +124,12 @@ components:
       nullable: true
       description: Type krigspensjon
       enum:
-        - BP
-        - EP
         - MIL_BARNEP
         - MIL_GJENLEV
         - MIL_INV
         - SIVIL_BARNEP
         - SIVIL_GJENLEV
         - SIVIL_INV
-        - UP
 
     BeregningDto:
       title: Beregning
@@ -168,11 +165,6 @@ components:
           type: integer
           nullable: true
           description: Grunnlag for utbetaling
-        forholdstallYG:
-          type: number
-          format: double
-          nullable: true
-          description: Forholdstall for yrkesskadegrad
 
     ProblemDetail:
       title: Feildetaljer (RFC 9457)
