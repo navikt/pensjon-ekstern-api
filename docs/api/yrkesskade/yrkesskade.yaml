@@ -126,12 +126,6 @@ components:
       enum:
         - BP
         - EP
-        - MIL_BARNEP
-        - MIL_GJENLEV
-        - MIL_INV
-        - SIVIL_BARNEP
-        - SIVIL_GJENLEV
-        - SIVIL_INV
         - UP
 
     BeregningDto:
@@ -164,10 +158,6 @@ components:
           type: integer
           nullable: true
           description: Pensjonsgrad i prosent
-        grunnlag:
-          type: integer
-          nullable: true
-          description: Grunnlag for utbetaling
         forholdstallYG:
           type: number
           format: double
