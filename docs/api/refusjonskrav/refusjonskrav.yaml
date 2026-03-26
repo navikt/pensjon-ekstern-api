@@ -9,7 +9,7 @@ info:
 servers:
   - url: https://pensjon-refusjonskrav.ekstern.dev.nav.no
     description: Dev
-  - url: https://pensjon-refusjonskrav.ekstern.nav.no
+  - url: https://pensjon-refusjonskrav.nav.no
     description: Prod
 security:
   - Maskinporten: []
