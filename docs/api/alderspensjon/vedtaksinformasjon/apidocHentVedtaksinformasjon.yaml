@@ -134,7 +134,7 @@ components:
           format: date
         vedtakId:
           description: Identifikator for vedtak.
-          type: number
+          type: integer
           format: int64
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
@@ -221,7 +221,7 @@ components:
           format: date
         vedtakId:
           description: Identifikator for vedtak.
-          type: number
+          type: integer
           format: int64
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
@@ -348,7 +348,8 @@ components:
       properties:
         argumentListe:
           type: array
-          items: {}
+          items:
+            type: string
         kode:
           description: Kodetekst som beskriver merknaden.
           type: string
@@ -369,7 +370,7 @@ components:
           format: date
         vedtakId:
           description: Identifikator for vedtak.
-          type: number
+          type: integer
           format: int64
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
@@ -462,7 +463,7 @@ components:
           format: date
         vedtakId:
           description: Identifikator for vedtak.
-          type: number
+          type: integer
           format: int64
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
@@ -511,7 +512,7 @@ components:
           format: date
         vedtakId:
           description: Identifikator for vedtak.
-          type: number
+          type: integer
           format: int64
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
