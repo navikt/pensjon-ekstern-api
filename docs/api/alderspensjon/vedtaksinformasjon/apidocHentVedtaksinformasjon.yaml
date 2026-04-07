@@ -103,7 +103,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AfpOffentligInfo'
-        AP67InfoList:
+        ap67InfoList:
           type: array
           items:
             $ref: '#/components/schemas/AP67Info'
@@ -112,7 +112,7 @@ components:
         - kap19InfoList
         - afpPrivatInfoList
         - afpOffentligInfoList
-        - AP67InfoList
+        - ap67InfoList
     Get400ApplicationJsonResponse: {}
     Get401ApplicationJsonResponse: {}
     Get404ApplicationJsonResponse: {}
@@ -139,7 +139,7 @@ components:
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
           type: integer
-        totalBelopNetto:
+        totalbelopNetto:
           description: 'Angir sum netto per mnd. '
           type: integer
         resultatKilde:
@@ -198,7 +198,7 @@ components:
         minstenivatilleggPensjonistpar:
           description: 'Minstenivatillegg pensjonistpar netto. '
           type: integer
-        uvektedeytelseskomponenter:
+        uvektedeYtelseskomponenter:
           description: Uvektede ytelseskomponenter som kan forekomme
           type: array
           items:
@@ -226,7 +226,7 @@ components:
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
           type: integer
-        totalBelopNetto:
+        totalbelopNetto:
           description: 'Angir sum netto per mnd. '
           type: integer
         resultatKilde:
@@ -293,12 +293,10 @@ components:
           format: double
         spt:
           description: 'Sluttpoengtall på tilleggspensjon. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         ypt:
           description: 'Sluttpoengtall for yrkesskade. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         yrkesskadegrad:
           description: 'Angir den siste yrkesskadegraden (fra yrkesskadegrunnlaget) som er lagt til grunn på beregningen. Kun relevant for ytelser der yrkesskade er tatt hensyn til. '
           type: number
@@ -308,16 +306,13 @@ components:
           type: string
         sptAvdod:
           description: 'Sluttpoengtall på tilleggspensjon for avdøde. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         yptAvdod:
           description: 'Sluttpoengtall for yrkesskade for avdøde. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         optAvdod:
           description: 'Sluttpoengtall ved overkompensasjon på tilleggspensjonen for avdød. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         yrkesskadegradAvdod:
           description: 'Angir den siste yrkesskadegraden for avdøde (fra yrkesskadegrunnlaget) som er lagt til grunn på beregningen. Kun relevant for ytelser der yrkesskade er hensyntatt. '
           type: number
@@ -339,7 +334,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Vilkarsvedtak'
-        uvektedeytelseskomponenter:
+        uvektedeYtelseskomponenter:
           description: Uvektede ytelseskomponenter som kan forekomme
           type: array
           items:
@@ -379,7 +374,7 @@ components:
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
           type: integer
-        totalBelopNetto:
+        totalbelopNetto:
           description: 'Angir sum netto per mnd. '
           type: integer
         resultatKilde:
@@ -389,7 +384,7 @@ components:
           description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/Merknad'
         sakType:
           description: 'Angir hva slags sak komponenten er knyttet til. F.eks. ALDER, AFP, AFP_PRIVAT. '
           type: string
@@ -414,7 +409,7 @@ components:
           description: 'Grunnpensjonsats. Kan for eksempel være 0,9 eller 1,0. Vil ikke være satt for vedtak fattet før desember 2008. '
           type: number
           format: double
-        sertillleggsats:
+        sertilleggsats:
           description: 'Hvis mottaker har liten eller ingen tilleggspensjon, tilståes det et særtillegg. Størrelsen avhenger av særtilleggsats og eventuell tilleggspensjon. '
           type: number
           format: double
@@ -434,8 +429,7 @@ components:
             $ref: '#/components/schemas/BeregningNokkelinfo'
         sluttpoengtall:
           description: Ved uføre, etterlatt og AFP blir det beregnet poengtall for fremtidige år for å komme frem til et sluttpoengtall som pensjonen skal beregnes etter
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         minstenivatilleggIndividuelt:
           description: 'Minstenivatillegg individuelt netto. '
           type: integer
@@ -473,7 +467,7 @@ components:
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
           type: integer
-        totalBelopNetto:
+        totalbelopNetto:
           description: 'Angir sum netto per mnd. '
           type: integer
         resultatKilde:
@@ -483,7 +477,7 @@ components:
           description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/Merknad'
         sakType:
           description: 'Angir hva slags sak komponenten er knyttet til. F.eks. ALDER, AFP, AFP_PRIVAT. '
           type: string
@@ -522,7 +516,7 @@ components:
         trygdetidAnvendt:
           description: 'Antall trygdetid anvendt i vedtak. '
           type: integer
-        totalBelopNetto:
+        totalbelopNetto:
           description: 'Angir sum netto per mnd. '
           type: integer
         resultatKilde:
@@ -532,7 +526,7 @@ components:
           description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/Merknad'
         sakType:
           description: 'Angir hva slags sak komponenten er knyttet til. F.eks. ALDER, AFP, AFP_PRIVAT. '
           type: string
@@ -556,8 +550,7 @@ components:
           type: integer
         spt:
           description: 'Sluttpoengtall på tilleggspensjon. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         minstenivatilleggIndividuelt:
           description: 'Minstenivatillegg individuelt netto. '
           type: integer
@@ -593,16 +586,13 @@ components:
           type: string
         spt:
           description: 'Eventuelt sluttpoengtall på tilleggspensjonen som er i bruk på (del)beregningen nøkkelinformasjonen gjelder for. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         ypt:
           description: 'Eventuelt sluttpoengtall ved yrkesskade på tilleggspensjonen som er i bruk  på (del)beregningen nøkkelinformasjonen gjelder for. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         opt:
           description: 'Eventuelt sluttpoengtall med overkompensasjon tilleggspensjonen som er i bruk på (del)beregning nøkkelinformasjonen gjelder for. '
-          items:
-            $ref: '#/components/schemas/KapittelSluttpoengtall'
+          $ref: '#/components/schemas/KapittelSluttpoengtall'
         anvendtTrygdetid:
           description: 'Eventuelt anvendt trygdetid på (del)beregningen nøkkelinformasjonen gjelder for. '
           type: integer
@@ -626,10 +616,10 @@ components:
         pa:
           description: Antall poengår totalt.
           type: integer
-        paf92:
+        paF92:
           description: Antall poengår før 1992.
           type: integer
-        pae91:
+        paE91:
           description: Antall poengår etter 1991.
           type: integer
         tpiFaktor:
