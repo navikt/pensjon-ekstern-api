@@ -477,10 +477,9 @@ components:
           type: string
           description: Identifiserer brukeren (eks. fnr/dnr)
         hendelseType:
-          type: object
-          description: Type hendelse.
-          items:
-            $ref: '#/components/schemas/hendelseTypeCode'
+          description: Type hendelse. Gyldige verdier er definert i HendelseTypeCode.
+          allOf:
+            - $ref: '#/components/schemas/hendelseTypeCode'
         ytelseType:
           type: string
           enum:
