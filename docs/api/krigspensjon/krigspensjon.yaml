@@ -149,7 +149,7 @@ components:
           $ref: '#/components/schemas/KrigpensjonBeregningDto'
 
     KrigpensjonBeregningDto:
-      title: Krig og gammel yrkesskade beregning
+      title: Krigspensjon beregning
       type: object
       nullable: true
       properties:
