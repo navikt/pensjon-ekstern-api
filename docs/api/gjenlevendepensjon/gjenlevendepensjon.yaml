@@ -140,12 +140,6 @@ components:
           description: Netto månedsbeløp
         resultatKode:
           $ref: '#/components/schemas/ResultatTypeDto'
-        p67Beregning:
-          type: boolean
-          nullable: true
-        afpPensjonsgrad:
-          type: integer
-          nullable: true
         bruttoGrunnpensjon:
           type: integer
           nullable: true
@@ -180,50 +174,10 @@ components:
           format: double
           nullable: true
           description: Særtilleggsats
-        bruttoAFPtillegg:
-          type: integer
-          nullable: true
-        nettoAFPtillegg:
-          type: integer
-          nullable: true
-        ektefelletillegg:
-          type: integer
-          nullable: true
-        bruttoBarnetilleggFellesbarn:
-          type: integer
-          nullable: true
-        nettoBarnetilleggFellesbarn:
-          type: integer
-          nullable: true
-        antallBarnetilleggFellesbarn:
-          type: integer
-          nullable: true
-        bruttoBarnetilleggSerkullsbarn:
-          type: integer
-          nullable: true
-        nettoBarnetilleggSerkullsbarn:
-          type: integer
-          nullable: true
-        antallBarnetilleggSerkullsbarn:
-          type: integer
-          nullable: true
-        nettoVentetillegg:
-          type: integer
-          nullable: true
-        ventetilleggProsent:
-          type: number
-          format: double
-          nullable: true
-        paragraf851Tillegg:
-          type: integer
-          nullable: true
         yrkesskadegrad:
           type: integer
           nullable: true
           description: Yrkesskadegrad i prosent
-        uforegrad:
-          type: integer
-          nullable: true
         involvertePersonerNokkelinfoListe:
           type: array
           items:
