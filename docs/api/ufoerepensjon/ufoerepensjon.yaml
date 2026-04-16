@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Pensjon Uførepensjon
-  description: Tjeneste for å hente informasjon om gjeldende vedtak for uførepensjon.
+  title: Pensjon Uførepensjon og Uføretrygd
+  description: Tjeneste for å hente informasjon om gjeldende vedtak for uførepensjon og uføretrygd.
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon
@@ -10,7 +10,7 @@ paths:
   /ufoerepensjon:
     post:
       description: >-
-        Henter gjeldende vedtak for uførepensjon for en gitt person.
+        Henter gjeldende vedtak for uførepensjon og uføretrygd for en gitt person.
         Returnerer en liste med vedtak inkludert beregningsdetaljer og uføretrygd-informasjon.
         Scope mot Maskinporten settes til `nav:pensjon/vedtaksinformasjon.read`.
       operationId: hentUfoerepensjonInformasjon
@@ -241,6 +241,9 @@ components:
       title: Beregning nøkkelinfo
       type: object
       properties:
+        grunnlagsrolleKode:
+          type: string
+          description: Grunnlagsrolle for personen i beregningen
         spt:
           $ref: '#/components/schemas/SluttpoengtallDto'
         ypt:
@@ -285,10 +288,6 @@ components:
           type: integer
           nullable: true
           description: Poengår etter 1991
-        tpiFaktor:
-          type: number
-          format: double
-          nullable: true
 
     BeregningUforetrygdDto:
       title: Beregning uføretrygd
