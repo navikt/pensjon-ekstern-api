@@ -1,0 +1,421 @@
+openapi: 3.0.1
+info:
+  title: Pensjon Uførepensjon
+  description: Tjeneste for å hente informasjon om gjeldende vedtak for uførepensjon.
+  version: 1.0.0
+servers:
+  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon
+  - url: https://pensjon-gw.nav.no/pensjon (ikke implementert enda)
+paths:
+  /ufoerepensjon:
+    post:
+      description: >-
+        Henter gjeldende vedtak for uførepensjon for en gitt person.
+        Returnerer en liste med vedtak inkludert beregningsdetaljer og uføretrygd-informasjon.
+        Scope mot Maskinporten settes til `nav:pensjon/vedtaksinformasjon.read`.
+      operationId: hentUfoerepensjonInformasjon
+      parameters:
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HentUfoerepensjonInformasjonRequest'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HentUfoerepensjonInformasjonResponse'
+        400:
+          description: Feil i request-data fra klient (f.eks. ugyldig fødselsnummer)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, f.eks. feil scope i token
+        500:
+          description: Intern feil i tjenesten
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+components:
+  schemas:
+    HentUfoerepensjonInformasjonRequest:
+      title: Hent uførepensjon informasjon - request
+      type: object
+      required:
+        - personId
+      properties:
+        personId:
+          type: string
+          description: Fødselsnummer, 11 siffer
+          example: "01234567890"
+        fomDato:
+          type: string
+          format: date
+          description: Valgfri fra-og-med-dato for å begrense søket
+          example: "2024-01-01"
+
+    HentUfoerepensjonInformasjonResponse:
+      title: Hent uførepensjon informasjon - response
+      type: object
+      properties:
+        pensjonVedtakListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/UfoerepensjonInformasjonDto'
+
+    UfoerepensjonInformasjonDto:
+      title: Uførepensjon vedtak
+      type: object
+      properties:
+        vedtakId:
+          type: integer
+          format: int64
+          description: Unik identifikator for vedtaket
+        virkningFom:
+          type: string
+          format: date
+          description: Vedtakets virkningstidspunkt fra og med
+        virkningTom:
+          type: string
+          format: date
+          nullable: true
+          description: Vedtakets virkningstidspunkt til og med
+        vedtaksKode:
+          $ref: '#/components/schemas/VedtakTypeDto'
+        barnListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/VilkarsvedtakDto'
+          description: Liste over barn som er omfattet av vedtaket
+        beregningListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/BeregningDto'
+        beregningUforetrygdListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/BeregningUforetrygdDto'
+
+    VedtakTypeDto:
+      type: string
+      description: Type vedtak
+      enum:
+        - AVSL
+        - ENDRING
+        - FORGANG
+        - GOMR
+        - OPPHOR
+        - OPPTJ
+        - REGULERING
+        - SAMMENSTOT
+
+    VilkarsvedtakDto:
+      title: Vilkårsvedtak
+      type: object
+      description: Vilkårsvedtak for barn som er omfattet av uførepensjon
+      properties:
+        gjelderFnr:
+          type: string
+          description: Fødselsnummer for barnet som vilkårsvedtaket gjelder
+        fom:
+          type: string
+          format: date
+          nullable: true
+          description: Fra-og-med-dato for vilkårsvedtaket
+        tom:
+          type: string
+          format: date
+          nullable: true
+          description: Til-og-med-dato for vilkårsvedtaket
+
+    BeregningDto:
+      title: Beregning
+      type: object
+      properties:
+        virkningFom:
+          type: string
+          format: date
+          nullable: true
+          description: Beregningens virkningstidspunkt fra og med
+        virkningTom:
+          type: string
+          format: date
+          nullable: true
+          description: Beregningens virkningstidspunkt til og med
+        brutto:
+          type: integer
+          nullable: true
+          description: Brutto månedsbeløp
+        netto:
+          type: integer
+          nullable: true
+          description: Netto månedsbeløp
+        resultatKode:
+          $ref: '#/components/schemas/ResultatTypeDto'
+        bruttoGrunnpensjon:
+          type: integer
+          nullable: true
+          description: Brutto grunnpensjon
+        nettoGrunnpensjon:
+          type: integer
+          nullable: true
+          description: Netto grunnpensjon
+        grunnpensjonsats:
+          type: number
+          format: double
+          nullable: true
+          description: Grunnpensjonsats
+        bruttoTilleggspensjon:
+          type: integer
+          nullable: true
+          description: Brutto tilleggspensjon
+        nettoTilleggspensjon:
+          type: integer
+          nullable: true
+          description: Netto tilleggspensjon
+        bruttoSertillegg:
+          type: integer
+          nullable: true
+          description: Brutto særtillegg
+        nettoSertillegg:
+          type: integer
+          nullable: true
+          description: Netto særtillegg
+        sertilleggSats:
+          type: number
+          format: double
+          nullable: true
+          description: Særtilleggsats
+        paragraf851Tillegg:
+          type: integer
+          nullable: true
+          description: Netto paragraf 8-5-1 tillegg
+        yrkesskadegrad:
+          type: integer
+          nullable: true
+          description: Yrkesskadegrad i prosent
+        uforegrad:
+          type: integer
+          nullable: true
+          description: Uføregrad i prosent
+        involvertePersonerNokkelinfoListe:
+          type: array
+          items:
+            $ref: '#/components/schemas/BeregningNokkelinfoDto'
+        fremtidigPensjonsgivendeInntektBruker:
+          type: integer
+          nullable: true
+          description: Fremtidig pensjonsgivende inntekt for bruker
+
+    ResultatTypeDto:
+      type: string
+      nullable: true
+      description: Resultattype for beregningen
+      enum:
+        - UP
+        - UP_GJP
+        - UP_GJP_UP
+        - UP_GJP_UP_YP
+        - UP_YP
+        - UT
+        - UT_YT
+        - UT_GJT
+
+    BeregningNokkelinfoDto:
+      title: Beregning nøkkelinfo
+      type: object
+      properties:
+        spt:
+          $ref: '#/components/schemas/SluttpoengtallDto'
+        ypt:
+          $ref: '#/components/schemas/SluttpoengtallDto'
+        opt:
+          $ref: '#/components/schemas/SluttpoengtallDto'
+        anvendtTrygdetid:
+          type: integer
+          nullable: true
+          description: Anvendt trygdetid i antall år
+        anvendtIBeregningen:
+          type: boolean
+          nullable: true
+
+    SluttpoengtallDto:
+      title: Sluttpoengtall
+      type: object
+      nullable: true
+      properties:
+        poengtall:
+          type: number
+          format: double
+          nullable: true
+          description: Sluttpoengtall
+        poengrekke:
+          $ref: '#/components/schemas/PoengrekkeDto'
+
+    PoengrekkeDto:
+      title: Poengrekke
+      type: object
+      nullable: true
+      properties:
+        pa:
+          type: integer
+          nullable: true
+          description: Poengår totalt
+        pa_f92:
+          type: integer
+          nullable: true
+          description: Poengår før 1992
+        pa_e91:
+          type: integer
+          nullable: true
+          description: Poengår etter 1991
+        tpiFaktor:
+          type: number
+          format: double
+          nullable: true
+
+    BeregningUforetrygdDto:
+      title: Beregning uføretrygd
+      type: object
+      description: Detaljer for uføretrygd-beregning
+      properties:
+        fom:
+          type: string
+          format: date
+          nullable: true
+          description: Fra-og-med-dato for uføretrygd
+        tom:
+          type: string
+          format: date
+          nullable: true
+          description: Til-og-med-dato for uføretrygd
+        resultatKode:
+          type: string
+          nullable: true
+          description: Resultattype for uføretrygd-beregningen
+        uforegrad:
+          type: integer
+          nullable: true
+          description: Uføregrad i prosent
+        yrkesskadegrad:
+          type: integer
+          nullable: true
+          description: Yrkesskadegrad i prosent
+        nettoUforetrygdOrdinar:
+          type: integer
+          nullable: true
+          description: Netto uføretrygd ordinær ordning
+        bruttoUforetrygdOrdinar:
+          type: integer
+          nullable: true
+          description: Brutto uføretrygd ordinær ordning
+        nettoGjenlevendetillegg:
+          type: integer
+          nullable: true
+          description: Netto gjenlevendetillegg
+        bruttoGjenlevendetillegg:
+          type: integer
+          nullable: true
+          description: Brutto gjenlevendetillegg
+        inntektForUforhet:
+          type: integer
+          nullable: true
+          description: Inntekt før uførheten
+        inntektEtterUforhet:
+          type: integer
+          nullable: true
+          description: Inntekt etter uførheten
+        beregningsgrunnlagOrdiner:
+          type: number
+          format: double
+          nullable: true
+          description: Beregningsgrunnlag ordinær ordning (årsbeløp)
+        beregningsgrunnlagYrkesskade:
+          type: number
+          format: double
+          nullable: true
+          description: Beregningsgrunnlag yrkesskade (årsbeløp)
+        anvendtTrygdetid:
+          type: integer
+          nullable: true
+          description: Anvendt trygdetid i antall år
+        benyttetSivilstand:
+          type: string
+          nullable: true
+          description: Benyttet sivilstand ved beregning
+        beregningsgrunnlagOrdinerAvdod:
+          type: number
+          format: double
+          nullable: true
+          description: Beregningsgrunnlag ordinær ordning for avdød (årsbeløp)
+        beregningsgrunnlagYrkesskadeAvdod:
+          type: number
+          format: double
+          nullable: true
+          description: Beregningsgrunnlag yrkesskade for avdød (årsbeløp)
+        anvendtTrygdetidAvdod:
+          type: integer
+          nullable: true
+          description: Anvendt trygdetid for avdød i antall år
+        yrkesskadegradAvdod:
+          type: integer
+          nullable: true
+          description: Yrkesskadegrad for avdød i prosent
+        inntektBruktIInntektsavkorting:
+          type: integer
+          nullable: true
+          description: Inntekt brukt i inntektsavkorting
+        ufoeretidspunkt:
+          type: string
+          format: date
+          nullable: true
+          description: Tidspunkt for uførheten
+        beloepsgrense:
+          type: integer
+          nullable: true
+          description: Beløpsgrense for inntektsavkorting
+
+    ProblemDetail:
+      title: Feildetaljer (RFC 9457)
+      type: object
+      properties:
+        type:
+          type: string
+          description: URI som identifiserer problemtypen
+          example: "ufoerepensjon:ugyldig-input"
+        title:
+          type: string
+          example: "ufoerepensjon"
+        status:
+          type: integer
+          example: 400
+        detail:
+          type: string
+          example: "Ugyldig input til tjenesten"
+        correlationId:
+          type: string
+          description: Korrelasjons-ID for feilsøking
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    security:
+      - bearerAuth: []

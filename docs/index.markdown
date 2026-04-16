@@ -32,6 +32,10 @@ title: Pensjon Ekstern-API
 
 * [Lånekassen - sletting av gjeld](api/uforetrygd-lanekassen/Uforetrygd-lanekassen.html)
 
+#### Uførepensjon
+
+* [Uførepensjon informasjon](api/ufoerepensjon/ufoerepensjon.html)
+
 #### AFP i privat sektor
 
 * [AFP Privat](api/afpprivat/AfpPrivat.html)
