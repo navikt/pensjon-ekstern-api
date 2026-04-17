@@ -7,7 +7,7 @@ servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/uforetrygd/tpordningene
   - url: https://pensjon-gw.nav.no/uforetrygd/tpordningene (ikke implementert enda)
 paths:
-  /informasjon:
+  /vedtaksinformasjon:
     post:
       description: >-
         Henter gjeldende vedtak for uførepensjon og uføretrygd for en gitt person.
