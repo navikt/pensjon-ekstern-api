@@ -4,16 +4,16 @@ info:
   description: Tjeneste for å hente informasjon om gjeldende vedtak for uførepensjon og uføretrygd.
   version: 1.0.0
 servers:
-  - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon
-  - url: https://pensjon-gw.nav.no/pensjon (ikke implementert enda)
+  - url: https://pensjon-gw.ekstern.dev.nav.no/uforetrygd/tpordningene
+  - url: https://pensjon-gw.nav.no/uforetrygd/tpordningene (ikke implementert enda)
 paths:
-  /ufoerepensjon:
+  /informasjon:
     post:
       description: >-
         Henter gjeldende vedtak for uførepensjon og uføretrygd for en gitt person.
         Returnerer en liste med vedtak inkludert beregningsdetaljer og uføretrygd-informasjon.
         Scope mot Maskinporten settes til `nav:pensjon/vedtaksinformasjon.read`.
-      operationId: hentUfoerepensjonInformasjon
+      operationId: hentUforetrygdInformasjon
       parameters:
         - in: header
           name: x-request-id
@@ -26,7 +26,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/HentUfoerepensjonInformasjonRequest'
+              $ref: '#/components/schemas/HentUforetrygdInformasjonRequest'
         required: true
       responses:
         200:
@@ -34,28 +34,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HentUfoerepensjonInformasjonResponse'
+                $ref: '#/components/schemas/HentUforetrygdInformasjonResponse'
         400:
           description: Feil i request-data fra klient (f.eks. ugyldig fødselsnummer)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
         401:
           description: Autentisering feilet
         403:
           description: Autorisering til ressurs feilet, f.eks. feil scope i token
         500:
           description: Intern feil i tjenesten
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
 
 components:
   schemas:
-    HentUfoerepensjonInformasjonRequest:
-      title: Hent uførepensjon informasjon - request
+    HentUforetrygdInformasjonRequest:
+      title: Hent uføretrygd informasjon - request
       type: object
       required:
         - personId
@@ -70,17 +62,17 @@ components:
           description: Valgfri fra-og-med-dato for å begrense søket
           example: "2024-01-01"
 
-    HentUfoerepensjonInformasjonResponse:
-      title: Hent uførepensjon informasjon - response
+    HentUforetrygdInformasjonResponse:
+      title: Hent uføretrygd informasjon - response
       type: object
       properties:
         pensjonVedtakListe:
           type: array
           items:
-            $ref: '#/components/schemas/UfoerepensjonInformasjonDto'
+            $ref: '#/components/schemas/UforetrygdInformasjonDto'
 
-    UfoerepensjonInformasjonDto:
-      title: Uførepensjon vedtak
+    UforetrygdInformasjonDto:
+      title: Uføretrygd vedtak
       type: object
       properties:
         vedtakId:
@@ -128,7 +120,7 @@ components:
     VilkarsvedtakDto:
       title: Vilkårsvedtak
       type: object
-      description: Vilkårsvedtak for barn som er omfattet av uførepensjon
+      description: Vilkårsvedtak for barn som er omfattet av uføretrygd
       properties:
         gjelderFnr:
           type: string
@@ -389,27 +381,6 @@ components:
           type: integer
           nullable: true
           description: Beløpsgrense for inntektsavkorting
-
-    ProblemDetail:
-      title: Feildetaljer (RFC 9457)
-      type: object
-      properties:
-        type:
-          type: string
-          description: URI som identifiserer problemtypen
-          example: "ufoerepensjon:ugyldig-input"
-        title:
-          type: string
-          example: "ufoerepensjon"
-        status:
-          type: integer
-          example: 400
-        detail:
-          type: string
-          example: "Ugyldig input til tjenesten"
-        correlationId:
-          type: string
-          description: Korrelasjons-ID for feilsøking
 
   securitySchemes:
     bearerAuth:
