@@ -553,6 +553,29 @@ components:
           description: Dato for dødsfall (dersom meldingskode er DOEDSFALL)
           format: date
           nullable: true
+        adresse:
+          type: object
+          description: Oppdatert adresse for brukeren (dersom meldingskode er ADRESSE)
+          nullable: true
+          properties:
+            adresselinje1:
+              type: string
+              nullable: true
+            adresselinje2:
+              type: string
+              nullable: true
+            adresselinje3:
+              type: string
+              nullable: true
+            postnr:
+              type: string
+              nullable: true
+            poststed:
+              type: string
+              nullable: true
+            land:
+              type: string
+              nullable: true
         meldingskode:
           type: string
           description: Type meldingkode.
