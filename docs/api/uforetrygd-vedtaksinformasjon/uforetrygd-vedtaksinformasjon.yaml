@@ -381,6 +381,15 @@ components:
           type: integer
           nullable: true
           description: Beløpsgrense for inntektsavkorting
+        satsMinsteytelse:
+          type: number
+          format: double
+          nullable: true
+          description: Sats for minsteytelse
+        arsbelop:
+          type: integer
+          nullable: true
+          description: Årsbeløp for minsteytelse
 
   securitySchemes:
     bearerAuth:
