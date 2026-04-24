@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon
-  - url: https://pensjon-gw.nav.no/pensjon (ikke implementert enda)
+  - url: https://pensjon-gw.nav.no/pensjon
 paths:
   /krigspensjon:
     post:
