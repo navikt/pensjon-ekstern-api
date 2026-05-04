@@ -37,6 +37,7 @@ paths:
         - name: ytelseType
           in: query
           required: false
+          description: Not yet implemented
           schema:
             type: string
             enum:
