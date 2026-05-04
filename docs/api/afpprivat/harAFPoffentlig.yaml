@@ -10,8 +10,14 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://afp-offentlig-q2.ekstern.dev.nav.no
+  - url: https://pensjon-gw.nav.no/tjenestepensjon
+    description: prod
   - url: https://pensjon-gw.ekstern.dev.nav.no/tjenestepensjon
+    description: dev
+  - url: https://afp-offentlig.nav.no
+    description: prod [DEPRECATED]
+  - url: https://afp-offentlig-q2.ekstern.dev.nav.no
+    description: dev [DEPRECATED]
 security:
   - Maskinporten:
       - nav:pensjon/v1/afpoffentlig
