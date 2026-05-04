@@ -69,43 +69,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Get403ApplicationJsonResponse'
       deprecated: false
-  /afpoffentlig/get:
-    get:
-      description: Sjekker hvis søker/person har AFP offentlig med bruk av krakenD
-      operationId: harAFPoffentlig
-      parameters:
-        - name: fnr
-          in: header
-          description: Format - String 11.
-          required: true
-          schema:
-            type: string
-        - name: correlationId
-          in: header
-          description: Format - UUID, correlationId
-          required: false
-          schema:
-            type: string
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BooleanResult'
-        401:
-          description: Ugyldig aksesstoken til tjenesten.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Get401ApplicationJsonResponse'
-        403:
-          description: Autorisering til ressurs feilet, feks feil scope i token
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Get403ApplicationJsonResponse'
-      deprecated: true
 
 components:
   schemas:
