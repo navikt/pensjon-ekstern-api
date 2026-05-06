@@ -1,10 +1,10 @@
 openapi: 3.0.1
 info:
-  title: Pensjon Samordningspliktige hendelser.
+  title: Pensjon Samordningspliktige hendelser
   description: |-
     - Hendelseskø for samordningspliktige vedtak fattet av NAV(AP, AFP, AAP og OMS).
     - Hendelseskø for ytelser registrert av tjenestepensjonordningene.
-    - Hendelseskø for personendringer fra Nav.
+    - Hendelseskø for personendringer (SIVILSTAND, FODSELSNUMMER, ADRESSE, DOEDSFALL) fra Nav.
     - Hendelseskø for manglende refusjonskrav (purring).
     
     For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/samordning`
@@ -20,8 +20,8 @@ paths:
     get:
       summary: Les samordningspliktige hendelser. ERSTATTET AV /hendelser/vedtak
       description: "Endepunktet returnerer en feed som inneholder hendelser tilhørende et angitt tjenestepensjonsnummer.
-                    \n\nFeeden benytter paginering, som deler opp feeden i sider basert på angitt antall hendelser per side. Hver side inneholder en liste med _hendelser_, samt en _nextUrl_ som peker til neste side av feeden. Siste side er nådd når _nextUrl_ er _null_.
-                    \n\nSekvensnummer kan benyttes som offset for feeden. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_."
+          \n\nFeeden benytter paginering, som deler opp feeden i sider basert på angitt antall hendelser per side. Hver side inneholder en liste med _hendelser_, samt en _nextUrl_ som peker til neste side av feeden. Siste side er nådd når _nextUrl_ er _null_.
+          \n\nSekvensnummer kan benyttes som offset for feeden. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_."
       operationId: HendelserGet
       parameters:
         - name: tpnr
@@ -271,6 +271,75 @@ paths:
         Listen benytter paginering, som deler opp listen i sider basert på angitt antall hendelser per side.\
         En side inneholder en liste med _hendelser_ for personendringer, samt en _nextUrl_ som peker til neste side av listen. Siste side er nådd når _nextUrl_ er _null_.\
         Sekvensnummer kan benyttes som offset for listen. Hendelser knyttet til et tjenestepensjonsnummer starter med sekvensnummer 1 til og med _sisteSekvensnummer_.
+
+        Eksempel på adresse hendelse:
+
+        ```json
+           {
+            "sekvensnummer": 20,
+            "tpnr": "9090",
+            "fnr": "015255******",
+            "fnrGammelt": null,
+            "sivilstand": null,
+            "sivilstandDato": null,
+            "doedsdato": null,
+            "adresse": {
+              "adresselinje1": "1KOLEJOWA 6/5 18-500 KOLNO",
+              "adresselinje2": "3000 CAPITAL WEST",
+              "adresselinje3": null,
+              "postnr": "3000",
+              "poststed": "CAPITAL WEST",
+              "land": "CHRISTMASØYA"
+            },
+            "meldingskode": "ADRESSE"
+           }
+        ```
+        Eksempel på sivilstand hendelse:
+
+        ```json
+           {
+            "sekvensnummer": 2,
+            "tpnr": "9090",
+            "fnr": "015255******",
+            "fnrGammelt": null,
+            "sivilstand": "UGIFT",
+            "sivilstandDato": "1965-05-17",
+            "doedsdato": null,
+            "adresse": null,
+            "meldingskode": "SIVILSTAND"
+           }
+        ```        
+        Eksempel på dødsfall hendelse:
+      
+        ```json
+           {
+            "sekvensnummer": 22,
+            "tpnr": "9090",
+            "fnr": "015255******",
+            "fnrGammelt": null,
+            "sivilstand": null,
+            "sivilstandDato": null,
+            "doedsdato": "2026-03-13",
+            "adresse": null,
+            "meldingskode": "DOEDSFALL"
+           }
+        ```
+
+        Eksempel på anullering av dødsfall hendelse:
+
+        ```json
+           {
+            "sekvensnummer": 21,
+            "tpnr": "9090",
+            "fnr": "015255******",
+            "fnrGammelt": null,
+            "sivilstand": null,
+            "sivilstandDato": null,
+            "doedsdato": null,
+            "adresse": null,
+            "meldingskode": "DOEDSFALL"
+           }
+        ```        
       operationId: HendelserPersonerGet
       parameters:
         - name: tpnr
