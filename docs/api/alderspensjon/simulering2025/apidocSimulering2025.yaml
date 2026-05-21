@@ -72,10 +72,23 @@ paths:
       summary: Simuler alderspensjon for personer født før 1963.
       description: >-
         Lager en prognose for utbetaling av alderspensjon for personer født før 1963.\
-        
+
         Dette er en tjeneste for offentlige tjenestepensjonsordninger.\
-        
+
         Personen må være medlem av tjenestepensjonsordningen.\
+        
+        \
+
+        **Endring av løpende uttak**:\
+        
+        Dersom personen allerede har løpende alderspensjon, vil tjenesten simulere en
+        *endring* av uttaket – for eksempel endring av uttaksgrad. Det simuleres da
+        et nytt uttak fra den oppgitte datoen, og pensjonsperiodene i responsen vil
+        reflektere kombinasjonen av eksisterende uttak frem til endringsdatoen og
+        nytt uttak fra og med endringsdatoen. Det siste elementet i `pensjonsperioder`
+        vil typisk representere den løpende utbetalingen uten ny `datoFom`, mens øvrige
+        elementer viser årsbeløp beregnet ut fra kombinasjonen av uttaksgrader i de
+        aktuelle periodene.\
 
         \
 
@@ -99,17 +112,46 @@ paths:
             Simulering kunne ikke utføres pga. uakseptable inndata. Det kan
             være:\
 
-            (1) helt uttak ikke etter gradert uttak,\
-
-            (2) inntekt ikke 1. i måneden,\
-
-            (3) inntekter har lik startdato, \
-
-            (4) negativ inntekt.
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/AlderspensjonResultV3'
+            (1) UtilstrekkeligOpptjeningException (for lav opptjening) \
+            
+            (2) UtilstrekkeligTrygdetidException (for kort trygdetid) \
+            
+            (3) PersonForGammelException (født før 1943) \
+            
+            (4) PersonForUngException (for ung for en gitt ytelse) \
+            
+            (5) Pre2025OffentligAfpAvslaattException (offentlig AFP avslått, gjelder gammel AFP-ordning) \
+            
+            (6) DateTimeParseException (feil i datoformat i inndata til API-kallet) \
+            
+            (7) InvalidEnumValueException (feil i enum-verdi i inndata til API-kallet) \
+            
+            (8) BadSpecException (annen feil i inndata til API-kallet) \
+            
+            (9) BadRequestException (annen klientfeil ved API-kallet) \
+            
+            (10) InvalidArgumentException (argumentfeil i simuleringsprosessen) \
+            
+            (11) FeilISimuleringsgrunnlagetException (feil ved grunnlagsdata fra simulatoren til regelmotoren i Nav) \
+            
+            (12) KonsistensenIGrunnlagetErFeilException (ikke-konsistente data fra simulatoren til regelmotoren i Nav) \
+            
+            (13) RegelmotorValideringException (ugyldige data fra simulatoren til regelmotoren i Nav) \
+            
+            (14) KanIkkeBeregnesException (Navs regelmotor kan ikke beregne)
+        '401':
+          description: >-
+            Ugyldig autentiseringstoken. For å kunne bruke tjenesten må klienten autentisere seg via Maskinporten og inkludere et gyldig token i Authorization-headeren. Tokenet må ha riktig *scope* for tjenesten, som er **nav/pensjon/v3/alderspensjon**.
+        '403':
+          description: >-
+            Ikke tilgang til tjenesten (feil ved scope). For å kunne bruke tjenesten må klienten autentisere seg via Maskinporten og inkludere et gyldig token i Authorization-headeren. Tokenet må ha riktig *scope* for tjenesten, som er **nav/pensjon/v3/alderspensjon**.
+        '500':
+          description: >-
+            (1) ImplementationUnrecoverableException (implementasjonsfeil i simulatoren) \
+            
+            (2) EgressException (feil ved kall fra simulatoren til andre tjenester) \
+            
+            (3) Exception (øvrige ikke-kategoriserte feil)
       security:
         - BearerAuthentication: []
   /pensjonssimulator/v3/simuler-alderspensjon-privat-afp:
@@ -290,6 +332,8 @@ components:
           items:
             $ref: '#/components/schemas/PensjonInntektSpecV4'
         rettTilAfpOffentligDato:
+          description: |
+            Dato for når personen får rett til offentlig AFP, i formatet "YYYY-MM-DD". Brukes for å avgjøre om personen har rett til offentlig AFP, og for å beregne tidligste mulige uttaksdato for alderspensjon.
           type: string
     GradertUttakSpecV4:
       type: object
@@ -495,6 +539,25 @@ components:
         afpPrivatBeholdningVedUttak:
           type: integer
           format: int32
+          description: |
+            AFP-beholdningen ved uttakstidspunktet, brukt som grunnlag for den livsvarige delen av AFP Privat.
+
+            Feltet ble opprinnelig lagt til slik at TP-ordninger (bl.a. KLP) skulle kunne beregne simulert
+            AFP Offentlig livsvarig, før NAV hadde en egen tjeneste for det. Nå som en slik tjeneste
+            finnes, har feltet begrenset verdi og kan på sikt fases ut.
+
+            \
+
+            AFP Privat består av flere komponenter:
+
+            * **Livsvarig del:** Utgjør 0,314% av pensjonsgrunnlaget, levealdersjustert med forholdstall.
+            * **Kronetillegg:** 1 600 kr/mnd frem til måneden du fyller 67 år.
+            * **Kompensasjonstillegg:** Livsvarig, skattefritt tillegg til deg født 1944–1962. Størrelse avhenger av fødselsår, maks 50% av livsvarig del.
+
+            Eksempel: En beholdning på 121 871 kr med forholdstall 1,012 (68 år og 5 mnd, 1958-kullet) gir
+            121 871 / 1,012 ≈ 120 426 kr/år i livsvarig del, dvs. ~10 036 kr/mnd.
+
+            For en person som allerede har startet uttak av AFP Privat, returnerer feltet 0.
         sisteGyldigeOpptjeningsAr:
           type: integer
           format: int32
@@ -541,11 +604,18 @@ components:
           $ref: '#/components/schemas/GarantipensjonsnivaaResultV3'
     PensjonsperiodeResultV3:
       type: object
+      description: |
+        En periode med alderspensjon, som kan være et resultat av eksisterende løpende uttak, eller et nytt uttak simulert fra den oppgitte datoen for første uttak.
+
+        For personer født før 1963, som kan ha løpende uttak uten datoTom, vil det siste elementet i `pensjonsperioder` typisk representere den løpende utbetalingen uten `datoFom`, mens øvrige elementer viser årsbeløp beregnet ut fra kombinasjonen av uttaksgrader i de aktuelle periodene.
       properties:
         arligUtbetaling:
           type: integer
           format: int32
         datoFom:
+          description: Startdato for perioden, i formatet "YYYY-MM-DD". For løpende uttak er det ikke noen datoTom \
+            
+            (den vil mangle, være NULL eller i visse tilfeller -999999999-01-01, litt avh av klient-implementasjon).
           type: string
     SimuleringsdataResultV3:
       type: object
@@ -722,6 +792,8 @@ components:
           type: string
           format: date
         rettTilAfpOffentligDato:
+          description: |
+            Dato for når personen får rett til offentlig AFP, i formatet "YYYY-MM-DD". Brukes for å avgjøre om personen har rett til offentlig AFP, og for å beregne tidligste mulige uttaksdato for alderspensjon.
           type: string
           format: date
         fremtidigInntektListe:
