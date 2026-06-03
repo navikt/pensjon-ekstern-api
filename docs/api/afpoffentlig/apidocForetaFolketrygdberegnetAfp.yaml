@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Pensjon AFP Offentlig - Foreta Folketrygdberegnet AFP
-  description: API for å beregne AFP (Avtalefestet pensjon) basert på befolkningens folketrygdberegning for offentlig sektor. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/afp-offentlig`.
+  description: API for å beregne AFP (Avtalefestet pensjon) basert på befolkningens folketrygdberegning for offentlig sektor. For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:pensjon/afpoffentlig`.
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/afp-offentlig
