@@ -5,6 +5,7 @@ info:
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/afp-offentlig
+  - url: https://pensjon-gw.nav.no/pensjon/afp-offentlig
 paths:
   /foreta-folketrygdberegnet-afp:
     post:
