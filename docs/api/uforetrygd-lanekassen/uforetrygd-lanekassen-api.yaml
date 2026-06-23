@@ -136,11 +136,8 @@ components:
       description: |
         ENDELIG - Det er foretatt en endelig beregning på saken.
         
-        FORELOPIG - Det er foretatt en foreløpig beregning på saken, og det kan komme endringer i fremtiden.
-        
-        USIKKER - Datagrunnlaget er manglende for å kunne si om det er en endelig eller foreløpig beregning på saken.
+        USIKKER - Datagrunnlaget er manglende for å kunne si om det er en endelig beregning på saken.
       enum:
-        - FORELOPIG
         - ENDELIG
         - USIKKER
       example: ENDELIG
