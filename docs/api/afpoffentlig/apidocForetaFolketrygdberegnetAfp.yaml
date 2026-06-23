@@ -5,10 +5,11 @@ info:
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/pensjon/afp-offentlig
+  - url: https://pensjon-gw.nav.no/pensjon/afp-offentlig
 paths:
   /foreta-folketrygdberegnet-afp:
     post:
-      description: Foreta beregning av AFP basert på folketrygdberegning for offentlig ordning
+      description: Foreta beregning av AFP basert på folketrygdberegning for offentlig ordning. Merk, ved å utføre kall til denne tjenesten vil det automatisk utløse en eventuell reberegning av ektefelle, partner eller samboers relevante uføre/alder-vedtak.
       operationId: foretaFolketrygdberegnetAfp
       parameters:
         - in: header
@@ -33,15 +34,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/ForetaFolketrygdBeregnetAfpResponse'
         400:
-          description: Feil i request-data fra klient. F.eks ugyldig fødselsnummer eller dato-format
+          description: Feil i request-data fra klient, f.eks. ugyldig fødselsnummer, ugyldig AFP-ordning, ugyldig sivilstand eller dato-format. `type` er `foreta-folketrygdberegnet-afp:ugyldig-request`.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         401:
           description: Autentisering feilet
         403:
           description: Autorisering til ressurs feilet, f.eks feil scope i token
         409:
-          description: Konflikt - Vilkårsprøving eller andre valideringer feilet. Se responsdetaljer for spesifikk feil
+          description: |
+            Konflikt - vilkårsprøving eller validering feilet. Bruk `type`-feltet i responsen for å skille mellom utfallene:
+            - `foreta-folketrygdberegnet-afp:avslag-afp-vilkårsprøving` - Vilkårsprøving av AFP offentlig er avslått
+            - `foreta-folketrygdberegnet-afp:avslag-vilkårsprøving-kort-trygdetid` - Avslag vilkårsprøving for kort trygdetid
+            - `foreta-folketrygdberegnet-afp:avslag-vilkårsprøving-tidlig-uttak` - Avslag vilkårsprøving for lavt tidlig uttak
+            - `foreta-folketrygdberegnet-afp:sivilstatus-avvik` - Avvik i sivilstatus
+            - `foreta-folketrygdberegnet-afp:eps-afp-informasjon-avvik` - EPS eller AFP samsvarer ikke med info hos NAV
+            - `foreta-folketrygdberegnet-afp:bruker-ingen-ytelse` - Bruker ikke registrert med ytelse i TP
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
         500:
-          description: Intern serverfeil
+          description: Intern serverfeil. `type` er `foreta-folketrygdberegnet-afp:intern-feil`.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 
 components:
   schemas:
@@ -210,12 +230,36 @@ components:
           example: 5000
           nullable: true
 
+    ProblemDetail:
+      title: Problem Detail (RFC 9457)
+      type: object
+      properties:
+        type:
+          type: string
+          description: URI som identifiserer problemtypen
+          example: "foreta-folketrygdberegnet-afp:sivilstatus-avvik"
+        title:
+          type: string
+          description: Kort beskrivelse av problemet
+          example: "foreta-folketrygdberegnet-afp"
+        status:
+          type: integer
+          description: HTTP-statuskode
+          example: 409
+        detail:
+          type: string
+          description: Detaljert beskrivelse av feilen
+          example: "Avvik i sivilstatus"
+        correlationId:
+          type: string
+          description: Korrelasjons-ID for sporing
+          example: "123e4567-e89b-12d3-a456-426614174000"
+
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
 security:
   - bearerAuth: []
 
