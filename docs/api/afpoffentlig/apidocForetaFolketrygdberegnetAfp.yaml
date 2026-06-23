@@ -9,7 +9,7 @@ servers:
 paths:
   /foreta-folketrygdberegnet-afp:
     post:
-      description: Foreta beregning av AFP basert på folketrygdberegning for offentlig ordning. Merk, ved å utføre kall til denne tjenesten vil det automatisk utløse en eventuell reberegning av ektefelle, partner eller samboers relevante vedtak.
+      description: Foreta beregning av AFP basert på folketrygdberegning for offentlig ordning. Merk, ved å utføre kall til denne tjenesten vil det automatisk utløse en eventuell reberegning av ektefelle, partner eller samboers relevante uføre/alder-vedtak.
       operationId: foretaFolketrygdberegnetAfp
       parameters:
         - in: header
