@@ -154,42 +154,143 @@ paths:
             (3) Exception (øvrige ikke-kategoriserte feil)
       security:
         - BearerAuthentication: []
-  /pensjonssimulator/v3/simuler-alderspensjon-privat-afp:
+  /pensjonssimulator/v2/simuler-alderspensjon-privat-afp:
     post:
       tags:
-        - Alderspensjon og privat AFP (kun test)
+        - Alderspensjon og privat AFP
       summary: Simuler alderspensjon og privat AFP
       description: >-
         Lager en prognose for utbetaling av alderspensjon og privat avtalefestet
-        pensjon.\
-        
+        pensjon (AFP).\
+
         Dette er en tjeneste for pensjonsportaler.\
-        
-        *Foreløpig tilbys denne tjenesten kun i testmiljø ("dev") med syntetiske personer fra Test-Norge.*\
+
+        \
+
+        **Simuleringstype** styres av feltet `simulerPrivatAfp`:\
+
+        – `true`: beregner alderspensjon kombinert med privat AFP (`ALDER_M_AFP_PRIVAT`).\
+
+        – `false` eller utelatt: beregner kun alderspensjon (`ALDER`).\
+
+        \
+
+        Dersom simuleringen ikke kan gjennomføres fullt ut (f.eks. utilstrekkelig opptjening),
+        returneres HTTP 200 med `suksess: false` og utfylt `problem`-felt.\
 
         \
 
         *Scope*: **nav:pensjon/simulering/alderspensjonogprivatafp**
-      operationId: simulerAlderspensjonOgPrivatAfpV3
+      operationId: simulerAlderspensjonOgPrivatAfpV2
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AlderspensjonOgPrivatAfpSpecV3'
+              $ref: '#/components/schemas/AlderspensjonOgPrivatAfpSpecV2'
+            examples:
+              gradertOgHeltUttak:
+                summary: Gradert uttak fra 62, heltuttak fra 67, gift, simuler AFP
+                value:
+                  personident: "01234567890"
+                  sivilstatusVedPensjonering: GIFT
+                  foersteUttak:
+                    fomDato: "2027-03-01"
+                    grad: 50
+                    aarligInntekt: 400000
+                  heltUttak:
+                    fomDato: "2032-03-01"
+                    grad: 100
+                    aarligInntekt: 100000
+                  aarligInntektFoerUttak: 600000
+                  antallInntektsaarEtterHeltUttak: 2
+                  aarIUtlandetEtter16: 0
+                  harEpsPensjon: false
+                  harEpsPensjonsgivendeInntektOver2G: true
+                  simulerPrivatAfp: true
         required: true
       responses:
         '200':
-          description: Simulering av alderspensjon og privat AFP utført.
+          description: >-
+            Simulering av alderspensjon og privat AFP utført.\
+
+            Merk: `suksess` kan være `false` ved HTTP 200 dersom simuleringen ikke
+            kunne gjennomføres (f.eks. `UTILSTREKKELIG_OPPTJENING`). Se `problem`-feltet.
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV3'
+                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV2'
+              examples:
+                suksess:
+                  summary: Vellykket simulering med gradert og helt uttak
+                  value:
+                    suksess: true
+                    alderspensjonsperioder:
+                      - alder: 62
+                        beloep: 180000
+                        datoFom: "2027-03-01"
+                        uttaksperiode:
+                          - startmaaned: 3
+                            uttaksgrad: 50
+                      - alder: 67
+                        beloep: 320000
+                        datoFom: "2032-03-01"
+                        uttaksperiode:
+                          - startmaaned: 3
+                            uttaksgrad: 100
+                    privatAfpPerioder:
+                      - alder: 62
+                        beloep: 42000
+                      - alder: 67
+                        beloep: 42000
+                    harNaavaerendeUttak: false
+                    harTidligereUttak: false
+                    harLoependePrivatAfp: false
+                    problem: null
         '400':
-          description: Simulering kunne ikke utføres pga. uakseptable inndata.
+          description: >-
+            Simulering kunne ikke utføres pga. uakseptable inndata. Feilkode i `problem.kode`:\
+
+            – `UGYLDIG_UTTAKSDATO`: `foersteUttak.fomDato` er i fortiden, eller etter `heltUttak.fomDato`.\
+
+            – `UGYLDIG_UTTAKSGRAD`: `grad` er ikke en av de gyldige verdiene (20, 40, 50, 60, 80, 100).\
+
+            – `UGYLDIG_SIVILSTATUS`: `sivilstatusVedPensjonering` er ikke en gyldig kode.\
+
+            – `UGYLDIG_INNTEKT`: negativ inntekt, eller inntektsdato ikke 1. i måneden.\
+
+            – `UGYLDIG_ANTALL_AAR`: `antallInntektsaarEtterHeltUttak` er negativ.\
+
+            – `UGYLDIG_PERSONIDENT`: `personident` er ikke et gyldig fødselsnummer/D-nummer.\
+
+            – `PERSON_FOR_HOEY_ALDER`: personen er for gammel for simulering.\
+
+            – `ANNEN_KLIENTFEIL`: annen klientfeil.
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV3'
+                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV2'
+        '401':
+          description: >-
+            Ugyldig autentiseringstoken. Klienten må autentisere seg via Maskinporten
+            med scope **nav:pensjon/simulering/alderspensjonogprivatafp**.
+        '403':
+          description: >-
+            Ikke tilgang (feil scope). Klienten må autentisere seg via Maskinporten
+            med scope **nav:pensjon/simulering/alderspensjonogprivatafp**.
+        '404':
+          description: >-
+            `PERSON_IKKE_FUNNET`: personen med oppgitt `personident` ble ikke funnet.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV2'
+        '500':
+          description: >-
+            `SERVERFEIL`: intern feil i simulatoren. Se `problem.beskrivelse` for detaljer.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV2'
       security:
         - BearerAuthentication: []
   /pensjonssimulator/v1/tidligst-mulig-uttak:
@@ -652,13 +753,55 @@ components:
           format: int32
         datoFom:
           type: string
-    AlderspensjonOgPrivatAfpSpecV3:
+    AlderspensjonOgPrivatAfpSpecV2:
       type: object
+      description: Spesifikasjon for simulering av alderspensjon og privat AFP.
       properties:
         personident:
           type: string
+          description: >-
+            Fødselsnummer eller D-nummer (11 siffer) for personen det simuleres for.
+          example: "01234567890"
         sivilstatusVedPensjonering:
           type: string
+          description: >-
+            Sivilstatus ved pensjonering. Påvirker beregning av grunnpensjon
+            (sats 85 % av G ved GIFT/SAMB/REPA med EPS som har pensjon eller
+            inntekt over 2G, ellers 100 % av G) og rett til gjenlevendetillegg.\
+
+            \
+
+            Gyldige verdier:\
+
+            – `ENKE` – Enke/enkemann\
+
+            – `GIFT` – Gift\
+
+            – `GJES` – Gjenlevende etter separasjon\
+
+            – `GJPA` – Gjenlevende registrert partner\
+
+            – `GJSA` – Gjenlevende samboer\
+
+            – `GLAD` – Gift, lever adskilt\
+
+            – `NULL` – Ukjent/ikke oppgitt\
+
+            – `PLAD` – Registrert partner, lever adskilt\
+
+            – `REPA` – Registrert partner\
+
+            – `SAMB` – Samboer\
+
+            – `SEPA` – Separert partner\
+
+            – `SEPR` – Separert\
+
+            – `SKIL` – Skilt\
+
+            – `SKPA` – Skilt partner\
+
+            – `UGIF` – Ugift
           enum:
             - ENKE
             - GIFT
@@ -676,107 +819,272 @@ components:
             - SKPA
             - UGIF
         foersteUttak:
-          $ref: '#/components/schemas/ApOgPrivatAfpUttakSpecV3'
+          $ref: '#/components/schemas/ApOgPrivatAfpUttakSpecV2'
+          description: >-
+            Første uttaksperiode. Kan være gradert (20–80 %) eller helt uttak (100 %).
+            Hvis `heltUttak` ikke er oppgitt, tolkes dette som eneste og fulle uttaksperiode.
         heltUttak:
-          $ref: '#/components/schemas/ApOgPrivatAfpUttakSpecV3'
+          $ref: '#/components/schemas/ApOgPrivatAfpUttakSpecV2'
+          description: >-
+            Uttaksperiode for 100 % uttak. Oppgis kun ved gradert uttak i `foersteUttak`.
+            `fomDato` må være etter `foersteUttak.fomDato`.
         aarligInntektFoerUttak:
           type: integer
           format: int32
+          description: >-
+            Forventet årlig pensjonsgivende inntekt (kr) frem til første uttaksdato.
+            Brukes til fremtidig pensjonsopptjening. Standard: 0.
+          example: 600000
         antallInntektsaarEtterHeltUttak:
           type: integer
           format: int32
+          description: >-
+            Antall år med pensjonsgivende inntekt etter 100 % uttak. Brukes hvis
+            personen forventer å jobbe videre etter heltuttak.
+          example: 2
         aarIUtlandetEtter16:
           type: integer
           format: int32
+          description: >-
+            Antall år bosatt utenfor Norge etter fylte 16 år.
+            Reduserer trygdetiden tilsvarende, noe som kan påvirke grunnpensjon og garantipensjon.
+          example: 0
         harEpsPensjon:
           type: boolean
+          description: >-
+            Om ektefelle/partner/samboer (EPS) mottar pensjon.
+            Påvirker beregning av grunnpensjon (sats 85 % av G hvis EPS har pensjon).
+          example: false
         harEpsPensjonsgivendeInntektOver2G:
           type: boolean
+          description: >-
+            Om EPS har pensjonsgivende inntekt over 2 ganger grunnbeløpet (2G).
+            Påvirker beregning av grunnpensjon på samme måte som `harEpsPensjon`.
+          example: true
         simulerPrivatAfp:
           type: boolean
+          description: >-
+            Hvorvidt privat AFP skal inkluderes i simuleringen.\
+
+            – `true`: beregner alderspensjon kombinert med privat AFP (simuleringstype `ALDER_M_AFP_PRIVAT`).\
+
+            – `false` eller utelatt: beregner kun alderspensjon (simuleringstype `ALDER`).
+          example: true
       required:
         - foersteUttak
         - personident
         - sivilstatusVedPensjonering
-    ApOgPrivatAfpUttakSpecV3:
+    ApOgPrivatAfpUttakSpecV2:
       type: object
+      description: Uttaksperiode med startdato, uttaksgrad og eventuell inntekt i perioden.
       properties:
         fomDato:
           type: string
           format: date
+          description: >-
+            Startdato for uttaksperioden, i formatet `YYYY-MM-DD` (ISO 8601, tidssone CET).
+            Kan ikke være i fortiden. Ved gradert uttak må `foersteUttak.fomDato` være
+            før `heltUttak.fomDato`.
+          example: "2027-03-01"
         grad:
           type: integer
           format: int32
+          description: >-
+            Uttaksgrad i prosent. Gyldige verdier: 20, 40, 50, 60, 80, 100.
+            Andre verdier gir HTTP 400 med feilkode `UGYLDIG_UTTAKSGRAD`.
+          enum:
+            - 20
+            - 40
+            - 50
+            - 60
+            - 80
+            - 100
+          example: 50
         aarligInntekt:
           type: integer
           format: int32
+          description: >-
+            Forventet årlig pensjonsgivende inntekt (kr) i denne uttaksperioden.
+            Ved gradert uttak: inntekt i den graderte fasen.
+            Ved heltuttak (`grad: 100`): inntekt etter 100 % uttak starter.
+          example: 400000
       required:
         - fomDato
         - grad
-    AlderspensjonOgPrivatAfpResultV3:
+    AlderspensjonOgPrivatAfpResultV2:
       type: object
+      description: Resultat av simulering av alderspensjon og privat AFP.
       properties:
+        suksess:
+          type: boolean
+          description: >-
+            Angir om simuleringen ble gjennomført uten feil.
+            `false` betyr at `problem`-feltet er utfylt med årsak.
+            Merk: `UTILSTREKKELIG_OPPTJENING` og `UTILSTREKKELIG_TRYGDETID`
+            returneres med HTTP 200 og `suksess: false`.
         alderspensjonsperioder:
           type: array
+          description: >-
+            Liste over alderspensjonsperioder, én per alder fra første uttaksalder.
+            Hvert element representerer én årgang med beregnet pensjonsbeløp og uttaksgrad-perioder.
           items:
-            $ref: '#/components/schemas/ApOgPrivatAfpAlderspensjonsperiodeResultV3'
+            $ref: '#/components/schemas/ApOgPrivatAfpAlderspensjonsperiodeResultV2'
         privatAfpPerioder:
           type: array
+          description: >-
+            Liste over perioder med beregnet privat AFP, én per alder fra første uttaksalder.
+            Tom liste hvis `simulerPrivatAfp` er `false` eller utelatt, eller personen
+            ikke kvalifiserer for privat AFP.
           items:
-            $ref: '#/components/schemas/ApOgPrivatAfpPrivatAfpPeriodeResultV3'
+            $ref: '#/components/schemas/ApOgPrivatAfpPrivatAfpPeriodeResultV2'
         harNaavaerendeUttak:
           type: boolean
+          description: >-
+            Om personen allerede har løpende alderspensjonuttak på simuleringstidspunktet.
         harTidligereUttak:
           type: boolean
+          description: >-
+            Om personen har hatt alderspensjonuttak tidligere (f.eks. opphørt gradert uttak).
+        harLoependePrivatAfp:
+          type: boolean
+          description: >-
+            Om personen allerede har løpende privat AFP på simuleringstidspunktet.
+        problem:
+          $ref: '#/components/schemas/ApOgPrivatAfpProblemV2'
+          description: >-
+            Feildetaljer ved `suksess: false`. `null` ved vellykket simulering.
       required:
         - alderspensjonsperioder
+        - harLoependePrivatAfp
         - harNaavaerendeUttak
         - harTidligereUttak
         - privatAfpPerioder
-    ApOgPrivatAfpAlderspensjonsperiodeResultV3:
+        - suksess
+    ApOgPrivatAfpAlderspensjonsperiodeResultV2:
       type: object
+      description: Alderspensjonsperiode for én bestemt alder.
       properties:
         alder:
           type: integer
           format: int32
+          description: >-
+            Personens alder (hele år) ved starten av denne pensjonsperioden.
         beloep:
           type: integer
           format: int32
+          description: >-
+            Beregnet årlig alderspensjon (kr) i denne perioden.
         datoFom:
           type: string
+          format: date
+          description: >-
+            Startdato for perioden (`YYYY-MM-DD`). Første dag i måneden etter
+            personens bursdag ved aktuell alder.
         uttaksperiode:
           type: array
+          description: >-
+            Uttaksgrad-perioder innenfor denne aldersperioden. Viser når og med
+            hvilken grad uttaket startet. Kan ha flere elementer ved gradsskifte.
           items:
-            $ref: '#/components/schemas/ApOgPrivatAfpUttaksperiodeResultV3'
+            $ref: '#/components/schemas/ApOgPrivatAfpUttaksperiodeResultV2'
       required:
         - alder
         - beloep
         - datoFom
         - uttaksperiode
-    ApOgPrivatAfpPrivatAfpPeriodeResultV3:
+    ApOgPrivatAfpPrivatAfpPeriodeResultV2:
       type: object
+      description: >-
+        Privat AFP-periode for én bestemt alder.
+        Privat AFP består av en livsvarig del, kronetillegg og kompensasjonstillegg.
+        Kun det samlede årlige beløpet eksponeres i dette APIet.
       properties:
         alder:
           type: integer
           format: int32
+          description: Personens alder (hele år) i denne AFP-perioden.
         beloep:
           type: integer
           format: int32
+          description: >-
+            Beregnet årlig privat AFP (kr). Summen av livsvarig del,
+            kronetillegg og kompensasjonstillegg.
       required:
         - alder
         - beloep
-    ApOgPrivatAfpUttaksperiodeResultV3:
+    ApOgPrivatAfpUttaksperiodeResultV2:
       type: object
+      description: En periode med en bestemt uttaksgrad innenfor en alderspensjonsperiode.
       properties:
         startmaaned:
           type: integer
           format: int32
+          description: >-
+            Månedsnummer (1–12) for når denne uttaksgraden startet.
         uttaksgrad:
           type: integer
           format: int32
+          description: >-
+            Uttaksgrad i prosent for denne perioden.
+            Gyldige verdier: 0, 20, 40, 50, 60, 80, 100.
       required:
         - startmaaned
         - uttaksgrad
+    ApOgPrivatAfpProblemV2:
+      type: object
+      description: Feildetaljer ved mislykket simulering.
+      properties:
+        kode:
+          type: string
+          description: >-
+            Feilkode som identifiserer årsaken til feilen.\
+
+            \
+
+            Feilkoder og tilhørende HTTP-statuser:\
+
+            – `UGYLDIG_UTTAKSDATO` (400): ugyldig uttaksdato\
+
+            – `UGYLDIG_UTTAKSGRAD` (400): ugyldig uttaksgrad\
+
+            – `UGYLDIG_SIVILSTATUS` (400): ugyldig sivilstatuskode\
+
+            – `UGYLDIG_INNTEKT` (400): ugyldig inntekt\
+
+            – `UGYLDIG_ANTALL_AAR` (400): ugyldig antall år\
+
+            – `UGYLDIG_PERSONIDENT` (400): ugyldig fødselsnummer/D-nummer\
+
+            – `PERSON_IKKE_FUNNET` (404): personen ble ikke funnet\
+
+            – `PERSON_FOR_HOEY_ALDER` (400): personen er for gammel for simulering\
+
+            – `UTILSTREKKELIG_OPPTJENING` (200): for lav pensjonsopptjening\
+
+            – `UTILSTREKKELIG_TRYGDETID` (200): for kort trygdetid\
+
+            – `ANNEN_KLIENTFEIL` (400): annen klientfeil\
+
+            – `SERVERFEIL` (500): intern feil i simulatoren
+          enum:
+            - UGYLDIG_UTTAKSDATO
+            - UGYLDIG_UTTAKSGRAD
+            - UGYLDIG_SIVILSTATUS
+            - UGYLDIG_INNTEKT
+            - UGYLDIG_ANTALL_AAR
+            - UGYLDIG_PERSONIDENT
+            - PERSON_IKKE_FUNNET
+            - PERSON_FOR_HOEY_ALDER
+            - UTILSTREKKELIG_OPPTJENING
+            - UTILSTREKKELIG_TRYGDETID
+            - ANNEN_KLIENTFEIL
+            - SERVERFEIL
+        beskrivelse:
+          type: string
+          description: Menneskelig lesbar beskrivelse av feilen.
+      required:
+        - beskrivelse
+        - kode
     TidligstMuligUttakSpecV1:
       type: object
       properties:
