@@ -191,7 +191,7 @@ paths:
               gradertOgHeltUttak:
                 summary: Gradert uttak fra 62, heltuttak fra 67, gift, simuler AFP
                 value:
-                  personident: "01234567890"
+                  personident: "01026512345"
                   sivilstatusVedPensjonering: GIFT
                   foersteUttak:
                     fomDato: "2027-03-01"
@@ -200,9 +200,9 @@ paths:
                   heltUttak:
                     fomDato: "2032-03-01"
                     grad: 100
-                    aarligInntekt: 100000
+                    aarligInntekt: 0
                   aarligInntektFoerUttak: 600000
-                  antallInntektsaarEtterHeltUttak: 2
+                  antallInntektsaarEtterHeltUttak: 0
                   aarIUtlandetEtter16: 0
                   harEpsPensjon: false
                   harEpsPensjonsgivendeInntektOver2G: true
@@ -269,6 +269,19 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV2'
+              examples:
+                feil:
+                  summary: Mislykket simulering pga. ugyldige inndata
+                  value:
+                    suksess: false
+                    alderspensjonsperioder: []
+                    privatAfpPerioder: []
+                    harNaavaerendeUttak: false
+                    harTidligereUttak: false
+                    harLoependePrivatAfp: false
+                    problem:
+                      kode: UGYLDIG_UTTAKSGRAD
+                      beskrivelse: "Ugyldig uttaksgrad: 30"
         '401':
           description: >-
             Ugyldig autentiseringstoken. Klienten må autentisere seg via Maskinporten
@@ -280,10 +293,6 @@ paths:
         '404':
           description: >-
             `PERSON_IKKE_FUNNET`: personen med oppgitt `personident` ble ikke funnet.
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV2'
         '500':
           description: >-
             `SERVERFEIL`: intern feil i simulatoren. Se `problem.beskrivelse` for detaljer.
@@ -291,6 +300,19 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/AlderspensjonOgPrivatAfpResultV2'
+              examples:
+                feil:
+                  summary: Intern serverfeil
+                  value:
+                    suksess: false
+                    alderspensjonsperioder: []
+                    privatAfpPerioder: []
+                    harNaavaerendeUttak: false
+                    harTidligereUttak: false
+                    harLoependePrivatAfp: false
+                    problem:
+                      kode: SERVERFEIL
+                      beskrivelse: "En uventet feil oppstod i simulatoren."
       security:
         - BearerAuthentication: []
   /pensjonssimulator/v1/tidligst-mulig-uttak:
