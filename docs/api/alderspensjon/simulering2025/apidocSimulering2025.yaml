@@ -684,7 +684,9 @@ components:
         gradertUttak:
           description: >-
             Forslag til gradert uttak. `null` dersom kun helt uttak foreslås.
-          $ref: '#/components/schemas/GradertUttakV4'
+          anyOf:
+            - $ref: '#/components/schemas/GradertUttakV4'
+            - type: 'null'
         heltUttakFraOgMedDato:
           description: >-
             Forslag til tidligste dato for helt uttak, i formatet "YYYY-MM-DD".
