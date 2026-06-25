@@ -665,7 +665,9 @@ components:
             Forslag til tidligste mulige uttaksdato dersom personen ikke har
             tilstrekkelig opptjening for det oppgitte uttakstidspunktet.
             Kun satt dersom `statusKode` er `AVSLAG_FOR_LAV_OPPTJENING`.
-          $ref: '#/components/schemas/ForslagVedForLavOpptjeningV4'
+          anyOf:
+            - $ref: '#/components/schemas/ForslagVedForLavOpptjeningV4'
+            - type: 'null'
         harUttak:
           description: >-
             Angir om personen allerede har løpende alderspensjon fra Nav
