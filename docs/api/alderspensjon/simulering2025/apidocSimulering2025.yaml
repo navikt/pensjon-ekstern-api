@@ -198,6 +198,24 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AlderspensjonSpecV3'
+            example:
+              fnr: "01016212345"
+              sivilstandVedPensjonering: "GIFT"
+              forsteUttak:
+                datoFom: "2024-02-01"
+                grad: 50
+              heltUttak:
+                datoFom: "2029-02-01"
+                grad: 100
+              arIUtlandetEtter16: 0
+              epsPensjon: false
+              eps2G: true
+              fremtidigInntektListe:
+                - arligInntekt: 600000
+                  fomDato: "2024-01-01"
+                - arligInntekt: 0
+                  fomDato: "2029-02-01"
+              simulerMedAfpPrivat: false
         required: true
       responses:
         '200':
@@ -206,6 +224,53 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/AlderspensjonResultV3'
+              example:
+                pensjonsperioder:
+                  - arligUtbetaling: 163000
+                    datoFom: "2024-02-01"
+                  - arligUtbetaling: 295000
+                    datoFom: "2029-02-01"
+                simuleringsdataListe:
+                  - poengArTom1991: 11
+                    poengArFom1992: 32
+                    sluttpoengtall: 5.23
+                    anvendtTrygdetid: 40
+                    basisgp: 118620.0
+                    basistp: 76458.0
+                    basispt: null
+                    forholdstallUttak: 1.119
+                    delingstallUttak: null
+                    uforegradVedOmregning: null
+                    datoFom: "2029-02-01"
+                pensjonsbeholdningsperioder:
+                  - pensjonsbeholdning: 1543200.0
+                    garantipensjonsbeholdning: 0.0
+                    garantitilleggsbeholdning: 0.0
+                    datoFom: "2024-01-01"
+                    garantipensjonsniva:
+                      belop: 204690.0
+                      satsType: "ORDINAER"
+                      sats: 1.9
+                      tt_anv: 40
+                alderspensjonFraFolketrygden:
+                  - datoFom: "2024-02-01"
+                    uttaksgrad: 50
+                    delytelser:
+                      - pensjonstype: "GP"
+                        belop: 52950
+                      - pensjonstype: "TP"
+                        belop: 34138
+                  - datoFom: "2029-02-01"
+                    uttaksgrad: 100
+                    delytelser:
+                      - pensjonstype: "GP"
+                        belop: 105900
+                      - pensjonstype: "TP"
+                        belop: 68276
+                harUttak: false
+                harTidligereUttak: false
+                afpPrivatBeholdningVedUttak: null
+                sisteGyldigeOpptjeningsAr: 2023
         '400':
           description: >-
             Simulering kunne ikke utføres pga. uakseptable inndata. Det kan
@@ -780,8 +845,45 @@ components:
       type: object
       properties:
         fnr:
+          description: >-
+            Fødselsnummer (11 siffer) eller D-nummer for personen som skal
+            simuleres. Personen må være født **før 1963**.
           type: string
         sivilstandVedPensjonering:
+          description: >-
+            Sivilstatus ved pensjonering. Påvirker garantipensjonssatsen
+            (grunnpensjon og garantipensjon): enslige får høyere sats enn
+            gifte/samboere. Samspiller med `epsPensjon` og `eps2G`.
+
+            - `ENKE` – Enke/enkemann
+
+            - `GIFT` – Gift
+
+            - `GJES` – Gjenlevende etter samlivsbrudd
+
+            - `GJPA` – Gjenlevende partner
+
+            - `GJSA` – Gjenlevende samboer
+
+            - `GLAD` – Gift, lever adskilt
+
+            - `NULL` – Ikke oppgitt
+
+            - `PLAD` – Registrert partner, lever adskilt
+
+            - `REPA` – Registrert partner
+
+            - `SAMB` – Samboer
+
+            - `SEPA` – Separert partner
+
+            - `SEPR` – Separert
+
+            - `SKIL` – Skilt
+
+            - `SKPA` – Skilt partner
+
+            - `UGIF` – Ugift
           type: string
           enum:
             - ENKE
@@ -800,21 +902,55 @@ components:
             - SKPA
             - UGIF
         forsteUttak:
+          description: >-
+            Første uttaksperiode. Kan være gradert (20–80 %) eller helt
+            (100 %) uttak. Dersom personen allerede har løpende alderspensjon,
+            simuleres en endring av uttaket fra denne datoen.
           $ref: '#/components/schemas/UttaksperiodeSpecV3'
         heltUttak:
+          description: >-
+            Perioden for helt (100 %) uttak. Utelates dersom `forsteUttak`
+            allerede er 100 %, eller dersom det ikke simuleres gradert uttak
+            etterfulgt av helt uttak.
           $ref: '#/components/schemas/UttaksperiodeSpecV3'
         arIUtlandetEtter16:
+          description: >-
+            Antall år personen har bodd utenfor Norge etter fylte 16 år.
+            Reduserer beregnet trygdetid (maks 40 år), som påvirker størrelsen
+            på grunnpensjon (GP), garantipensjon (GAP) og pensjonstillegg (PT).
+            Standardverdi er 0.
+
+            Merk: feltet er stavet med enkel 'r' (`arIUtlandetEtter16`).
           type: integer
           format: int32
         epsPensjon:
+          description: >-
+            Angir om ektefelle, partner eller samboer (EPS) har pensjon.
+            Påvirker garantipensjonssatsen – satsen reduseres dersom EPS
+            har pensjon.
           type: boolean
         eps2G:
+          description: >-
+            Angir om ektefelle, partner eller samboer (EPS) har inntekt over
+            2 ganger grunnbeløpet (2G). Påvirker garantipensjonssatsen –
+            satsen reduseres dersom EPS har inntekt over 2G.
           type: boolean
         fremtidigInntektListe:
+          description: >-
+            Liste over fremtidige inntekter for personen. Inntektene påvirker
+            pensjonsopptjeningen frem til uttaksdato og dermed størrelsen på
+            alderspensjonen. Alle datoer må være den 1. i måneden, og det
+            kan ikke være duplikate startdatoer eller negative beløp.
           type: array
           items:
             $ref: '#/components/schemas/InntektSpecV3'
         simulerMedAfpPrivat:
+          description: >-
+            Angir om simuleringen skal inkludere privat avtalefestet pensjon
+            (AFP). `true` beregner alderspensjon kombinert med privat AFP
+            (`ALDER_M_AFP_PRIVAT`). `false` eller utelatt beregner kun
+            alderspensjon (`ALDER`). Ved `true` returneres
+            `afpPrivatBeholdningVedUttak` i responsen.
           type: boolean
       required:
         - fnr
@@ -824,11 +960,19 @@ components:
       type: object
       properties:
         arligInntekt:
+          description: >-
+            Årlig pensjonsgivende inntekt i kroner. Ikke-negativ verdi.
+            Sett til 0 fra uttaksdato for å angi ingen inntekt etter uttak.
+
+            Merk: feltet er stavet med enkel 'r' (`arligInntekt`).
           type: integer
           format: int32
         fomDato:
+          description: >-
+            Dato inntekten gjelder fra og med, i formatet "YYYY-MM-DD".
+            Må være første dag i en måned.
           type: string
-          format: date-time
+          format: date
       required:
         - arligInntekt
         - fomDato
@@ -836,11 +980,18 @@ components:
       type: object
       properties:
         datoFom:
+          description: >-
+            Dato for oppstart av uttaket, i formatet "YYYY-MM-DD".
+            Må være første dag i en måned.
           type: string
-          format: date-time
+          format: date
         grad:
+          description: >-
+            Uttaksgrad i prosent. Gyldige verdier: 20, 40, 50, 60, 80, 100.
+            For `heltUttak` skal graden alltid være 100.
           type: integer
           format: int32
+          enum: [20, 40, 50, 60, 80, 100]
       required:
         - datoFom
         - grad
@@ -848,36 +999,65 @@ components:
       type: object
       properties:
         datoFom:
+          description: >-
+            Dato for start av uttaksperioden, i formatet "YYYY-MM-DD".
           type: string
         delytelser:
+          description: >-
+            Liste over pensjonskomponenter (delytelser) som inngår i perioden.
+            Se `DelytelseResultV3` for forklaring av `pensjonstype`-kodene.
           type: array
           items:
             $ref: '#/components/schemas/DelytelseResultV3'
         uttaksgrad:
+          description: >-
+            Uttaksgrad i prosent for perioden.
           type: integer
           format: int32
     AlderspensjonResultV3:
       type: object
       properties:
         pensjonsperioder:
+          description: >-
+            Liste over simulerte pensjonsperioder. Hvert element viser
+            årsbeløpet for en periode. For personer med gradert uttak
+            vil det være ett element per uttakstrinn.
           type: array
           items:
             $ref: '#/components/schemas/PensjonsperiodeResultV3'
         simuleringsdataListe:
+          description: >-
+            Liste over tekniske simuleringsdata per knekkpunkt (uttaksdato).
+            Inneholder parametrene som ble brukt i beregningen, bl.a.
+            poengår, sluttpoengtall, trygdetid og forholdstall/delingstall.
           type: array
           items:
             $ref: '#/components/schemas/SimuleringsdataResultV3'
         pensjonsbeholdningsperioder:
+          description: >-
+            Liste over pensjonsbeholdningsperioder (kapittel 20-opptjening).
+            Viser opptjent beholdning per periode. For personer født
+            1954–1962 beregnes en andel av pensjonen etter kapittel 20.
           type: array
           items:
             $ref: '#/components/schemas/PensjonsbeholdningPeriodeResultV3'
         alderspensjonFraFolketrygden:
+          description: >-
+            Detaljert liste over alderspensjon per uttaksperiode med
+            fordeling på pensjonskomponenter (delytelser).
+            Inneholder ett element per uttakstrinn (gradert og helt uttak).
           type: array
           items:
             $ref: '#/components/schemas/AlderspensjonFraFolketrygdenResultV3'
         harUttak:
+          description: >-
+            Angir om personen har løpende alderspensjon fra Nav
+            på simuleringstidspunktet (uttaksgrad > 0 %).
           type: boolean
         harTidligereUttak:
+          description: >-
+            Angir om personen har hatt alderspensjon tidligere, men ikke
+            lenger har løpende uttak (f.eks. etter å ha satt uttaksgrad til 0 %).
           type: boolean
         afpPrivatBeholdningVedUttak:
           type: integer
@@ -902,6 +1082,9 @@ components:
 
             For en person som allerede har startet uttak av AFP Privat, returnerer feltet 0.
         sisteGyldigeOpptjeningsAr:
+          description: >-
+            Siste år med registrert pensjonsgivende inntekt i opptjeningsregisteret.
+            Inntekt etter dette året er ikke inkludert i beregningsgrunnlaget.
           type: integer
           format: int32
       required:
@@ -911,39 +1094,104 @@ components:
       type: object
       properties:
         pensjonstype:
+          description: >-
+            Type pensjonskomponent (delytelse). Forkortelser:
+
+            - `GP` – Grunnpensjon (kapittel 19). Fast beløp basert på
+              trygdetid, uavhengig av inntektshistorikk.
+
+            - `TP` – Tilleggspensjon (kapittel 19). Inntektsbasert tillegg
+              beregnet fra pensjonspoeng (sluttpoengtall × poengår).
+
+            - `PT` – Pensjonstillegg (kapittel 19/20). Sikrer at pensjonister
+              med lav opptjening når et minstenivå.
+
+            - `IP` – Inntektspensjon (kapittel 20). Inntektsbasert pensjon
+              for opptjening etter 1992.
+
+            - `GAP` – Garantipensjon (kapittel 20). Minstegaranti for
+              alderspensjon – sikrer et gulv uavhengig av opptjening.
+
+            - `GAT` – Garantitillegg (kapittel 20). Overgangsordning som
+              sikrer at kapittel 20-pensjonister ikke får lavere beløp enn
+              minstepensjon etter kapittel 19.
+
+            - `MIN_NIVA_TILL_INDV` – Individuelt minstenivåtillegg
+              (kapittel 19). Tillegg for å nå individuelt minstenivå.
+
+            - `SKJERMT` – Skjermingstillegg (kapittel 20). Gis til
+              uførepensjonister som går over til alderspensjon, for å skjerme
+              mot levealdersjustering.
           type: string
+          enum:
+            - GP
+            - TP
+            - PT
+            - IP
+            - GAP
+            - GAT
+            - MIN_NIVA_TILL_INDV
+            - SKJERMT
         belop:
+          description: >-
+            Årlig beløp for delytelsen i kroner.
           type: integer
           format: int32
     GarantipensjonsnivaaResultV3:
       type: object
       properties:
         belop:
+          description: >-
+            Beregnet garantipensjonsnivå i kroner per år ved aktuell trygdetid
+            og satstype.
           type: number
           format: double
         satsType:
+          description: >-
+            Type garantipensjonssats. `ORDINAER` er standardsatsen for gifte
+            og samboere. `HOY` er høy sats for enslige. `SSET_HOY` er
+            særskilt høy sats for enslige med lav inntekt.
           type: string
         sats:
+          description: >-
+            Garantipensjonssatsen målt i antall grunnbeløp (G).
           type: number
           format: double
         tt_anv:
+          description: >-
+            Anvendt trygdetid (TT_ANV) i år, brukt til å skalere
+            garantipensjonsnivået. Maks 40 år.
           type: integer
           format: int32
     PensjonsbeholdningPeriodeResultV3:
       type: object
       properties:
         pensjonsbeholdning:
+          description: >-
+            Akkumulert pensjonsopptjening i kapittel 20-beholdningen, i kroner.
+            Brukes som grunnlag for beregning av inntektspensjon (IP).
           type: number
           format: double
         garantipensjonsbeholdning:
+          description: >-
+            Garantipensjonsbeholdning (kapittel 20), i kroner. Brukes som
+            grunnlag for beregning av garantipensjon (GAP).
           type: number
           format: double
         garantitilleggsbeholdning:
+          description: >-
+            Garantitilleggsbeholdning (kapittel 20), i kroner. Brukes som
+            grunnlag for beregning av garantitillegg (GAT).
           type: number
           format: double
         datoFom:
+          description: >-
+            Startdato for perioden beholdningen gjelder, i formatet "YYYY-MM-DD".
           type: string
         garantipensjonsniva:
+          description: >-
+            Beregnet garantipensjonsnivå for perioden. Viser hvilken
+            garantipensjonssats og trygdetid som er lagt til grunn.
           $ref: '#/components/schemas/GarantipensjonsnivaaResultV3'
     PensjonsperiodeResultV3:
       type: object
@@ -964,36 +1212,79 @@ components:
       type: object
       properties:
         poengArTom1991:
+          description: >-
+            Antall poengår opptjent tom. 1991 (kapittel 19). Brukes i
+            beregning av tilleggspensjon (TP).
           type: integer
           format: int32
         poengArFom1992:
+          description: >-
+            Antall poengår opptjent fom. 1992 (kapittel 19). Brukes i
+            beregning av tilleggspensjon (TP).
           type: integer
           format: int32
         sluttpoengtall:
+          description: >-
+            Sluttpoengtall (SPT) – gjennomsnittlig pensjonspoeng over de
+            beste 20 årene. Grunnlag for beregning av tilleggspensjon (TP)
+            i kapittel 19. Pensjonspoeng = (inntekt / G) - 1.
           type: number
           format: double
         anvendtTrygdetid:
+          description: >-
+            Antall år trygdetid brukt i beregningen. Maks 40 år. Påvirker
+            størrelsen på grunnpensjon (GP), garantipensjon (GAP) og
+            pensjonstillegg (PT). Reduseres proporsjonalt med antall år
+            i utlandet etter 16 år (`arIUtlandetEtter16`).
           type: integer
           format: int32
         basisgp:
+          description: >-
+            Basisgrunnpensjon (GP) – grunnpensjon beregnet ved 100 % uttak
+            og full trygdetid (40 år), i kroner. Levealdersjusteres med
+            forholdstall ved uttak.
           type: number
           format: double
         basistp:
+          description: >-
+            Basistilleggspensjon (TP) – tilleggspensjon beregnet ved 100 %
+            uttak, basert på sluttpoengtall og poengår, i kroner.
+            Levealdersjusteres med forholdstall ved uttak.
           type: number
           format: double
         basispt:
+          description: >-
+            Basispensjonstillegg (PT) – pensjonstillegg (minstenivå) beregnet
+            ved 100 % uttak, i kroner. Settes dersom personen har rett til
+            pensjonstillegg. Null for de fleste med høy opptjening.
           type: number
           format: double
         forholdstallUttak:
+          description: >-
+            Forholdstall ved uttakstidspunktet. Brukes til levealdersjustering
+            av kapittel 19-pensjon (GP, TP). Et høyere forholdstall gir
+            lavere pensjon per år. Fastsettes basert på forventet gjenstående
+            levetid for fødselskullet.
           type: number
           format: double
         delingstallUttak:
+          description: >-
+            Delingstall ved uttakstidspunktet. Brukes til levealdersjustering
+            av kapittel 20-pensjon (IP, GAP). Et høyere delingstall gir
+            lavere pensjon per år. Null for personer som kun beregnes etter
+            kapittel 19.
           type: number
           format: double
         uforegradVedOmregning:
+          description: >-
+            Uføregrad (i prosent) ved omregning til alderspensjon, dersom
+            personen hadde uføretrygd før alderspensjon. Null dersom ikke
+            aktuelt.
           type: integer
           format: int32
         datoFom:
+          description: >-
+            Dato knekkpunktet (uttakstrinnet) gjelder fra, i formatet "YYYY-MM-DD".
           type: string
     AlderspensjonOgPrivatAfpSpecV2:
       type: object
