@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Pensjon Samordningspliktige hendelser
   description: |-
-    - Hendelseskø for samordningspliktige vedtak fattet av NAV(AP, AFP, AAP og OMS).
+    - Hendelseskø for samordningspliktige vedtak fattet av NAV(AP, AFP, AAP, OMS, GJENLEV, KRIGP, GAM_YRK, UFOREP og AFP_PRIVAT).
     - Hendelseskø for ytelser registrert av tjenestepensjonordningene.
     - Hendelseskø for personendringer (SIVILSTAND, FODSELSNUMMER, ADRESSE, DOEDSFALL) fra Nav.
     - Hendelseskø for manglende refusjonskrav (purring).
@@ -512,6 +512,11 @@ components:
             - AFP
             - OMS
             - AAP
+            - GJENLEV
+            - KRIGP
+            - GAM_YRK
+            - UFOREP
+            - AFP_PRIVAT
           description: Samordningspliktig ytelse knyttet til hendelse
         identifikator:
           type: string
