@@ -108,12 +108,9 @@ components:
       type: string
       description: Type vedtak
       enum:
-        - AVSL
         - ENDRING
         - FORGANG
         - GOMR
-        - OPPHOR
-        - OPPTJ
         - REGULERING
         - SAMMENSTOT
 

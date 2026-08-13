@@ -110,14 +110,10 @@ components:
       nullable: true
       description: Type vedtak
       enum:
-        - AVSL
         - ENDRING
         - FORGANG
         - GOMR
-        - OPPHOR
-        - OPPTJ
         - REGULERING
-        - SAMMENSTOT
 
     KrigspensjonTypeDto:
       type: string
