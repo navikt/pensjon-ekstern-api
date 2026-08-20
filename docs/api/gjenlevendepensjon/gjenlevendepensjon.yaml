@@ -190,11 +190,8 @@ components:
       description: Resultattype for beregningen
       enum:
         - GJP
-        - GJP_FAR
-        - GJP_MOR
         - GJP_UP
         - GJP_UP_YP
-        - GJR
 
     BeregningNokkelinfoDto:
       title: Beregning nøkkelinfo
