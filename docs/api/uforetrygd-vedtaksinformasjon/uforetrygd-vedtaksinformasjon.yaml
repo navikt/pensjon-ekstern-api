@@ -156,7 +156,9 @@ components:
           nullable: true
           description: Netto månedsbeløp
         resultatKode:
-          $ref: '#/components/schemas/ResultatTypeDto'
+          type: string
+          nullable: true
+          description: Resultattype for beregningen
         bruttoGrunnpensjon:
           type: integer
           nullable: true
@@ -211,20 +213,6 @@ components:
           type: integer
           nullable: true
           description: Fremtidig pensjonsgivende inntekt for bruker
-
-    ResultatTypeDto:
-      type: string
-      nullable: true
-      description: Resultattype for beregningen
-      enum:
-        - UP
-        - UP_GJP
-        - UP_GJP_UP
-        - UP_GJP_UP_YP
-        - UP_YP
-        - UT
-        - UT_YT
-        - UT_GJT
 
     BeregningNokkelinfoDto:
       title: Beregning nøkkelinfo
