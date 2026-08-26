@@ -7,18 +7,15 @@ info:
     Hva, når og hvem som har hentet ut uføreopplysninger vil bli logget i en database hos Nav.<br>
     Bruker kan logge seg inn på nav.no for å få innsyn i disse hendelsene.<br>
     
-    Påkrevd scope-verdi for bruk av API'et er `nav:helse/v1/uforeopplysninger`.<br>
+    For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til `nav:helse/v1/uforeopplysninger`<br>
     
-    API'et støtter samtykke fra både Altinn 2 og Altinn 3. Avhengig av Altinn-versjonen gjelder følgende:<br>
+    API'et støtter samtykke fra Altinn<br>
     
-    * Altinn 2: Altinn tjenestekode og tjenesteutgavekode må være `5252_X` der `X` er 2 eller større.
-    * Altinn 3: Altinn ressursnavn må være `nav_samtykke_dsop_aap-ufore`.
+    * Altinn ressursnavn må være `nav_samtykke_dsop_aap-ufore`
     
-    API'et forutsetter at samtykket inneholder metadata for samtykkeperioden der datoene er oppgitt på formatet `dd.MM.yyyy`.</br>
-    Merk at metadataene har ulik bruk av små og store bokstaver siden Altinn 3 godtar kun små bokstaver.
+    * API'et forutsetter at samtykket inneholder metadata for samtykkeperioden der datoene er oppgitt på formatet `dd.MM.yyyy`</br>
     
-    * Altinn 2: Samtykkeperioden er definert av `fraOgMed` og `tilOgMed`.
-    * Altinn 3: Samtykkeperioden er definert av `fraogmed` og `tilogmed`.
+    * Altinn: Samtykkeperioden er definert av `fraogmed` og `tilogmed`
     
     Du kan finne info om ressursen og dens metadata her: [https://platform.tt02.altinn.no/resourceregistry/api/v1/resource/nav_samtykke_dsop_aap-ufore](https://platform.tt02.altinn.no/resourceregistry/api/v1/resource/nav_samtykke_dsop_aap-ufore)<br>
     Klikk [her](./Begreper-HelseUforeopplysninger.pdf) for begrepsforklaringer.</br>
