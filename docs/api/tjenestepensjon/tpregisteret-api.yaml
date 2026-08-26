@@ -11,8 +11,8 @@ info:
     
     Spesifikt for tjenesten `/hasForhold` gjelder eget scope: `nav:pensjon/tpregisteret/forhold.check`
     
-    Ved opprettelse av ytelsene `UFORE` og `GJENLEVENDE` returneres ikke vedtakopplysninger.
-    Dette må hentes med hentSamordningsdata (SOAP)
+    Ved opprettelse av ytelsene `UFORE` og `GJENLEVENDE` returneres ikke vedtakopplysninger. Dette må hentes med hentSamordningsdata (SOAP)   
+
   contact: {}
   version: '1.0'
 servers:
@@ -185,6 +185,8 @@ paths:
           description: Ikke tilgang til ordning eller feil scope på token fra Maskinporten
         '404':
           description: Person eller Ordning ikke funnet
+        '409':
+          description: Identisk forhold eksisterer allerede
       deprecated: false
   /forhold/{ordning}/delete:
     delete:
