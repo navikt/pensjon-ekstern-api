@@ -375,6 +375,10 @@ components:
           type: integer
           nullable: true
           description: Årsbeløp for minsteytelse
+        utbetalingsgrad:
+          type: integer
+          nullable: true
+          description: Utbetalingsgrad i prosent
 
   securitySchemes:
     bearerAuth:
