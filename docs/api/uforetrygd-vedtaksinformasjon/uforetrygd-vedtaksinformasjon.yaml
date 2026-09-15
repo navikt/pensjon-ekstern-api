@@ -223,13 +223,13 @@ components:
         - UP_GJP_UP_YP
         - UP_YP
         - YP
+        - KONV_UFORE
 
     ResultatTypeUtDto:
       type: string
       nullable: true
       description: Resultattype for beregningen
       enum:
-        - KONV_UFORE
         - UT
         - UT_EO
         - UT_YT
