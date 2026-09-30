@@ -96,7 +96,7 @@ components:
           description: beløpet som inngår i refusjonstrekket
         kravstillersRef:
           type: string
-          description: Kravstillers referanse
+          description: Kravstillers referanse. Bør helst være unik. Maks 12 tegn.
         datoFom:
           type: string
           description: Dato fra og med.
