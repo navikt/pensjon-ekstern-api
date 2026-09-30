@@ -113,6 +113,7 @@ components:
         - ENDRING
         - FORGANG
         - GOMR
+        - OPPHOR
         - REGULERING
 
     YrkesskadeTypeDto:
