@@ -635,8 +635,8 @@ components:
           description: ''
           type: number
           format: double
-        merknadliste:
-          $ref: '#/components/schemas/Merknadliste'
+        merknadListe:
+          $ref: '#/components/schemas/MerknadListe'
         pt_a10:
           description: ''
           type: number
@@ -713,8 +713,8 @@ components:
         siste_fpp_aar:
           description: ''
           type: integer
-        merknadliste:
-          $ref: '#/components/schemas/Merknadliste'
+        merknadListe:
+          $ref: '#/components/schemas/MerknadListe'
         fpp_eos_snitt:
           description: ''
           type: number
@@ -750,8 +750,8 @@ components:
         pia:
           description: ''
           type: integer
-        merknadliste:
-          $ref: '#/components/schemas/Merknadliste'
+        merknadListe:
+          $ref: '#/components/schemas/MerknadListe'
         poengtallType:
           title: poengtallType
           description: ''
@@ -779,8 +779,8 @@ components:
         uforear:
           description: ''
           type: boolean
-    Merknadliste:
-      title: merknadliste
+    MerknadListe:
+      title: merknadListe
       description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
       type: object
       properties:
@@ -829,8 +829,8 @@ components:
         erBrukt:
           description: ''
           type: boolean
-        merknadliste:
-          $ref: '#/components/schemas/Merknadliste'
+        merknadListe:
+          $ref: '#/components/schemas/MerknadListe'
         sakType:
           title: sakType
           description: ''
@@ -1079,20 +1079,20 @@ components:
       description: ''
       allOf:
         - $ref: '#/components/schemas/Ytelsekomponent'
-        - $ref: '#/components/schemas/Ytp'
+        - $ref: '#/components/schemas/Ypt'
         - $ref: '#/components/schemas/Spt'
         - $ref: '#/components/schemas/Opt'
-    Ytp:
+    Ypt:
       title: ypt
       description: 'Sluttpoengtall for yrkesskade. '
       items:
         $ref: '#/components/schemas/YtelseskomponentSluttpoengtall'
     Spt:
-      description: 'Sluttpoengtall for yrkesskade. '
+      description: 'Sluttpoengtall på tilleggspensjon. '
       items:
         $ref: '#/components/schemas/YtelseskomponentSluttpoengtall'
     Opt:
-      description: 'Sluttpoengtall for yrkesskade. '
+      description: 'Sluttpoengtall ved overkompensasjon tilleggspensjon. '
       items:
         $ref: '#/components/schemas/YtelseskomponentSluttpoengtall'
     Paragraf_8_5_1Tillegg:
