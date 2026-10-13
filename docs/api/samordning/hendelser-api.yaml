@@ -74,13 +74,13 @@ paths:
                     items:
                       $ref: '#/components/schemas/vedtakshendelse'
                   sisteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Siste sekvensnummer fra forrige side
-                    format: long
+                    format: int64
                   sisteLesteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Det nyeste sekvensnummeret
-                    format: long
+                    format: int64
                   nextUrl:
                     type: string
                     description: Lenke til neste side
@@ -157,13 +157,13 @@ paths:
                     items:
                       $ref: '#/components/schemas/vedtakshendelse'
                   sisteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Siste sekvensnummer fra forrige side
-                    format: long
+                    format: int64
                   sisteLesteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Det nyeste sekvensnummeret
-                    format: long
+                    format: int64
                   nextUrl:
                     type: string
                     description: Lenke til neste side
@@ -240,13 +240,13 @@ paths:
                     items:
                       $ref: '#/components/schemas/ytelseshendelse'
                   sisteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Siste sekvensnummer fra forrige side
-                    format: long
+                    format: int64
                   sisteLesteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Det nyeste sekvensnummeret
-                    format: long
+                    format: int64
                   nextUrl:
                     type: string
                     description: Lenke til neste side
@@ -392,13 +392,13 @@ paths:
                     items:
                       $ref: '#/components/schemas/personendringer'
                   sisteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Siste sekvensnummer fra forrige side
-                    format: long
+                    format: int64
                   sisteLesteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Det nyeste sekvensnummeret
-                    format: long
+                    format: int64
                   nextUrl:
                     type: string
                     description: Lenke til neste side
@@ -475,13 +475,13 @@ paths:
                     items:
                       $ref: '#/components/schemas/manglendeRefusjonskrav'
                   sisteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Siste sekvensnummer fra forrige side
-                    format: long
+                    format: int64
                   sisteLesteSekvensnummer:
-                    type: string
+                    type: integer
                     description: Det nyeste sekvensnummeret
-                    format: long
+                    format: int64
                   nextUrl:
                     type: string
                     description: Lenke til neste side
