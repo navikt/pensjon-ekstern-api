@@ -505,6 +505,11 @@ components:
       type: object
       description: En hendelse tilknyttet samordningspliktig vedtak
       properties:
+        sekvensnummer:
+          type: integer
+          description: Sekvensnummer.
+          format: int64
+          nullable: false
         ytelsesType:
           type: string
           enum:
@@ -541,9 +546,10 @@ components:
       description: En hendelse tilknyttet tjenstepensjonsytelse.
       properties:
         sekvensnummer:
-          type: string
+          type: integer
           description: Sekvensnummer.
-          format: long
+          format: int64
+          nullable: false
         tpnr:
           type: string
           description: Organisasjonsnummeret til tjenestepensjonsordning.
@@ -589,9 +595,10 @@ components:
       description: En hendelse tilknyttet personendringer fra nav.
       properties:
         sekvensnummer:
-          type: string
+          type: integer
           description: Sekvensnummer.
-          format: long
+          format: int64
+          nullable: false
         tpnr:
           type: string
           description: Id for tjenestepensjonsordning.
@@ -665,9 +672,9 @@ components:
       description: En hendelse tilknyttet manglendeRefusjonskrav (purring) fra nav.
       properties:
         sekvensnummer:
-          type: string
+          type: integer
           description: Sekvensnummer.
-          format: long
+          format: int64
           nullable: false
         tpnr:
           type: string
