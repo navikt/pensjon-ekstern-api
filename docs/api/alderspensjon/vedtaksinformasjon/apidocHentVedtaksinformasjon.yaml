@@ -486,7 +486,16 @@ components:
           description: Ytelseskomponenter som kan forekomme
           type: array
           items:
-            $ref: '#/components/schemas/Ytelsekomponent'
+            allOf:
+              - $ref: '#/components/schemas/Ytelsekomponent'
+              - type: object
+                properties:
+                  ytelseskomponentType:
+                    type: string
+                    enum:
+                      - AFP_KOMP_TILLEGG
+                      - AFP_KRONETILLEGG
+                      - AFP_LIVSVARIG
         forholdstallKompensasjonstillegg:
           description: 'Forholdstall brukt i beregning av kompensasjonstillegg. '
           type: number
