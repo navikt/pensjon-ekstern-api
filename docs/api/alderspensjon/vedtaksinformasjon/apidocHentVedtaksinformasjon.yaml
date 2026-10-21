@@ -493,9 +493,24 @@ components:
                   ytelseskomponentType:
                     type: string
                     enum:
-                      - AFP_KOMP_TILLEGG
-                      - AFP_KRONETILLEGG
-                      - AFP_LIVSVARIG
+                      - AfpKompensasjonstillegg
+                      - AfpKronetillegg
+                      - AfpLivsvarig
+                  ytelseKomponentTypeCti:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                          - AFP_KOMP_TILLEGG
+                          - AFP_KRONETILLEGG
+                          - AFP_LIVSVARIG
+                      decode:
+                        type: string
+                        enum:
+                          - AFP kompensasjonstillegg
+                          - AFP kronetillegg
+                          - AFP livsvarig del
         forholdstallKompensasjonstillegg:
           description: 'Forholdstall brukt i beregning av kompensasjonstillegg. '
           type: number
