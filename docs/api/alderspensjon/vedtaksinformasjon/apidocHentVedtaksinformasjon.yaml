@@ -660,7 +660,9 @@ components:
           type: number
           format: double
         merknadListe:
-          $ref: '#/components/schemas/MerknadListe'
+          type: array
+          items:
+            $ref: '#/components/schemas/Merknad'
         pt_a10:
           description: ''
           type: number
@@ -738,7 +740,9 @@ components:
           description: ''
           type: integer
         merknadListe:
-          $ref: '#/components/schemas/MerknadListe'
+          type: array
+          items:
+            $ref: '#/components/schemas/Merknad'
         fpp_eos_snitt:
           description: ''
           type: number
@@ -775,7 +779,9 @@ components:
           description: ''
           type: integer
         merknadListe:
-          $ref: '#/components/schemas/MerknadListe'
+          type: array
+          items:
+            $ref: '#/components/schemas/Merknad'
         poengtallType:
           title: poengtallType
           description: ''
@@ -803,19 +809,6 @@ components:
         uforear:
           description: ''
           type: boolean
-    MerknadListe:
-      title: merknadListe
-      description: 'Dette er en liste med merknader fra regelmotoren – forklaringer, unntak og avvisningsgrunner. '
-      type: object
-      properties:
-        argumentListe:
-          description: ''
-          type: array
-          items:
-            type: string
-        kode:
-          description: ''
-          type: string
     Ytelsekomponent:
       title: Ytelsekomponent
       description: Felter vil variere basert på typen ytelseskomponent
@@ -854,7 +847,9 @@ components:
           description: ''
           type: boolean
         merknadListe:
-          $ref: '#/components/schemas/MerknadListe'
+          type: array
+          items:
+            $ref: '#/components/schemas/Merknad'
         sakType:
           title: sakType
           description: ''
