@@ -293,10 +293,12 @@ components:
           format: double
         spt:
           description: 'Sluttpoengtall på tilleggspensjon. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         ypt:
           description: 'Sluttpoengtall for yrkesskade. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         yrkesskadegrad:
           description: 'Angir den siste yrkesskadegraden (fra yrkesskadegrunnlaget) som er lagt til grunn på beregningen. Kun relevant for ytelser der yrkesskade er tatt hensyn til. '
           type: number
@@ -306,13 +308,16 @@ components:
           type: string
         sptAvdod:
           description: 'Sluttpoengtall på tilleggspensjon for avdøde. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         yptAvdod:
           description: 'Sluttpoengtall for yrkesskade for avdøde. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         optAvdod:
           description: 'Sluttpoengtall ved overkompensasjon på tilleggspensjonen for avdød. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         yrkesskadegradAvdod:
           description: 'Angir den siste yrkesskadegraden for avdøde (fra yrkesskadegrunnlaget) som er lagt til grunn på beregningen. Kun relevant for ytelser der yrkesskade er hensyntatt. '
           type: number
@@ -430,7 +435,8 @@ components:
             $ref: '#/components/schemas/BeregningNokkelinfo'
         sluttpoengtall:
           description: Ved uføre, etterlatt og AFP blir det beregnet poengtall for fremtidige år for å komme frem til et sluttpoengtall som pensjonen skal beregnes etter
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         minstenivatilleggIndividuelt:
           description: 'Minstenivatillegg individuelt netto. '
           type: integer
@@ -575,7 +581,8 @@ components:
           type: integer
         spt:
           description: 'Sluttpoengtall på tilleggspensjon. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         minstenivatilleggIndividuelt:
           description: 'Minstenivatillegg individuelt netto. '
           type: integer
@@ -611,13 +618,16 @@ components:
           type: string
         spt:
           description: 'Eventuelt sluttpoengtall på tilleggspensjonen som er i bruk på (del)beregningen nøkkelinformasjonen gjelder for. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         ypt:
           description: 'Eventuelt sluttpoengtall ved yrkesskade på tilleggspensjonen som er i bruk  på (del)beregningen nøkkelinformasjonen gjelder for. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         opt:
           description: 'Eventuelt sluttpoengtall med overkompensasjon tilleggspensjonen som er i bruk på (del)beregning nøkkelinformasjonen gjelder for. '
-          $ref: '#/components/schemas/KapittelSluttpoengtall'
+          allOf:
+            - $ref: '#/components/schemas/KapittelSluttpoengtall'
         anvendtTrygdetid:
           description: 'Eventuelt anvendt trygdetid på (del)beregningen nøkkelinformasjonen gjelder for. '
           type: integer
