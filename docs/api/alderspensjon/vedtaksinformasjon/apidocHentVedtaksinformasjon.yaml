@@ -157,7 +157,37 @@ components:
           description: Ytelseskomponenter som kan forekomme
           type: array
           items:
-            $ref: '#/components/schemas/Ytelsekomponent'
+            allOf:
+              - $ref: '#/components/schemas/Ytelsekomponent'
+              - type: object
+                properties:
+                  ytelseskomponentType:
+                    type: string
+                    enum:
+                      - GjenlevendetilleggAP
+                      - Garantipensjon
+                      - Garantitillegg
+                      - Inntektspensjon
+                      - MinstenivatilleggIndividuelt
+                  ytelseKomponentTypeCti:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                          - AP_GJT
+                          - GAP
+                          - GAT
+                          - IP
+                          - MIN_NIVA_TILL_INDV
+                      decode:
+                        type: string
+                        enum:
+                          - Gjenlevendetillegg
+                          - Garantipensjon
+                          - Garantitillegg
+                          - Inntektspensjon
+                          - Minstenivåtillegg individuelt
         pensjonsbeholdning:
           description: 'Angir verdi for beholdning. '
           type: number
@@ -244,7 +274,58 @@ components:
           description: Ytelseskomponenter som kan forekomme
           type: array
           items:
-            $ref: '#/components/schemas/Ytelsekomponent'
+            allOf:
+              - $ref: '#/components/schemas/Ytelsekomponent'
+              - type: object
+                properties:
+                  ytelseskomponentType:
+                    type: string
+                    enum:
+                      - GjenlevendetilleggAPKap19
+                      - Familietillegg
+                      - FasteUtgifterTillegg
+                      - Grunnpensjon
+                      - MinstenivatilleggIndividuelt
+                      - MinstenivatilleggPensjonistpar
+                      - Pensjonstillegg
+                      - Skjermingstillegg
+                      - Tilleggspensjon
+                      - Ektefelletillegg (historisk)
+                      - BarnetilleggFellesbarn (historisk)
+                      - BarnetilleggSerkullsbarn (historisk)
+                  ytelseKomponentTypeCti:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                          - AP_GJT_KAP19
+                          - FAM_T
+                          - FAST_UTGIFT_T
+                          - GP
+                          - MIN_NIVA_TILL_INDV
+                          - MIN_NIVA_TILL_PPAR
+                          - PT
+                          - SKJERMT
+                          - TP
+                          - ET (historisk)
+                          - TFB (historisk)
+                          - TSB (historisk)
+                      decode:
+                        type: string
+                        enum:
+                          - Gjenlevendetillegg kapittel 19
+                          - Familietillegg
+                          - Tillegg faste utgifter
+                          - Grunnpensjon
+                          - Minstenivåtillegg individuelt
+                          - Minstenivåtillegg pensjonistpar
+                          - Pensjonstillegg
+                          - Skjermingstillegg
+                          - Tilleggspensjon
+                          - Ektefelletillegg (historisk)
+                          - Barnetillegg fellesbarn (historisk)
+                          - Barnetillegg særkullsbarn (historisk)
         resultatKode:
           description: Hvilken type beregning dette er.
           type: string
@@ -398,7 +479,46 @@ components:
           description: Ytelseskomponenter som kan forekomme
           type: array
           items:
-            $ref: '#/components/schemas/Ytelsekomponent'
+            allOf:
+              - $ref: '#/components/schemas/Ytelsekomponent'
+              - type: object
+                properties:
+                  ytelseskomponentType:
+                    type: string
+                    enum:
+                      - Paragraf_8_5_1Tillegg
+                      - Familietillegg
+                      - Grunnpensjon
+                      - Sertillegg
+                      - Tilleggspensjon
+                      - Ektefelletillegg (historisk)
+                      - BarnetilleggFellesbarn (historisk)
+                      - BarnetilleggSerkullsbarn (historisk)
+                  ytelseKomponentTypeCti:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                          - 8_5_1_T
+                          - FAM_T
+                          - GP
+                          - ST
+                          - TP
+                          - ET (historisk)
+                          - TFB (historisk)
+                          - TSB (historisk)
+                      decode:
+                        type: string
+                        enum:
+                          - 8-5-1 Tillegg
+                          - Familietillegg
+                          - Grunnpensjon
+                          - Særtillegg
+                          - Tilleggspensjon
+                          - Ektefelletillegg (historisk)
+                          - Barnetillegg fellesbarn (historisk)
+                          - Barnetillegg særkullsbarn (historisk)
         resultatKode:
           description: 'Hvilken type beregning dette er. '
           type: string
@@ -565,7 +685,43 @@ components:
           description: Ytelseskomponenter som kan forekomme
           type: array
           items:
-            $ref: '#/components/schemas/Ytelsekomponent'
+            allOf:
+              - $ref: '#/components/schemas/Ytelsekomponent'
+              - type: object
+                properties:
+                  ytelseskomponentType:
+                    type: string
+                    enum:
+                      - AfpLivsvarig
+                      - AfpTillegg
+                      - Grunnpensjon
+                      - MinstenivatilleggIndividuelt
+                      - MinstenivatilleggPensjonistpar
+                      - Sertillegg
+                      - Tilleggspensjon
+                  ytelseKomponentTypeCti:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                          - AFP_LIVSVARIG
+                          - AFP_T
+                          - GP
+                          - MIN_NIVA_TILL_INDV
+                          - MIN_NIVA_TILL_PPAR
+                          - ST
+                          - TP
+                      decode:
+                        type: string
+                        enum:
+                          - AFP livsvarig del
+                          - AFP tillegg
+                          - Grunnpensjon
+                          - Minstenivåtillegg individuelt
+                          - Minstenivåtillegg pensjonistpar
+                          - Særtillegg
+                          - Tilleggspensjon
         resultatKode:
           description: Hvilken type beregning dette er.
           type: string
