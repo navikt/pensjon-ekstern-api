@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Pensjon Uførepensjon og Uføretrygd
-  description: Tjeneste for å hente informasjon om gjeldende vedtak for uførepensjon og uføretrygd.
+  description: Tjeneste for å hente informasjon om gjeldende vedtak for en person eller et bestemt vedtak for uførepensjon og uføretrygd.
   version: 1.0.0
 servers:
   - url: https://pensjon-gw.ekstern.dev.nav.no/uforetrygd/tpordningene
@@ -41,6 +41,46 @@ paths:
           description: Autentisering feilet
         403:
           description: Autorisering til ressurs feilet, f.eks. feil scope i token
+        500:
+          description: Intern feil i tjenesten
+
+  /vedtaksinformasjon/{vedtakId}:
+    get:
+      description: >-
+        Henter et bestemt vedtak for uførepensjon eller uføretrygd basert på vedtakets ID.
+        Returnerer en liste med ett vedtak inkludert beregningsdetaljer og uføretrygd-informasjon.
+        Scope mot Maskinporten settes til `nav:pensjon/vedtaksinformasjon.read`.
+      operationId: hentUforetrygdVedtaksinformasjonForVedtak
+      parameters:
+        - in: path
+          name: vedtakId
+          description: Unik identifikator for vedtaket
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: header
+          name: x-request-id
+          description: UUID for å spore kallet
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HentUforetrygdInformasjonResponse'
+        400:
+          description: Feil i request-data fra klient, eller vedtaket er ikke et uførevedtak
+        401:
+          description: Autentisering feilet
+        403:
+          description: Autorisering til ressurs feilet, f.eks. feil scope i token
+        404:
+          description: Fant ikke person
         500:
           description: Intern feil i tjenesten
 
