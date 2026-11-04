@@ -48,7 +48,7 @@ paths:
     get:
       description: >-
         Henter et bestemt vedtak for uførepensjon eller uføretrygd basert på vedtakets ID.
-        Returnerer en liste med ett vedtak inkludert beregningsdetaljer og uføretrygd-informasjon.
+        Returnerer ett vedtaksobjekt inkludert beregningsdetaljer og uføretrygd-informasjon.
         Scope mot Maskinporten settes til `nav:pensjon/vedtaksinformasjon.read`.
       operationId: hentUforetrygdVedtaksinformasjonForVedtak
       parameters:
@@ -72,7 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HentUforetrygdInformasjonResponse'
+                $ref: '#/components/schemas/UforetrygdInformasjonDto'
         400:
           description: Feil i request-data fra klient, eller vedtaket er ikke et uførevedtak
         401:
