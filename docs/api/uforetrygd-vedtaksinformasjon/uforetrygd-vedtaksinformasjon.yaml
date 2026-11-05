@@ -448,3 +448,4 @@ components:
       bearerFormat: JWT
     security:
       - bearerAuth: []
+
