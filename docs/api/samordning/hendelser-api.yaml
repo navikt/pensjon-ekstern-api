@@ -4,7 +4,7 @@ info:
   description: |-
     - Hendelseskø for samordningspliktige vedtak fattet av NAV(AP, AFP, AAP, OMS, GJENLEV, KRIGP, GAM_YRK, UFOREP og AFP_PRIVAT).
     - Hendelseskø for ytelser registrert av tjenestepensjonordningene.
-    - Hendelseskø for personendringer (SIVILSTAND, FODSELSNUMMER, ADRESSE, DOEDSFALL) fra Nav.
+    - Hendelseskø for personendringer (SIVILSTAND, FODSELSNUMMER, ADRESSE, DOEDSFALL) kun fra NAVs register.
     - Hendelseskø for manglende refusjonskrav (purring).
     
     For å kunne bruke tjenesten må scope i autentiseringen mot Maskinporten settes til: `nav:pensjon/v1/samordning`
