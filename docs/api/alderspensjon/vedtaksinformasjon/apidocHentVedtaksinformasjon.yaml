@@ -124,6 +124,13 @@ components:
         vedtaksKode:
           description: 'Hvilken type vedtak dette er. '
           type: string
+          enum:
+            - ENDRING
+            - FORGANG
+            - GOMR
+            - OPPHOR
+            - REGULERING
+            - SAMMENSTOT
         virkFom:
           description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
           type: string
@@ -241,6 +248,13 @@ components:
         vedtaksKode:
           description: 'Hvilken type vedtak dette er.'
           type: string
+          enum:
+            - ENDRING
+            - FORGANG
+            - GOMR
+            - OPPHOR
+            - REGULERING
+            - SAMMENSTOT
         virkFom:
           description: 'Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.'
           type: string
@@ -446,6 +460,13 @@ components:
         vedtaksKode:
           description: 'Hvilken type vedtak dette er. '
           type: string
+          enum:
+            - ENDRING
+            - FORGANG
+            - GOMR
+            - OPPHOR
+            - REGULERING
+            - SAMMENSTOT
         virkFom:
           description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
           type: string
@@ -579,6 +600,13 @@ components:
         vedtaksKode:
           description: 'Hvilken type vedtak dette er. '
           type: string
+          enum:
+            - ENDRING
+            - FORGANG
+            - GOMR
+            - OPPHOR
+            - REGULERING
+            - SAMMENSTOT
         virkFom:
           description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
           type: string
@@ -652,6 +680,13 @@ components:
         vedtaksKode:
           description: 'Hvilken type vedtak dette er. '
           type: string
+          enum:
+            - ENDRING
+            - FORGANG
+            - GOMR
+            - OPPHOR
+            - REGULERING
+            - SAMMENSTOT
         virkFom:
           description: Dato i ISO-8601 format, uten klokkeslett. Første virk for ytelsen.
           type: string
