@@ -34,7 +34,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ForetaFolketrygdBeregnetAfpResponse'
         400:
-          description: Feil i request-data fra klient, f.eks. ugyldig fødselsnummer, ugyldig AFP-ordning, ugyldig sivilstand eller dato-format. `type` er `foreta-folketrygdberegnet-afp:ugyldig-request`.
+          description: Feil i request-data fra klient, f.eks. manglende påkrevde felt, ugyldig fødselsnummer, ugyldig AFP-ordning, ugyldig sivilstand eller dato-format. `type` er `foreta-folketrygdberegnet-afp:ugyldig-request`.
           content:
             application/problem+json:
               schema:
@@ -72,6 +72,10 @@ components:
         - fnr
         - virkFom
         - afpOrdning
+        - inntektMndForUttak
+        - inntektArForUttak
+        - antallArUtland
+        - sivilstand
       properties:
         fnr:
           type: string
@@ -101,22 +105,19 @@ components:
           nullable: true
         inntektMndForUttak:
           type: integer
-          description: Månedlig arbeidsinntekt før uttak (valgfritt)
+          description: Månedlig arbeidsinntekt før uttak
           example: 50000
-          nullable: true
         inntektArForUttak:
           type: integer
-          description: Årlig arbeidsinntekt før uttak (valgfritt)
+          description: Årlig arbeidsinntekt før uttak
           example: 600000
-          nullable: true
         antallArUtland:
           type: integer
-          description: Antall år oppholdt i utlandet (valgfritt)
+          description: Antall år oppholdt i utlandet etter fylte 16 år
           example: 5
-          nullable: true
         sivilstand:
           type: string
-          description: Sivilstand (valgfritt).
+          description: Sivilstand. Ved `GIFT`, `REPA` eller `SAMB` må også `epsMottarYtelse` og `epsOver2G` være satt.
           example: "GIFT"
           enum:
             - ENKE
@@ -133,15 +134,14 @@ components:
             - SKIL
             - SKPA
             - UGIF
-          nullable: true
         epsMottarYtelse:
           type: boolean
-          description: Om ektefelle/partner mottar ytelse (valgfritt)
+          description: Om ektefelle/partner/samboer mottar ytelse. Påkrevd når `sivilstand` er `GIFT`, `REPA` eller `SAMB`.
           example: true
           nullable: true
         epsOver2G:
           type: boolean
-          description: Om ektefelle/partner har inntekt over 2G (valgfritt)
+          description: Om ektefelle/partner/samboer har inntekt over 2G. Påkrevd når `sivilstand` er `GIFT`, `REPA` eller `SAMB`.
           example: false
           nullable: true
 
