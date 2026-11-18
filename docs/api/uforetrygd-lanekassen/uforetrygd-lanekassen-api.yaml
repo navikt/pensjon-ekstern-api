@@ -129,7 +129,7 @@ components:
           nullable: false
           example: false
           description: Har utbetalt barnetillegg på angitt dato.
-        harBarnetilleggUtbetaltForBarnSomFyller17Eller18IlaAret:
+        utbetaltBarnetilleggForBarn17Eller18:
           type: boolean
           nullable: false
           example: false
